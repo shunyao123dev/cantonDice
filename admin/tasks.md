@@ -5,6 +5,10 @@ any dependencies.
 
 Use the entries below as an example.
 
+## Weekly Meeting Time
+Wednesday's 5pm
+
+
 ## Week 4
 
 Everyone: create application skeleton - meeting 14:00 19 Mar
