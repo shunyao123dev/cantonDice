@@ -20,10 +20,8 @@ declaration: >-
 # Add as many "name+comment" entries as necessary
 # (or remove it altogether if you haven't collaborated with anyone)
 collaboration:
-  - name: Hugo Heanly
-    comment: >- skelton of the game
-  - name: Zimu Li
-    comment: >- design the game class
+  - name:
+    comment: >-
 
 # Use this to list any code that you used that you did not write,
 # aside from code provided by the lecturer.  Provide a comment
@@ -32,7 +30,10 @@ collaboration:
 #
 # Add as many "url+licence+comment" entries as necessary
 # (or remove it altogether if you haven't used any external code)
-
+code:
+  - comment:
+    url:
+    licence:
 
 # Use this to list any assets (artwork, sound, etc) that you used.
 # Provide a comment explaining your use of that asset and the URL
@@ -40,15 +41,18 @@ collaboration:
 #
 # Add as many "url+licence+comment" entries as necessary
 # (or remove it altogether if you haven't used any external assets)
-
+assets:
+  - comment:
+    url:
+    licence:
 
 
 # Sign *your* name and uids here. (Remove entries if you have fewer
 # than three members.)
 signatures:
+  - name:Hugo Heanly
+    uid: u7119555
   - name: Shunyao Yang
     uid: u7341225
-  - name:
-    uid:
-  - name:
-    uid:
+  - name: Zimu Li
+    uid: u7274285
