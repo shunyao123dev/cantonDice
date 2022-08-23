@@ -10,10 +10,10 @@ declaration: >-
 contributions:
   - uid: u7119555
     contribution: 33
-  - uid:
-    contribution:
-  - uid:
-    contribution:
+  - uid: u7341225
+    contribution: 33
+  - uid: u7274285
+    contribution: 33
 
 # Sign *your* name and uids here. (Remove entries if you have fewer
 # than three members)
