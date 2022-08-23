@@ -72,4 +72,30 @@ public class BoardValidation {
     }
 
 
+    /**
+     * Check if the string encoding of a board state is well formed.
+     * Note that this does not mean checking if the state is valid
+     * (represents a state that the player could get to in game play),
+     * only that the string representation is syntactically well formed.
+     *
+     * @param board_state: The string representation of the board state.
+     * @return true iff the string is a well-formed representation of
+     *         a board state, false otherwise.
+     */
+    public static boolean isBoardStateWellFormed(String board_state) {
+        return false; // FIXME: Task #3
+    }
+
+    /**
+     * Check if the string encoding of a player action is well formed.
+     *
+     * @param action: The string representation of the action.
+     * @return true iff the string is a well-formed representation of
+     *         a board state, false otherwise.
+     */
+    public static boolean isActionWellFormed(String action) {
+        return false; // FIXME: Task #4
+    }
+
+
 }

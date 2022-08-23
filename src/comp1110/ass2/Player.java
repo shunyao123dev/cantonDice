@@ -18,7 +18,7 @@ public class Player {
     private int score;
 
     /**
-     * constructor of initialising the fiele
+     * constructor of initialising the field
      * @param name
      * @param boardstate
      */
