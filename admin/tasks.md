@@ -11,7 +11,20 @@ Wednesday's 5pm
 
 ## Week 4
 
-Everyone: create application skeleton - meeting 14:00 19 Mar
+Everyone: create application skeleton - meeting 5:00pm 17/08/2022
+
+## Skeleton design:
+
+Task 3 and 4 - Board Validation
+Task 6 - Move Controls
+Task 8,7,12,9 and 11 - Move Validation
+Task 5 and Task 10 - Interface for JavaFX
+Task 13 and 14 - Game Strategy (finding path and building plan)
+
+Hugo: Responsible for creating the diagram to sketch application. Complete by Saturday Night.
+Zimo and Shunyao: Responsible for creating the skeleton (various classes and methods required). Complete by Sunday Night.
+
+
 
 ## Week 5
 
