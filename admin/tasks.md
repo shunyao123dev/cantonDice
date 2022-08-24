@@ -28,11 +28,11 @@ Zimo and Shunyao: Responsible for creating the skeleton (various classes and met
 
 ## Week 5
 
-Zhang San: Task 3 isPlayerStateWellFormed - 23 Mar
+Hugo Heanly: Determining how to represent the board state, starting on class.
 
-Jane Bloggs: Task 5 drawTileFromBag - 23 Mar
+Shunyao Yang: Task 3 and 6
 
-Erika Mustermann: Task 6 refillFactories - 25 Mar (depends on Task 5)
+Zimu Li: Task 4 and 7
 
 ## Week 6
 

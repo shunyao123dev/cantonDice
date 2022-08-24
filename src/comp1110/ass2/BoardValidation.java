@@ -87,7 +87,7 @@ public class BoardValidation {
     }
 
     /**
-     * Check if the string encoding of a player action is well formed.
+     * Check if the string encoding of a player action is well-formed.
      *
      * @param action: The string representation of the action.
      * @return true iff the string is a well-formed representation of
