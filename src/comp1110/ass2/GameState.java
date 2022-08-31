@@ -29,7 +29,7 @@ public class GameState {
     public void startGame() {
         this.structures = new Structure[27][];
 
-        for (int i = 0; i < 27; i++) {
+        for (int i = 0; i < STRUCTURES_NO; i++) {
             // if the structure is the starting road
             if (i == 0) {
                 this.structures[i][4] = new Structure("R0", START, 0, false);
