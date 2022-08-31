@@ -6,7 +6,7 @@ import static comp1110.ass2.StructureType.*;
 public class Structure {
 
     // the position on the board
-    public int position;
+    public String position;
 
     // the structure type on the given tile and position
     public StructureType type;
@@ -21,7 +21,7 @@ public class Structure {
     // for the structure's coordinates as well as its type (ROAD,
     // SETTLEMENT, CITY)
 
-    public Structure(int position, StructureType type, int value, boolean built) {
+    public Structure(String position, StructureType type, int value, boolean built) {
         this.position = position;
         this.type = type;
         this.value = value;
@@ -31,7 +31,7 @@ public class Structure {
     // Constructor for the Structure class that  allows specifying
     // for the structure's position only
 
-    public Structure(int position) {
+    public Structure(String position) {
         this.position = position;
 
     }
@@ -39,7 +39,7 @@ public class Structure {
     //Return functions
 
     // Returns the position of a given structure
-    public int getPosition() {return this.position;}
+    public String getPosition() {return this.position;}
 
     // Returns the type of a given structure
     public StructureType getType() {return this.type;}
