@@ -25,7 +25,7 @@ public class BoardValidation {
      * Check for city or settlements or roads around knights
      *
      * @param board_state: The string representation of the board state.
-     * @return true iff the current postion of knight have any city or settlements or roads next to knight
+     * @return true iff the current position of knight have any city or settlements or roads next to knight
      * false otherwise.
      */
 

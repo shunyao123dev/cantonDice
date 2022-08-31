@@ -36,7 +36,13 @@ Zimu Li: Task 4 and 7
 
 ## Week 6
 
-...
+Hugo Heanly: Finishing class on board state, and starting on Task 5.
+
+Shunyao Yang: Completing tasks 3 and 6 and starting on 8.
+
+Zimu Li: Completing task 4 and 7.
+
+Board state, 3 and 6, 4 and 7 done by Mid-semester break meeting 1.
 
 ## Mid-Semester Break
 
