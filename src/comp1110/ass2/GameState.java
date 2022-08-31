@@ -5,6 +5,7 @@ import comp1110.ass2.Structure;
 import static comp1110.ass2.ResourceType.*;
 import static comp1110.ass2.StructureType.*;
 
+// This class authored by Hugo Heanly u7119555
 public class GameState {
 
     //The structures on the game board

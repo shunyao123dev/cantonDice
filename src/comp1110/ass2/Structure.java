@@ -2,6 +2,7 @@ package comp1110.ass2;
 
 import static comp1110.ass2.StructureType.*;
 
+// This class authored by Hugo Heanly u7119555
 public class Structure {
 
     // the position on the board

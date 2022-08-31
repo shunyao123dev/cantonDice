@@ -1,5 +1,6 @@
 package comp1110.ass2;
 
+// This class authored by Hugo Heanly u7119555
 public class Resource {
 
     //The type of Resource for the given tile
