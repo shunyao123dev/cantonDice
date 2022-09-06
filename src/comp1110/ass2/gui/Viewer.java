@@ -84,14 +84,12 @@ public class Viewer extends Application {
         oceanView.setPreserveRatio(true);
 
         //Creating the hexagons for the island
-        Polyline hexagon1 = makeHexagon(150, 740, 300);
-        Polyline hexagon2 = makeHexagon(150, 875, 222);
-        Polyline hexagon3 = makeHexagon(150, 1010, 300);
-        Polyline hexagon4 = makeHexagon(150, 740, 455);
-        Polyline hexagon5 = makeHexagon(150, 875, 555);
-        Polyline hexagon6 = makeHexagon(150, 740, 300);
-
-
+        Polyline hexagon1 = makeHexagon(150, 740, 285);
+        Polyline hexagon2 = makeHexagon(150, 875, 207);
+        Polyline hexagon3 = makeHexagon(150, 1010, 285);
+        Polyline hexagon4 = makeHexagon(150, 740, 440);
+        Polyline hexagon5 = makeHexagon(150, 875, 518);
+        Polyline hexagon6 = makeHexagon(150, 1010, 440);
 
         //Setting terrain on each island
 
@@ -123,6 +121,7 @@ public class Viewer extends Application {
         root.getChildren().add(hexagon3);
         root.getChildren().add(hexagon4);
         root.getChildren().add(hexagon5);
+        root.getChildren().add(hexagon6);
 
         makeControls();
 
@@ -148,6 +147,7 @@ public class Viewer extends Application {
         Polyline hexagon = new Polyline();
         hexagon.getPoints().addAll(points);
         hexagon.setFill(Color.BLANCHEDALMOND);
+        hexagon.setStroke(Color.BLACK);
         hexagon.setLayoutX(xCoord);
         hexagon.setLayoutY(yCoord);
 
