@@ -25,7 +25,6 @@ Hugo: Responsible for creating the diagram to sketch application. Complete by Sa
 Zimo and Shunyao: Responsible for creating the skeleton (various classes and methods required). Complete by Sunday Night.
 
 
-
 ## Week 5
 
 Hugo Heanly: Determining how to represent the board state, starting on class.

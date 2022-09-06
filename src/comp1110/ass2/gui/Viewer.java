@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Viewer extends Application {
@@ -29,6 +30,7 @@ public class Viewer extends Application {
      */
     void displayState(String board_state) {
         // FIXME Task 5: implement the state viewer
+
     }
 
     /**
@@ -51,10 +53,51 @@ public class Viewer extends Application {
         controls.getChildren().add(hb);
     }
 
+
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Board State Viewer");
-        Scene scene = new Scene(root, VIEWER_WIDTH, VIEWER_HEIGHT);
+        Scene scene = new Scene(root, VIEWER_WIDTH, VIEWER_HEIGHT, Color.GREEN);
+
+        //Setting ocean image background
+
+
+
+
+        //Creating the hexagons for the island
+
+
+
+        //Setting terrain on each island
+
+
+
+        //Small circles with resource
+
+
+
+        //Roads
+
+
+
+        //Towns
+
+
+
+        //Settlements
+
+
+
+        //Resource key
+
+
+
+        //Scoreboard
+
+
+
+        //Titles
 
         root.getChildren().add(controls);
 

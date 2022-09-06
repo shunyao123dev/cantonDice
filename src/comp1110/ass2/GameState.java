@@ -12,7 +12,7 @@ public class GameState {
 
     public Structure[] structures;
 
-    //The tiles on the game board
+    //The Knights on the game board
 
     public Knight[] knights;
 
@@ -26,7 +26,7 @@ public class GameState {
 
     //Initialises the structures and tiles to represent the start of the game
 
-    public void startGame() {
+    public GameState() {
         this.structures = new Structure[27];
 
         for (int i = 0; i < STRUCTURES_NO; i++) {
@@ -101,30 +101,37 @@ public class GameState {
                 }
             }
 
-
-            this.knights = new Knight[6];
-
-            //First knight
-            this.knights[1] = new Knight(1, ORE, false, false);
-
-            //Second knight
-            this.knights[2] = new Knight(2, GRAIN, false, false);
-
-            //Third knight
-            this.knights[3] = new Knight(3, WOOL, false, false);
-
-            //Fourth knight
-            this.knights[4] = new Knight(4, TIMBER, false, false);
-
-            //Fifth knight
-            this.knights[5] = new Knight(2, BRICK, false, false);
-
-            //Sixth knight
-            this.knights[6] = new Knight(2, MYSTERY, false, false);
-
-
         }
+    }
+
+    public Knight[] startKnight() {
+        this.knights = new Knight[6];
+
+        //First knight
+        this.knights[1] = new Knight(1, ORE, false, false);
+
+        //Second knight
+        this.knights[2] = new Knight(2, GRAIN, false, false);
+
+        //Third knight
+        this.knights[3] = new Knight(3, WOOL, false, false);
+
+        //Fourth knight
+        this.knights[4] = new Knight(4, TIMBER, false, false);
+
+        //Fifth knight
+        this.knights[5] = new Knight(2, BRICK, false, false);
+
+        //Sixth knight
+        this.knights[6] = new Knight(2, MYSTERY, false, false);
+
+        return knights;
+
+    }
+
+    // Creates a GameState object given a board array, player,
+    //public GameStateObject(Structure[] structures, Knight[] knights, Player player, ResourceState state, int score) {
+
 
 
     }
-}
