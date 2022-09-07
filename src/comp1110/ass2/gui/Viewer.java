@@ -15,6 +15,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.stage.Stage;
@@ -75,7 +76,8 @@ public class Viewer extends Application {
 
         //Setting ocean image background
 
-        Image ocean = new Image(new FileInputStream("C:\\Users\\hhean\\IdeaProjects\\comp1110-ass2\\assets\\Ocean.png"));
+        Image ocean = new Image(new FileInputStream("C:\\Users\\hhean\\" +
+                "IdeaProjects\\comp1110-ass2\\assets\\Ocean.png"));
         ImageView oceanView = new ImageView(ocean);
         oceanView.setX(600);
         oceanView.setY(85);
@@ -93,12 +95,39 @@ public class Viewer extends Application {
 
         //Setting terrain on each island
 
-//        Image flower = new Image(new FileInputStream());
-//        p.setFill(new ImagePattern(flower, 0, 0, 1, 1, true));
+        Image ore = new Image(new FileInputStream("C:\\Users\\hhean\\" +
+                "IdeaProjects\\comp1110-ass2\\assets\\ORE.jpg"));
+        Polyline oreHexagon = makeHexagon(125, 740, 285);
+        oreHexagon.setFill(new ImagePattern(ore, 0, 0, 1, 1, true));
 
+        Image grain = new Image(new FileInputStream("C:\\Users\\hhean\\" +
+                "IdeaProjects\\comp1110-ass2\\assets\\GRAIN.png"));
+        Polyline grainHexagon = makeHexagon(125, 740, 440);
+        grainHexagon.setFill(new ImagePattern(grain, 0, 0, 1, 1, true));
+
+        Image wool = new Image(new FileInputStream("C:\\Users\\hhean\\" +
+                "IdeaProjects\\comp1110-ass2\\assets\\WOOL.jpg"));
+        Polyline woolHexagon = makeHexagon(125, 875, 518);
+        woolHexagon.setFill(new ImagePattern(wool, 0, 0, 1, 1, true));
+
+        Image timber = new Image(new FileInputStream("C:\\Users\\hhean\\" +
+                "IdeaProjects\\comp1110-ass2\\assets\\TIMBER.png"));
+        Polyline timberHexagon = makeHexagon(125, 1010, 440);
+        timberHexagon.setFill(new ImagePattern(timber, 0, 0, 1, 1, true));
+
+        Image brick = new Image(new FileInputStream("C:\\Users\\hhean\\" +
+                "IdeaProjects\\comp1110-ass2\\assets\\BRICK.png"));
+        Polyline brickHexagon = makeHexagon(125, 1010, 285);
+        brickHexagon.setFill(new ImagePattern(brick, 0, 0, 1, 1, true));
+
+        Image mystery = new Image(new FileInputStream("C:\\Users\\hhean\\" +
+                "IdeaProjects\\comp1110-ass2\\assets\\MYSTERY.jpg"));
+        Polyline mysteryHexagon = makeHexagon(125, 875, 207);
+        mysteryHexagon.setFill(new ImagePattern(mystery, 0, 0, 1, 1, true));
 
 
         //Small circles with resource
+
 
 
         //Roads
@@ -126,6 +155,12 @@ public class Viewer extends Application {
         root.getChildren().add(hexagon4);
         root.getChildren().add(hexagon5);
         root.getChildren().add(hexagon6);
+        root.getChildren().add(oreHexagon);
+        root.getChildren().add(grainHexagon);
+        root.getChildren().add(woolHexagon);
+        root.getChildren().add(timberHexagon);
+        root.getChildren().add(brickHexagon);
+        root.getChildren().add(mysteryHexagon);
 
         makeControls();
 
@@ -151,7 +186,6 @@ public class Viewer extends Application {
         Polyline hexagon = new Polyline();
         hexagon.getPoints().addAll(points);
         hexagon.setFill(Color.BLANCHEDALMOND);
-        hexagon.setStroke(Color.BLACK);
         hexagon.setLayoutX(xCoord);
         hexagon.setLayoutY(yCoord);
 
