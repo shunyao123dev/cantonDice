@@ -17,11 +17,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Polyline;
+import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
@@ -40,6 +39,8 @@ public class Viewer extends Application {
     private final Group controls = new Group();
 
     private final Group hexagons = new Group();
+
+    private final Group structures = new Group();
 
 
     private TextField playerTextField;
@@ -146,7 +147,7 @@ public class Viewer extends Application {
         hexagons.getChildren().add(mysteryHexagon);
 
 
-        //Small circles with resource
+        //Small circles with resource and knights
 
         makeCircle("ORE", 30, 710, 255);
         makeCircle("GRAIN", 30, 710, 410);
@@ -155,8 +156,36 @@ public class Viewer extends Application {
         makeCircle("BRICK", 30, 982, 255);
         makeCircle("MYSTERY", 30, 845, 175);
 
+        makeKnight("1", 731, 240); //K1
+        makeKnight("2", 731, 395); //K2
+        makeKnight("3", 866, 475); //K3
+        makeKnight("4", 1003, 395); //K4
+        makeKnight("5", 1003, 240); //K5
+        makeKnight("6", 866, 160); //K6
+
+
 
         //Roads
+
+        makeRoad("1", 45, 15, 805,300, 30); //R0
+        makeRoad("1", 45, 15, 720,370, -90); //R1
+        makeRoad("1", 45, 15, 778,382, -30); //R2
+        makeRoad("1", 45, 15, 815,450, 30); //R3
+        makeRoad("1", 45, 15, 720,518, -90); //R4
+        makeRoad("1", 45, 15, 790,530, -30); //R5
+        makeRoad("1", 45, 15, 853,596, -90); //R6
+        makeRoad("1", 45, 15, 937,535, 30); //R7
+        makeRoad("1", 45, 15, 922,458, -30); //R8
+        makeRoad("1", 45, 15, 953,380, 30); //R9
+        makeRoad("1", 45, 15, 928,300, -30); //R10
+        makeRoad("1", 45, 15, 945,225, 30); //R11
+        makeRoad("1", 45, 15, 989,518, -90); //R12
+        makeRoad("1", 45, 15, 1070,460, 30); //R13
+        makeRoad("1", 45, 15, 1044,375, -30); //R14
+        makeRoad("1", 45, 15, 1073,300, 30); //R15
+
+
+
 
 
         //Towns
@@ -176,6 +205,7 @@ public class Viewer extends Application {
         root.getChildren().add(controls);
         root.getChildren().add(oceanView);
         root.getChildren().add(hexagons);
+        root.getChildren().add(structures);
 
 
         makeControls();
@@ -224,5 +254,47 @@ public class Viewer extends Application {
         stack.setLayoutY(yCoord);
         hexagons.getChildren().add(stack);
 
+    }
+
+    public void makeRoad(String text, int height, int width, double xCoord, double yCoord, int rotation) {
+        Rectangle rect = new Rectangle();
+        rect.setHeight(height);
+        rect.setWidth(width);
+        rect.setFill(Color.WHITE);
+        rect.setStroke(Color.BLACK);
+        Text newText = new Text(text);
+        newText.setFont(Font.font("Verdana", 12));
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(rect, newText);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        stack.getTransforms().add(new Rotate(rotation));
+        structures.getChildren().add(stack);
+    }
+    public void makeKnight(String text, double xCoord, double yCoord) {
+        Ellipse ellp = new Ellipse();
+        ellp.setCenterX(0);
+        ellp.setCenterY(0);
+        ellp.setRadiusX(10);
+        ellp.setRadiusY(15);
+        ellp.setFill(Color.WHITE);
+        ellp.setStroke(Color.BLACK);
+
+        Circle circle = new Circle(7.5);
+        circle.setFill(Color.WHITE);
+        circle.setStroke(Color.BLACK);
+
+        Text newText = new Text(text);
+        newText.setFont(Font.font("Verdana", 12));
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(ellp, newText);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        circle.setCenterX(xCoord+10);
+        circle.setCenterY(yCoord-5);
+
+
+        structures.getChildren().add(stack);
+        structures.getChildren().add(circle);
     }
 }
