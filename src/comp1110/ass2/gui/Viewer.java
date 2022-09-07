@@ -93,6 +93,10 @@ public class Viewer extends Application {
 
         //Setting terrain on each island
 
+//        Image flower = new Image(new FileInputStream());
+//        p.setFill(new ImagePattern(flower, 0, 0, 1, 1, true));
+
+
 
         //Small circles with resource
 
