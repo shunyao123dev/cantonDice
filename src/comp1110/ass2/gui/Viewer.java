@@ -148,31 +148,12 @@ public class Viewer extends Application {
 
         //Small circles with resource
 
-        Circle oreCircle = new Circle(30);
-        oreCircle.setFill(Color.BLANCHEDALMOND);
-        oreCircle.setStroke(Color.BLACK);
-        Text oreText = new Text("ORE");
-        oreText.setFont(Font.font ("Verdana", 12));
-        StackPane oreStack = new StackPane();
-        oreStack.getChildren().addAll(oreCircle, oreText);
-        oreStack.setLayoutX(710);
-        oreStack.setLayoutY(255);
-        hexagons.getChildren().add(oreStack);
-
-        Circle grainCircle = new Circle(30);
-        grainCircle.setFill(Color.BLANCHEDALMOND);
-        grainCircle.setStroke(Color.BLACK);
-        Text grainText = new Text("GRAIN");
-        grainText.setFont(Font.font ("Verdana", 12));
-        StackPane grainStack = new StackPane();
-        grainStack.getChildren().addAll(oreCircle, Text);
-        grainStack.setLayoutX(710);
-        grainStack.setLayoutY(255);
-        hexagons.getChildren().add(oreStack);
-
-
-
-
+        makeCircle("ORE", 30, 710, 255);
+        makeCircle("GRAIN", 30, 710, 410);
+        makeCircle("WOOL", 30, 845, 490);
+        makeCircle("TIMBER", 30, 982, 410);
+        makeCircle("BRICK", 30, 982, 255);
+        makeCircle("MYSTERY", 30, 845, 175);
 
 
         //Roads
@@ -227,6 +208,21 @@ public class Viewer extends Application {
         hexagon.setLayoutY(yCoord);
 
         return hexagon;
+
+    }
+
+    //method for making circles
+    public void makeCircle(String text, int radius, double xCoord, double yCoord) {
+        Circle circle = new Circle(radius);
+        circle.setFill(Color.BLANCHEDALMOND);
+        circle.setStroke(Color.BLACK);
+        Text newText = new Text(text);
+        newText.setFont(Font.font("Verdana", 12));
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(circle, newText);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        hexagons.getChildren().add(stack);
 
     }
 }
