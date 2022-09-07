@@ -1,5 +1,10 @@
 package comp1110.ass2;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+
 public class CatanDice {
 
     /**
@@ -24,7 +29,65 @@ public class CatanDice {
      *         a board state, false otherwise.
      */
     public static boolean isActionWellFormed(String action) {
-	 return false; // FIXME: Task #4
+        boolean flag = false;
+        List<String> road = new ArrayList<String>(
+                List.of("R0", "R1", "R2", "R3", "R4",
+                        "R5", "R6", "R7", "R8", "R9", "R10", "R11",
+                        "R12", "R13", "R14", "R15"));
+
+        List<String> settlement = new ArrayList<String>(
+                List.of("S3", "S4", "S5", "S7", "S9", "S11"));
+
+        List<String> city = new ArrayList<String>(
+                List.of("C7", "C12", "C20", "C30"));
+
+        List<String> unusedKnight = new ArrayList<String>(
+                List.of("J1", "J2", "J3", "J4", "J5"));
+
+        List<String> Knight = new ArrayList<String>(
+                List.of("K1", "K2", "K3", "K4", "K5"));
+
+        List<String> number = new ArrayList<String>(
+                List.of("0", "1", "2", "3", "4", "5"));
+
+
+        String[] arr = action.split(" ");
+
+        if (arr[0].equals("build")) {
+            if ((road.contains(arr[1]) == true) ||
+                    (settlement.contains(arr[1]) == true) ||
+                    (city.contains(arr[1]) == true) ||
+                    (unusedKnight.contains(arr[1]) == true) ||
+                    (Knight.contains(arr[1]) == true)) {
+                flag = true;
+            } else {
+                flag = false;
+            }
+
+
+        } else if (arr[0].equals("trade")) {
+            if (number.contains(arr[1]) == true) {
+                flag = true;
+            } else {
+                flag = false;
+            }
+
+
+        } else if (arr[0].equals("swap")) {
+            if ((number.contains(arr[1]) == true) && (number.contains(arr[2]) == true)) {
+                flag = true;
+            } else {
+                flag = false;
+            }
+
+
+        } else {
+            flag = false;
+        }
+
+        return flag;
+
+        // FIXME: Task #4
     }
 
     /**
@@ -44,6 +107,28 @@ public class CatanDice {
      * resource_state.
      */
     public static void rollDice(int n_dice, int[] resource_state) {
+        Random rad = new Random();
+        String[] res = {"ore","grain","wool","lumber","brick","gold"};
+        HashMap<String,Integer> resource = new HashMap<>();
+        for (int i=1;i<=n_dice;i++) {
+            int num = rad.nextInt(6);
+            String s1 = res[num];
+            if(!(resource.containsKey(s1))) {
+                resource.put(s1,1);
+            } else{
+                resource.put(s1,resource.get(s1)+1);
+            }
+        }
+
+        for (String i1: resource.keySet()) {
+            for(int i=0;i<res.length;i++) {
+                if(i1.equals(res[i])) {
+                    resource_state[i] = resource_state[i]+resource.get(i1);
+                }
+            }
+        }
+
+
 	// FIXME: Task #6
     }
 
@@ -61,6 +146,7 @@ public class CatanDice {
      */
     public static boolean checkBuildConstraints(String structure,
 						String board_state) {
+        
 	 return false; // FIXME: Task #8
     }
 
@@ -75,10 +161,39 @@ public class CatanDice {
      *         resources, false otherwise.
      */
     public static boolean checkResources(String structure,
-					 int[] resource_state) {
-	 return false; // FIXME: Task #7
-    }
+                                         int[] resource_state) {
+        boolean flag = false;
 
+
+        if (structure.charAt(0) == 'R') {
+            if ((resource_state[4] >= 1) &&
+                    (resource_state[3] >= 1)) {
+                flag = true;
+            }
+
+        } else if (structure.charAt(0) == 'S') {
+            if ((resource_state[1] >= 1) &&
+                    (resource_state[2] >= 1) &&
+                    (resource_state[3] >= 1) &&
+                    (resource_state[4] >= 1)) {
+                flag = true;
+            }
+        } else if (structure.charAt(0) == 'C') {
+            if ((resource_state[0] >= 3) &&
+                    (resource_state[1] >= 2)) {
+                flag = true;
+            }
+
+        } else if (structure.charAt(0) == 'J') {
+            if ((resource_state[0] >= 1) &&
+                    (resource_state[1] >= 1) &&
+                    (resource_state[2] >= 1)) {
+                flag = true;
+            }
+            // FIXME: Task #7
+        }
+        return flag;
+    }
     /**
      * Check if the available resources are sufficient to build the
      * specified structure, considering also trades and/or swaps.
