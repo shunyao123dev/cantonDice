@@ -13,11 +13,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
@@ -34,6 +38,10 @@ public class Viewer extends Application {
 
     private final Group root = new Group();
     private final Group controls = new Group();
+
+    private final Group hexagons = new Group();
+
+
     private TextField playerTextField;
     private TextField boardTextField;
 
@@ -87,11 +95,17 @@ public class Viewer extends Application {
 
         //Creating the hexagons for the island
         Polyline hexagon1 = makeHexagon(150, 740, 285);
+        hexagons.getChildren().add(hexagon1);
         Polyline hexagon2 = makeHexagon(150, 875, 207);
+        hexagons.getChildren().add(hexagon2);
         Polyline hexagon3 = makeHexagon(150, 1010, 285);
+        hexagons.getChildren().add(hexagon3);
         Polyline hexagon4 = makeHexagon(150, 740, 440);
+        hexagons.getChildren().add(hexagon4);
         Polyline hexagon5 = makeHexagon(150, 875, 518);
+        hexagons.getChildren().add(hexagon5);
         Polyline hexagon6 = makeHexagon(150, 1010, 440);
+        hexagons.getChildren().add(hexagon6);
 
         //Setting terrain on each island
 
@@ -99,34 +113,65 @@ public class Viewer extends Application {
                 "IdeaProjects\\comp1110-ass2\\assets\\ORE.jpg"));
         Polyline oreHexagon = makeHexagon(125, 740, 285);
         oreHexagon.setFill(new ImagePattern(ore, 0, 0, 1, 1, true));
+        hexagons.getChildren().add(oreHexagon);
 
         Image grain = new Image(new FileInputStream("C:\\Users\\hhean\\" +
                 "IdeaProjects\\comp1110-ass2\\assets\\GRAIN.png"));
         Polyline grainHexagon = makeHexagon(125, 740, 440);
         grainHexagon.setFill(new ImagePattern(grain, 0, 0, 1, 1, true));
+        hexagons.getChildren().add(grainHexagon);
 
         Image wool = new Image(new FileInputStream("C:\\Users\\hhean\\" +
                 "IdeaProjects\\comp1110-ass2\\assets\\WOOL.jpg"));
         Polyline woolHexagon = makeHexagon(125, 875, 518);
         woolHexagon.setFill(new ImagePattern(wool, 0, 0, 1, 1, true));
+        hexagons.getChildren().add(woolHexagon);
 
         Image timber = new Image(new FileInputStream("C:\\Users\\hhean\\" +
                 "IdeaProjects\\comp1110-ass2\\assets\\TIMBER.png"));
         Polyline timberHexagon = makeHexagon(125, 1010, 440);
         timberHexagon.setFill(new ImagePattern(timber, 0, 0, 1, 1, true));
+        hexagons.getChildren().add(timberHexagon);
 
         Image brick = new Image(new FileInputStream("C:\\Users\\hhean\\" +
                 "IdeaProjects\\comp1110-ass2\\assets\\BRICK.png"));
         Polyline brickHexagon = makeHexagon(125, 1010, 285);
         brickHexagon.setFill(new ImagePattern(brick, 0, 0, 1, 1, true));
+        hexagons.getChildren().add(brickHexagon);
 
         Image mystery = new Image(new FileInputStream("C:\\Users\\hhean\\" +
                 "IdeaProjects\\comp1110-ass2\\assets\\MYSTERY.jpg"));
         Polyline mysteryHexagon = makeHexagon(125, 875, 207);
         mysteryHexagon.setFill(new ImagePattern(mystery, 0, 0, 1, 1, true));
+        hexagons.getChildren().add(mysteryHexagon);
 
 
         //Small circles with resource
+
+        Circle oreCircle = new Circle(30);
+        oreCircle.setFill(Color.BLANCHEDALMOND);
+        oreCircle.setStroke(Color.BLACK);
+        Text oreText = new Text("ORE");
+        oreText.setFont(Font.font ("Verdana", 12));
+        StackPane oreStack = new StackPane();
+        oreStack.getChildren().addAll(oreCircle, oreText);
+        oreStack.setLayoutX(710);
+        oreStack.setLayoutY(255);
+        hexagons.getChildren().add(oreStack);
+
+        Circle grainCircle = new Circle(30);
+        grainCircle.setFill(Color.BLANCHEDALMOND);
+        grainCircle.setStroke(Color.BLACK);
+        Text grainText = new Text("GRAIN");
+        grainText.setFont(Font.font ("Verdana", 12));
+        StackPane grainStack = new StackPane();
+        grainStack.getChildren().addAll(oreCircle, Text);
+        grainStack.setLayoutX(710);
+        grainStack.setLayoutY(255);
+        hexagons.getChildren().add(oreStack);
+
+
+
 
 
 
@@ -149,18 +194,8 @@ public class Viewer extends Application {
 
         root.getChildren().add(controls);
         root.getChildren().add(oceanView);
-        root.getChildren().add(hexagon1);
-        root.getChildren().add(hexagon2);
-        root.getChildren().add(hexagon3);
-        root.getChildren().add(hexagon4);
-        root.getChildren().add(hexagon5);
-        root.getChildren().add(hexagon6);
-        root.getChildren().add(oreHexagon);
-        root.getChildren().add(grainHexagon);
-        root.getChildren().add(woolHexagon);
-        root.getChildren().add(timberHexagon);
-        root.getChildren().add(brickHexagon);
-        root.getChildren().add(mysteryHexagon);
+        root.getChildren().add(hexagons);
+
 
         makeControls();
 
@@ -186,6 +221,8 @@ public class Viewer extends Application {
         Polyline hexagon = new Polyline();
         hexagon.getPoints().addAll(points);
         hexagon.setFill(Color.BLANCHEDALMOND);
+        hexagon.setStroke(Color.BLACK);
+        hexagon.setStrokeWidth(0);
         hexagon.setLayoutX(xCoord);
         hexagon.setLayoutY(yCoord);
 
