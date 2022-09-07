@@ -85,8 +85,7 @@ public class Viewer extends Application {
 
         //Setting ocean image background
 
-        Image ocean = new Image(new FileInputStream("C:\\Users\\hhean\\" +
-                "IdeaProjects\\comp1110-ass2\\assets\\Ocean.png"));
+        Image ocean = new Image(new FileInputStream("assets/Ocean.png"));
         ImageView oceanView = new ImageView(ocean);
         oceanView.setX(600);
         oceanView.setY(85);
@@ -110,38 +109,32 @@ public class Viewer extends Application {
 
         //Setting terrain on each island
 
-        Image ore = new Image(new FileInputStream("C:\\Users\\hhean\\" +
-                "IdeaProjects\\comp1110-ass2\\assets\\ORE.jpg"));
+        Image ore = new Image(new FileInputStream("assets/ORE.jpg"));
         Polyline oreHexagon = makeHexagon(125, 740, 285);
         oreHexagon.setFill(new ImagePattern(ore, 0, 0, 1, 1, true));
         hexagons.getChildren().add(oreHexagon);
 
-        Image grain = new Image(new FileInputStream("C:\\Users\\hhean\\" +
-                "IdeaProjects\\comp1110-ass2\\assets\\GRAIN.png"));
+        Image grain = new Image(new FileInputStream("assets/GRAIN.png"));
         Polyline grainHexagon = makeHexagon(125, 740, 440);
         grainHexagon.setFill(new ImagePattern(grain, 0, 0, 1, 1, true));
         hexagons.getChildren().add(grainHexagon);
 
-        Image wool = new Image(new FileInputStream("C:\\Users\\hhean\\" +
-                "IdeaProjects\\comp1110-ass2\\assets\\WOOL.jpg"));
+        Image wool = new Image(new FileInputStream("assets/WOOL.jpg"));
         Polyline woolHexagon = makeHexagon(125, 875, 518);
         woolHexagon.setFill(new ImagePattern(wool, 0, 0, 1, 1, true));
         hexagons.getChildren().add(woolHexagon);
 
-        Image timber = new Image(new FileInputStream("C:\\Users\\hhean\\" +
-                "IdeaProjects\\comp1110-ass2\\assets\\TIMBER.png"));
+        Image timber = new Image(new FileInputStream("assets/TIMBER.png"));
         Polyline timberHexagon = makeHexagon(125, 1010, 440);
         timberHexagon.setFill(new ImagePattern(timber, 0, 0, 1, 1, true));
         hexagons.getChildren().add(timberHexagon);
 
-        Image brick = new Image(new FileInputStream("C:\\Users\\hhean\\" +
-                "IdeaProjects\\comp1110-ass2\\assets\\BRICK.png"));
+        Image brick = new Image(new FileInputStream("assets/BRICK.png"));
         Polyline brickHexagon = makeHexagon(125, 1010, 285);
         brickHexagon.setFill(new ImagePattern(brick, 0, 0, 1, 1, true));
         hexagons.getChildren().add(brickHexagon);
 
-        Image mystery = new Image(new FileInputStream("C:\\Users\\hhean\\" +
-                "IdeaProjects\\comp1110-ass2\\assets\\MYSTERY.jpg"));
+        Image mystery = new Image(new FileInputStream("assets/MYSTERY.jpg"));
         Polyline mysteryHexagon = makeHexagon(125, 875, 207);
         mysteryHexagon.setFill(new ImagePattern(mystery, 0, 0, 1, 1, true));
         hexagons.getChildren().add(mysteryHexagon);
@@ -167,6 +160,8 @@ public class Viewer extends Application {
 
         //Roads
 
+        makeStartRoad
+
         makeRoad("1", 45, 15, 805,300, 30); //R0
         makeRoad("1", 45, 15, 720,370, -90); //R1
         makeRoad("1", 45, 15, 778,382, -30); //R2
@@ -183,9 +178,6 @@ public class Viewer extends Application {
         makeRoad("1", 45, 15, 1070,460, 30); //R13
         makeRoad("1", 45, 15, 1044,375, -30); //R14
         makeRoad("1", 45, 15, 1073,300, 30); //R15
-
-
-
 
 
         //Towns
@@ -262,6 +254,28 @@ public class Viewer extends Application {
         rect.setWidth(width);
         rect.setFill(Color.WHITE);
         rect.setStroke(Color.BLACK);
+        Text newText = new Text(text);
+        newText.setFont(Font.font("Verdana", 12));
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(rect, newText);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        stack.getTransforms().add(new Rotate(rotation));
+        structures.getChildren().add(stack);
+    }
+
+
+    public void makeStartRoad() {
+        Rectangle rect = new Rectangle();
+        rect.setHeight(45);
+        rect.setWidth(15);
+        rect.setFill(Color.PURPLE);
+        rect.setStroke(Color.BLACK);
+        Image ore = new Image(new FileInputStream("assets/ARROW.jpg"));
+        Polyline oreHexagon = makeHexagon(125, 740, 285);
+        oreHexagon.setFill(new ImagePattern(ore, 0, 0, 1, 1, true));
+
+
         Text newText = new Text(text);
         newText.setFont(Font.font("Verdana", 12));
         StackPane stack = new StackPane();
