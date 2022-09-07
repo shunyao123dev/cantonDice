@@ -160,7 +160,24 @@ public class Viewer extends Application {
 
         //Roads
 
-        makeStartRoad
+        Rectangle startRoad = new Rectangle();
+        startRoad.setHeight(45);
+        startRoad.setWidth(15);
+        startRoad.setX(600);
+        startRoad.setY(85);
+        startRoad.setFill(Color.PURPLE);
+        startRoad.setStroke(Color.BLACK);
+        Image arrow = new Image(new FileInputStream("assets/ARROW.png"));
+        ImageView arrowView = new ImageView(arrow);
+        arrowView.setX(600);
+        arrowView.setY(85);
+        arrowView.setFitHeight(1200);
+        arrowView.setFitWidth(550);
+        arrowView.setPreserveRatio(true);
+        structures.getChildren().addAll(arrowView, startRoad);
+
+
+
 
         makeRoad("1", 45, 15, 805,300, 30); //R0
         makeRoad("1", 45, 15, 720,370, -90); //R1
@@ -254,28 +271,6 @@ public class Viewer extends Application {
         rect.setWidth(width);
         rect.setFill(Color.WHITE);
         rect.setStroke(Color.BLACK);
-        Text newText = new Text(text);
-        newText.setFont(Font.font("Verdana", 12));
-        StackPane stack = new StackPane();
-        stack.getChildren().addAll(rect, newText);
-        stack.setLayoutX(xCoord);
-        stack.setLayoutY(yCoord);
-        stack.getTransforms().add(new Rotate(rotation));
-        structures.getChildren().add(stack);
-    }
-
-
-    public void makeStartRoad() {
-        Rectangle rect = new Rectangle();
-        rect.setHeight(45);
-        rect.setWidth(15);
-        rect.setFill(Color.PURPLE);
-        rect.setStroke(Color.BLACK);
-        Image ore = new Image(new FileInputStream("assets/ARROW.jpg"));
-        Polyline oreHexagon = makeHexagon(125, 740, 285);
-        oreHexagon.setFill(new ImagePattern(ore, 0, 0, 1, 1, true));
-
-
         Text newText = new Text(text);
         newText.setFont(Font.font("Verdana", 12));
         StackPane stack = new StackPane();
