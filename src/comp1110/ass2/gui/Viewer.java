@@ -160,25 +160,7 @@ public class Viewer extends Application {
 
         //Roads
 
-        Rectangle startRoad = new Rectangle();
-        startRoad.setHeight(45);
-        startRoad.setWidth(15);
-        startRoad.setX(600);
-        startRoad.setY(85);
-        startRoad.setFill(Color.PURPLE);
-        startRoad.setStroke(Color.BLACK);
-        Image arrow = new Image(new FileInputStream("assets/ARROW.png"));
-        ImageView arrowView = new ImageView(arrow);
-        arrowView.setX(600);
-        arrowView.setY(85);
-        arrowView.setFitHeight(1200);
-        arrowView.setFitWidth(550);
-        arrowView.setPreserveRatio(true);
-        structures.getChildren().addAll(arrowView, startRoad);
-
-
-
-
+        makeStartRoad("S", 45, 15, 795,240, -30); //R0
         makeRoad("1", 45, 15, 805,300, 30); //R0
         makeRoad("1", 45, 15, 720,370, -90); //R1
         makeRoad("1", 45, 15, 778,382, -30); //R2
@@ -280,6 +262,23 @@ public class Viewer extends Application {
         stack.getTransforms().add(new Rotate(rotation));
         structures.getChildren().add(stack);
     }
+    public void makeStartRoad(String text, int height, int width, double xCoord, double yCoord, int rotation) {
+        Rectangle rect = new Rectangle();
+        rect.setHeight(height);
+        rect.setWidth(width);
+        rect.setFill(Color.PURPLE);
+        rect.setStroke(Color.BLACK);
+        Text newText = new Text(text);
+        newText.setFont(Font.font("Verdana", 12));
+        newText.setFill(Color.WHITE);
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(rect, newText);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        stack.getTransforms().add(new Rotate(rotation));
+        structures.getChildren().add(stack);
+    }
+
     public void makeKnight(String text, double xCoord, double yCoord) {
         Ellipse ellp = new Ellipse();
         ellp.setCenterX(0);
