@@ -45,6 +45,14 @@ Board state, 3 and 6, 4 and 7 done by Mid-semester break meeting 1.
 
 ## Mid-Semester Break
 
+Meeting 1:
+
+Hugo Heanly: Finishing task 5 and continue working on board state class.
+
+Shunyao Yang: Completing Task 8 with Zimu, and starting Dice class.
+
+Zimu Li: Completing task 8. 
+
 ## Week 7
 
 ## Week 8
