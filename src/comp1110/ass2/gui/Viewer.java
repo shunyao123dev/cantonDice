@@ -178,10 +178,20 @@ public class Viewer extends Application {
 
         //Towns
 
-
-
+        makeTown("3", 825,290);
+        makeTown("4", 818,425);
+        makeTown("5", 820,580);
+        makeTown("7", 955,510);
+        makeTown("9", 960,355);
+        makeTown("11", 960,200);
 
         //Settlements
+
+        makeSettlement("7", 670,340, 0);
+        makeSettlement("12", 670,490,3);
+        makeSettlement("20", 1075, 420, 3);
+        makeSettlement("30", 1075, 260, 3);
+
 
 
         //Resource key
@@ -297,6 +307,59 @@ public class Viewer extends Application {
         structures.getChildren().add(stack);
         structures.getChildren().add(circle);
     }
+
+    public void makeTown(String text, double xCoord, double yCoord) {
+        Rectangle rect = new Rectangle();
+        rect.setX(0);
+        rect.setY(0);
+        rect.setHeight(20);
+        rect.setWidth(20);
+        rect.setFill(Color.WHITE);
+        rect.setStroke(Color.BLACK);
+
+        Polygon tri = new Polygon(15, 0, 30, 15, 0, 15);
+        tri.setFill(Color.WHITE);
+        tri.setStroke(Color.BLACK);
+
+        Text newText = new Text(text);
+        newText.setFont(Font.font("Verdana", 12));
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(rect, newText);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        tri.setLayoutX(xCoord-4);
+        tri.setLayoutY(yCoord-13);
+
+        structures.getChildren().add(stack);
+        structures.getChildren().add(tri);
+    }
+
+    public void makeSettlement(String text, double xCoord, double yCoord, int textShift) {
+        Polygon base = new Polygon(0, 10, 20, 10,20, 0, 40, 0, 40, 30, 0, 30);
+        base.setFill(Color.WHITE);
+        base.setStroke(Color.BLACK);
+
+        Polygon tri = new Polygon(15, 0, 30, 15, 0, 15);
+        tri.setFill(Color.WHITE);
+        tri.setStroke(Color.BLACK);
+
+        Text newText = new Text(text);
+        newText.setFont(Font.font("Verdana", 12));
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(base);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        newText.setX(xCoord+26-textShift);
+        newText.setY(yCoord+22);
+        tri.setLayoutX(xCoord + 16);
+        tri.setLayoutY(yCoord - 14);
+
+        structures.getChildren().add(stack);
+        structures.getChildren().add(newText);
+        structures.getChildren().add(tri);
+    }
+
+
 
 
 
