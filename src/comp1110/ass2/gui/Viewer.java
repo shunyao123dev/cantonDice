@@ -57,8 +57,92 @@ public class Viewer extends Application {
      */
     void displayState(String board_state) {
         // FIXME Task 5: implement the state viewer
+        String[] boardArr = board_state.split(",");
 
-    }
+        for (var str : boardArr) {
+            if (str == "R0") {
+                buildRoad(805, 300, 30);
+            } else if (str.equals("R1")) {
+                buildRoad(720,370,-90);
+            } else if (str.equals("R2")) {
+                buildRoad(778,382,-30);
+            } else if (str.equals("R3")) {
+                buildRoad(815,450,30);
+            } else if (str.equals("R4")) {
+                buildRoad(720,518,-90);
+            } else if (str.equals("R5")) {
+                buildRoad(790,530,-30);
+            } else if (str.equals("R6")) {
+                buildRoad(853,596,-90);
+            } else if (str.equals("R7")) {
+                buildRoad(937,535,30);
+            } else if (str.equals("R8")) {
+                buildRoad(922,458,-30);
+            } else if (str.equals("R9")) {
+                buildRoad(953,380,30);
+            } else if (str.equals("R10")) {
+                buildRoad(928,300,-30);
+            } else if (str.equals("R11")) {
+                buildRoad(945,225,30);
+            } else if (str.equals("R12")) {
+                buildRoad(989,518,-90);
+            } else if (str.equals("R13")) {
+                buildRoad(1070,460,30);
+            } else if (str.equals("R14")) {
+                buildRoad(1044,375,-30);
+            } else if (str.equals("R15")) {
+                buildRoad(1073,300,30);
+            } else if (str.equals("S3")) {
+                buildSettlement(825,290);
+            } else if (str.equals("S4")) {
+                buildSettlement(818,425);
+            } else if (str.equals("S5")) {
+                buildSettlement(820,580);
+            } else if (str.equals("S7")) {
+                buildSettlement(955,510);
+            } else if (str.equals("S9")) {
+                buildSettlement(960,355);
+            } else if (str.equals("S11")) {
+                buildSettlement(960,200);
+            } else if (str.equals("T7")) {
+                buildTown(670,340);
+            } else if (str.equals("T12")) {
+                buildTown(670,490);
+            } else if (str.equals("T20")) {
+                buildTown(1075,420);
+            } else if (str.equals("T30")) {
+                buildTown(1075,260);
+            } else if (str.equals("J1")) {
+                buildKnight(731,240);
+            } else if (str.equals("J2")) {
+                buildKnight(731,395);
+            } else if (str.equals("J3")) {
+                buildKnight(866,475);
+            } else if (str.equals("J4")) {
+                buildKnight(1003,395);
+            } else if (str.equals("J5")) {
+                buildKnight(1003,240);
+            } else if (str.equals("J6")) {
+                buildKnight(866,160);
+            } else if (str.equals("K1")) {
+                useKnight(731,240);
+            } else if (str.equals("K2")) {
+                useKnight(731,395);
+            } else if (str.equals("K3")) {
+                useKnight(866,475);
+            } else if (str.equals("K4")) {
+                useKnight(1003,395);
+            } else if (str.equals("K5")) {
+                useKnight(1003,240);
+            } else { //K6
+                useKnight(866,160);
+            }
+
+        }
+
+
+
+        }
 
     /**
      * Create a basic text field for input and a refresh button.
@@ -181,21 +265,21 @@ public class Viewer extends Application {
         makeRoad("1", 45, 15, 1044,375, -30); //R14
         makeRoad("1", 45, 15, 1073,300, 30); //R15
 
-        //Towns
-
-        makeTown("3", 825,290);
-        makeTown("4", 818,425);
-        makeTown("5", 820,580);
-        makeTown("7", 955,510);
-        makeTown("9", 960,355);
-        makeTown("11", 960,200);
-
         //Settlements
 
-        makeSettlement("7", 670,340, 0);
-        makeSettlement("12", 670,490,3);
-        makeSettlement("20", 1075, 420, 3);
-        makeSettlement("30", 1075, 260, 3);
+        makeSettlement("3", 825,290);
+        makeSettlement("4", 818,425);
+        makeSettlement("5", 820,580);
+        makeSettlement("7", 955,510);
+        makeSettlement("9", 960,355);
+        makeSettlement("11", 960,200);
+
+        //Towns
+
+        makeTown("7", 670,340, 0);
+        makeTown("12", 670,490,3);
+        makeTown("20", 1075, 420, 3);
+        makeTown("30", 1075, 260, 3);
 
         //Resource key and Scoreboard
 
@@ -372,7 +456,7 @@ public class Viewer extends Application {
      * @param yCoord: The y-coordinate of the town
      */
 
-    public void makeTown(String text, double xCoord, double yCoord) {
+    public void makeSettlement(String text, double xCoord, double yCoord) {
         Rectangle rect = new Rectangle();
         rect.setX(0);
         rect.setY(0);
@@ -406,7 +490,7 @@ public class Viewer extends Application {
      * @param textShift: The text shift for the number
      */
 
-    public void makeSettlement(String text, double xCoord, double yCoord, int textShift) {
+    public void makeTown(String text, double xCoord, double yCoord, int textShift) {
         Polygon base = new Polygon(0, 10, 20, 10,20, 0, 40, 0, 40, 30, 0, 30);
         base.setFill(Color.WHITE);
         base.setStroke(Color.BLACK);
@@ -429,6 +513,150 @@ public class Viewer extends Application {
         structures.getChildren().add(stack);
         structures.getChildren().add(newText);
         structures.getChildren().add(tri);
+    }
+
+    /**
+     * Adds a built road to the board
+     * @param xCoord: The x-coordinate of the used road
+     * @param yCoord: The y-coordinate of the used road
+     * @param rotation: The rotation of the used road
+     */
+
+    public void buildRoad(double xCoord, double yCoord, int rotation) {
+        Rectangle rect = new Rectangle();
+        rect.setHeight(45);
+        rect.setWidth(15);
+        rect.setFill(Color.BLACK);
+        rect.setStroke(Color.BLACK);
+        rect.setOpacity(0.5);
+        StackPane stack = new StackPane();
+        stack.getChildren().add(rect);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        stack.getTransforms().add(new Rotate(rotation));
+        structures.getChildren().add(stack);
+    }
+
+    /**
+     * Adds a built settlement to the board
+     * @param xCoord: The x-coordinate of the settlement
+     * @param yCoord: The y-coordinate of the settlement
+     */
+
+    public void buildSettlement(double xCoord, double yCoord) {
+        Rectangle rect = new Rectangle();
+        rect.setX(0);
+        rect.setY(0);
+        rect.setHeight(20);
+        rect.setWidth(20);
+        rect.setFill(Color.BLACK);
+        rect.setStroke(Color.BLACK);
+        rect.setOpacity(0.5);
+
+        Polygon tri = new Polygon(15, 0, 30, 15, 0, 15);
+        tri.setFill(Color.BLACK);
+        tri.setStroke(Color.BLACK);
+        tri.setOpacity(0.5);
+
+        StackPane stack = new StackPane();
+        stack.getChildren().add(rect);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        tri.setLayoutX(xCoord - 4);
+        tri.setLayoutY(yCoord - 13);
+
+        structures.getChildren().add(stack);
+        structures.getChildren().add(tri);
+    }
+
+    /**
+     * Adds a built town to the board
+     * @param xCoord: The x-coordinate of the town
+     * @param yCoord: The y-coordinate of the town
+     */
+
+    public void buildTown(double xCoord, double yCoord) {
+        Polygon base = new Polygon(0, 10, 20, 10, 20, 0, 40, 0, 40, 30, 0, 30);
+        base.setFill(Color.BLACK);
+        base.setStroke(Color.BLACK);
+        base.setOpacity(0.5);
+
+        Polygon tri = new Polygon(15, 0, 30, 15, 0, 15);
+        tri.setFill(Color.BLACK);
+        tri.setStroke(Color.BLACK);
+        tri.setOpacity(0.5);
+
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(base);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        tri.setLayoutX(xCoord + 16);
+        tri.setLayoutY(yCoord - 14);
+
+        structures.getChildren().add(stack);
+        structures.getChildren().add(tri);
+    }
+
+    /**
+     * Adds a built knight to the board
+     * @param xCoord: The x-coordinate of the built knight
+     * @param yCoord: The y-coordinate of the built knight
+     */
+
+    public void buildKnight (double xCoord, double yCoord) {
+        Ellipse ellp = new Ellipse();
+        ellp.setCenterX(0);
+        ellp.setCenterY(0);
+        ellp.setRadiusX(10);
+        ellp.setRadiusY(15);
+        ellp.setFill(Color.LIGHTGREEN);
+        ellp.setStroke(Color.BLACK);
+        ellp.setOpacity(0.5);
+
+        Circle circle = new Circle(7.5);
+        circle.setFill(Color.LIGHTGREEN);
+        circle.setStroke(Color.BLACK);
+        circle.setOpacity(0.5);
+
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(ellp);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        circle.setCenterX(xCoord + 10);
+        circle.setCenterY(yCoord - 5);
+
+        structures.getChildren().add(stack);
+        structures.getChildren().add(circle);
+    }
+
+    /**
+     * Adds a used knight to the board
+     * @param xCoord: The x-coordinate of the used knight
+     * @param yCoord: The y-coordinate of the used knight
+     */
+
+    public void useKnight (double xCoord, double yCoord) {
+        Ellipse ellp = new Ellipse();
+        ellp.setCenterX(0);
+        ellp.setCenterY(0);
+        ellp.setRadiusX(10);
+        ellp.setRadiusY(15);
+        ellp.setFill(Color.BLACK);
+        ellp.setStroke(Color.BLACK);
+
+        Circle circle = new Circle(7.5);
+        circle.setFill(Color.BLACK);
+        circle.setStroke(Color.BLACK);
+
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(ellp);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        circle.setCenterX(xCoord + 10);
+        circle.setCenterY(yCoord - 5);
+
+        structures.getChildren().add(stack);
+        structures.getChildren().add(circle);
     }
 
     @Override
