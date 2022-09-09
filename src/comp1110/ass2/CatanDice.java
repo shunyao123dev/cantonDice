@@ -18,8 +18,73 @@ public class CatanDice {
      *         a board state, false otherwise.
      */
     public static boolean isBoardStateWellFormed(String board_state) {
-	 return false; // FIXME: Task #3
+        if (board_state.isEmpty()) {
+            return true;
+        }
+        for (int i = 0; i < board_state.length(); i++) {
+            if (!(Character.isLetterOrDigit(board_state.charAt(i))) && board_state.charAt(i) != ',') {
+                return false;
+            }
+        }
+        String[] b_state = board_state.split(",");
+        for (int j = 0; j < b_state.length; j++) {
+            if (b_state[j].charAt(0) != 'R' && b_state[j].charAt(0) != 'K' && b_state[j].charAt(0) != 'S'
+                    && b_state[j].charAt(0) != 'C' && b_state[j].charAt(0) != 'J') {
+                return false;
+            } else {
+                if (b_state[j].charAt(0) == 'K' || b_state[j].charAt(0) == 'J') {
+                    if (b_state[j].length() != 2) {
+                        return false;
+                    } else {
+                        if (Character.getNumericValue(b_state[j].charAt(1)) != 1 && Character.getNumericValue(b_state[j].charAt(1)) != 2 &&
+                                Character.getNumericValue(b_state[j].charAt(1)) != 3 && Character.getNumericValue(b_state[j].charAt(1)) != 5
+                                && Character.getNumericValue(b_state[j].charAt(1)) != 6) {
+                            return false;
+                        }
+                    }
+                } else if (b_state[j].charAt(0) == 'C') {
+                    if (b_state[j].length() == 2) {
+                        if (Character.getNumericValue(b_state[j].charAt(1)) != 7) {
+                            return false;
+                        }
+                    } else if (b_state[j].length() == 3) {
+                        if (Integer.parseInt(b_state[j].substring(1, 3)) != 12 && Integer.parseInt(b_state[j].substring(1, 3)) != 20 && Integer.parseInt(b_state[j].substring(1, 3)) != 30) {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                } else if (b_state[j].charAt(0) == 'S') {
+                    if (b_state[j].length() == 2) {
+                        if (Character.getNumericValue(b_state[j].charAt(1)) != 3 && Character.getNumericValue(b_state[j].charAt(1)) != 4 &&
+                                Character.getNumericValue(b_state[j].charAt(1)) != 5 && Character.getNumericValue(b_state[j].charAt(1)) != 7 &&
+                                Character.getNumericValue(b_state[j].charAt(1)) != 9) {
+                            return false;
+                        }
+                    } else if (b_state[j].length() == 3) {
+                        if (Integer.parseInt(b_state[j].substring(1, 3)) != 11) {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                } else {
+                    if (b_state[j].length() == 2) {
+                        if (!(Character.isDigit(b_state[j].charAt(1)))) {
+                            return false;
+                        }
+                    } else if (b_state[j].length() == 3) {
+                        if (!(Integer.parseInt(b_state[j].substring(1, 3)) >= 10 && Integer.parseInt(b_state[j].substring(1, 3)) <= 15)) {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }  return true; // FIXME: Task #3
     }
+
 
     /**
      * Check if the string encoding of a player action is well formed.
