@@ -24,6 +24,7 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +37,8 @@ public class Viewer extends Application {
     private static final int HEX_HEIGHT = 200;
 
     private final Group root = new Group();
+
+    private final Group board = new Group();
     private final Group controls = new Group();
 
     private final Group hexagons = new Group();
@@ -77,11 +80,7 @@ public class Viewer extends Application {
         controls.getChildren().add(hb);
     }
 
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Board State Viewer");
-        Scene scene = new Scene(root, VIEWER_WIDTH, VIEWER_HEIGHT, Color.GREEN);
+    void makeBaseBoard() throws FileNotFoundException {
 
         //Setting ocean image background
 
@@ -156,8 +155,6 @@ public class Viewer extends Application {
         makeKnight("5", 1003, 240); //K5
         makeKnight("6", 866, 160); //K6
 
-
-
         //Roads
 
         makeStartRoad("S", 45, 15, 795,240, -30); //R0
@@ -200,14 +197,7 @@ public class Viewer extends Application {
         root.getChildren().add(hexagons);
         root.getChildren().add(structures);
 
-
-        makeControls();
-
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
     }
-
 
     //This code for creating the hexagon has been created
     public Polyline makeHexagon(int length, double xCoord, double yCoord) {
@@ -306,5 +296,20 @@ public class Viewer extends Application {
 
         structures.getChildren().add(stack);
         structures.getChildren().add(circle);
+    }
+
+
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.setTitle("Board State Viewer");
+        Scene scene = new Scene(root, VIEWER_WIDTH, VIEWER_HEIGHT, Color.GREEN);
+
+        makeBaseBoard();
+        makeControls();
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
     }
 }
