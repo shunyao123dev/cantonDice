@@ -38,7 +38,7 @@ public class Viewer extends Application {
 
     private final Group root = new Group();
 
-    private final Group board = new Group();
+    private final Group objects = new Group();
     private final Group controls = new Group();
 
     private final Group hexagons = new Group();
@@ -80,6 +80,11 @@ public class Viewer extends Application {
         controls.getChildren().add(hb);
     }
 
+    /**
+     * Creates the base board for Catan Island 1
+     * @throws FileNotFoundException
+     */
+
     void makeBaseBoard() throws FileNotFoundException {
 
         //Setting ocean image background
@@ -91,8 +96,10 @@ public class Viewer extends Application {
         oceanView.setFitHeight(1200);
         oceanView.setFitWidth(550);
         oceanView.setPreserveRatio(true);
+        objects.getChildren().add(oceanView);
 
         //Creating the hexagons for the island
+
         Polyline hexagon1 = makeHexagon(150, 740, 285);
         hexagons.getChildren().add(hexagon1);
         Polyline hexagon2 = makeHexagon(150, 875, 207);
@@ -138,7 +145,6 @@ public class Viewer extends Application {
         mysteryHexagon.setFill(new ImagePattern(mystery, 0, 0, 1, 1, true));
         hexagons.getChildren().add(mysteryHexagon);
 
-
         //Small circles with resource and knights
 
         makeCircle("ORE", 30, 710, 255);
@@ -175,7 +181,6 @@ public class Viewer extends Application {
         makeRoad("1", 45, 15, 1044,375, -30); //R14
         makeRoad("1", 45, 15, 1073,300, 30); //R15
 
-
         //Towns
 
         makeTown("3", 825,290);
@@ -192,24 +197,44 @@ public class Viewer extends Application {
         makeSettlement("20", 1075, 420, 3);
         makeSettlement("30", 1075, 260, 3);
 
+        //Resource key and Scoreboard
 
-
-        //Resource key
-
-
-        //Scoreboard
-
+        Image key = new Image(new FileInputStream("assets/KEY.png"));
+        ImageView keyView = new ImageView(key);
+        keyView.setX(25);
+        keyView.setY(425);
+        keyView.setFitHeight(1200);
+        keyView.setFitWidth(550);
+        keyView.setPreserveRatio(true);
+        objects.getChildren().add(keyView);
 
         //Titles
 
-        root.getChildren().add(controls);
-        root.getChildren().add(oceanView);
-        root.getChildren().add(hexagons);
-        root.getChildren().add(structures);
+        Image title = new Image(new FileInputStream("assets/TITLE.jpg"));
+        ImageView titleView = new ImageView(title);
+        titleView.setX(725);
+        titleView.setY(15);
+        titleView.setFitHeight(100);
+        titleView.setFitWidth(300);
+        titleView.setPreserveRatio(true);
+        objects.getChildren().add(titleView);
+
+        //Nodes
+
+        root.getChildren().add(controls); //adds control bar
+        root.getChildren().add(objects); //adds resource key, scoreboard, title and ocean
+        root.getChildren().add(hexagons); //adds all hexagons
+        root.getChildren().add(structures); //adds all structures to the board
 
     }
 
-    //This code for creating the hexagon has been created
+    /**
+     * Creates hexagons. Has adapted the hexagon code from Assignment 1.
+     * @param length: The length of each side
+     * @param xCoord: The x-coordinate of the hexagon
+     * @param yCoord: The y-coordinate of the hexagon
+     * @return: Returns a hexagon of type Polyline
+     */
     public Polyline makeHexagon(int length, double xCoord, double yCoord) {
         double sideLength = length * 3 / 5;
         ArrayList<Double> points = new ArrayList<>();
@@ -234,7 +259,13 @@ public class Viewer extends Application {
 
     }
 
-    //method for making circles
+    /**
+     * Creates circles
+     * @param text: The number to be displayed in the circle
+     * @param radius: The radius of the circle
+     * @param xCoord: The x-coordinate of the circle
+     * @param yCoord: The y-coordinate of the circle
+     */
     public void makeCircle(String text, int radius, double xCoord, double yCoord) {
         Circle circle = new Circle(radius);
         circle.setFill(Color.BLANCHEDALMOND);
@@ -248,6 +279,16 @@ public class Viewer extends Application {
         hexagons.getChildren().add(stack);
 
     }
+
+    /**
+     * Creates the road shape
+     * @param text: The number to be displayed on the road
+     * @param height: The height of the road
+     * @param width: The width of the road
+     * @param xCoord: The x-coordinate of the road
+     * @param yCoord: The y-coordinate of the road
+     * @param rotation: The rotation of the road in degrees
+     */
 
     public void makeRoad(String text, int height, int width, double xCoord, double yCoord, int rotation) {
         Rectangle rect = new Rectangle();
@@ -264,6 +305,15 @@ public class Viewer extends Application {
         stack.getTransforms().add(new Rotate(rotation));
         structures.getChildren().add(stack);
     }
+
+    /**
+     * Creates the start road
+     * @param height: The height of the road
+     * @param width: The width of the road
+     * @param xCoord: The x-coordinate of the road
+     * @param yCoord: The y-coordinate of the road
+     * @param rotation: The rotation of the road in degrees
+     */
     public void makeStartRoad(String text, int height, int width, double xCoord, double yCoord, int rotation) {
         Rectangle rect = new Rectangle();
         rect.setHeight(height);
@@ -280,6 +330,13 @@ public class Viewer extends Application {
         stack.getTransforms().add(new Rotate(rotation));
         structures.getChildren().add(stack);
     }
+
+    /**
+     * Creates the knight shape
+     * @param text: The number to be displayed on the knight
+     * @param xCoord: The x-coordinate of the knight
+     * @param yCoord: The y-coordinate of the knight
+     */
 
     public void makeKnight(String text, double xCoord, double yCoord) {
         Ellipse ellp = new Ellipse();
@@ -308,6 +365,13 @@ public class Viewer extends Application {
         structures.getChildren().add(circle);
     }
 
+    /**
+     * Creates the town structure
+     * @param text: The number to be displayed on the town
+     * @param xCoord: The x-coordinate of the town
+     * @param yCoord: The y-coordinate of the town
+     */
+
     public void makeTown(String text, double xCoord, double yCoord) {
         Rectangle rect = new Rectangle();
         rect.setX(0);
@@ -334,6 +398,14 @@ public class Viewer extends Application {
         structures.getChildren().add(tri);
     }
 
+    /**
+     * Creates the settlement structure
+     * @param text: The number to be displayed on the settlement
+     * @param xCoord: The x-coordinate of the settlement
+     * @param yCoord: The y-coordinate of the settlement
+     * @param textShift: The text shift for the number
+     */
+
     public void makeSettlement(String text, double xCoord, double yCoord, int textShift) {
         Polygon base = new Polygon(0, 10, 20, 10,20, 0, 40, 0, 40, 30, 0, 30);
         base.setFill(Color.WHITE);
@@ -358,10 +430,6 @@ public class Viewer extends Application {
         structures.getChildren().add(newText);
         structures.getChildren().add(tri);
     }
-
-
-
-
 
     @Override
     public void start(Stage primaryStage) throws Exception {
