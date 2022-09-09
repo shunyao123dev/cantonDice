@@ -36,6 +36,12 @@ public class Viewer extends Application {
 
     private static final int HEX_HEIGHT = 200;
 
+    private static final String testBoardState=
+            "R0,R1,R2,R3,R4,R5,R6,R7,R8," +
+            "R9,R10,R11,R12,R13,R14,R15,S3," +
+                    "S4,S5,S7,S9,S11,T7,T12,T20," +
+                    "T30,J1,J2,J3,J4,J5,J6,K1,K2,K3,K4,K5,K6";
+
     private final Group root = new Group();
 
     private final Group objects = new Group();
@@ -52,7 +58,10 @@ public class Viewer extends Application {
 
     /**
      * Show the state of a (single player's) board in the window.
-     *
+     * If any structure (road, settlement or town) is built, the
+     * structure will appear grey. If a Knight is built but unused,
+     * the figure will appear green. If a Knight has been built and
+     * used, the figure will be black.
      * @param: The string representation of the board state.
      */
     void displayState(String board_state) {
@@ -60,7 +69,7 @@ public class Viewer extends Application {
         String[] boardArr = board_state.split(",");
 
         for (var str : boardArr) {
-            if (str == "R0") {
+            if (str.equals("R0")) {
                 buildRoad(805, 300, 30);
             } else if (str.equals("R1")) {
                 buildRoad(720,370,-90);
