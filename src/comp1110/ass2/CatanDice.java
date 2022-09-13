@@ -1,9 +1,6 @@
 package comp1110.ass2;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class CatanDice {
 
@@ -211,9 +208,129 @@ public class CatanDice {
      */
     public static boolean checkBuildConstraints(String structure,
 						String board_state) {
-        
-	 return false; // FIXME: Task #8
+        if (!(isBoardStateWellFormed(board_state))) {
+            return false;
+        }
+        String[] b_state = board_state.split(",");
+        ArrayList<String> B_state = new ArrayList<>(Arrays.asList(b_state));
+        B_state.add(structure);
+        ArrayList<String> S = new ArrayList<>();
+        ArrayList<String> cit = new ArrayList<>();
+        ArrayList<String> knight = new ArrayList<>();
+        ArrayList<String> Road = new ArrayList<>();
+        HashMap<Character, ArrayList<String>> h1 = new HashMap<>();
+        int[] s_point = {3, 4, 5, 7, 9, 11};
+        int[] c_point = {7, 12, 20, 30};
+        int[] R_point = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+        int[] K_point = {1, 2, 3, 4, 5, 6};
+        if(!(Building_Valid_Settlement_City(B_state))) {
+            return false;
+        }
+        for(int i=0;i< B_state.size();i++) {
+            if (B_state.get(i).charAt(0) == 'R') {
+                Road.add(B_state.get(i));
+                h1.put(B_state.get(i).charAt(0), Road);
+            } else if (B_state.get(i).charAt(0) == 'C') {
+                cit.add(B_state.get(i));
+                h1.put(B_state.get(i).charAt(0), cit);
+            } else if (B_state.get(i).charAt(0) == 'J' || B_state.get(i).charAt(0) == 'K') {
+                knight.add(B_state.get(i));
+                h1.put(B_state.get(i).charAt(0), knight);
+            } else if (B_state.get(i).charAt(0) == 'S') {
+                S.add(B_state.get(i));
+                h1.put(B_state.get(i).charAt(0), S);
+            }
+        }
+        if(!(checkAscendingPoints(h1,c_point,s_point,K_point,R_point))) {
+            return false;
+        }
+        // FIXME: Task #8
+        return true;
     }
+
+    public static boolean checkAscendingPoints (HashMap<Character,ArrayList<String>> h1, int[] C_point, int[] S_point, int[] K_point, int[] R_point) {
+        for (Character c : h1.keySet()) {
+            if (c == 'R') {
+                for (int i=0;i<h1.get(c).size();i++) {
+                    int r_point = Integer.parseInt(h1.get(c).get(i).substring(1));
+                    if(r_point!=R_point[i]) {
+                        return false;
+                    }
+                }
+            } else if (c == 'K' || c == 'J') {
+                for (int i=0;i<h1.get(c).size();i++) {
+                    int k_point = Integer.parseInt(h1.get(c).get(i).substring(1));
+                    if(k_point!=K_point[i]) {
+                        return false;
+                    }
+                }
+            } else if (c == 'S') {
+                for (int i=0;i<h1.get(c).size();i++) {
+                    int s_point = Integer.parseInt(h1.get(c).get(i).substring(1));
+                    if(s_point!=S_point[i]) {
+                        return false;
+                    }
+                }
+            } else{
+                for (int i=0;i<h1.get(c).size();i++) {
+                    int c_point = Integer.parseInt(h1.get(c).get(i).substring(1));
+                    if (c_point!=C_point[i]) {
+                        return false;
+                    }
+                }
+            }
+        } return true;
+    }
+
+    public static boolean Building_Valid_Settlement_City(ArrayList<String> b_state) {
+        for (int i=0;i<b_state.size();i++) {
+            if(b_state.get(i).charAt(0)=='C') {
+                if(b_state.get(i).equals("C7")) {
+                    if(!(b_state.subList(0,i).contains("R1"))) {
+                        return false;
+                    }
+                } else if(b_state.get(i).equals("C12")) {
+                    if(!(b_state.subList(0,i).contains("R4"))) {
+                        return false;
+                    }
+                } else if (b_state.get(i).equals("C20")) {
+                    if(!(b_state.subList(0,i).contains("R13"))) {
+                        return false;
+                    }
+                } else if (b_state.get(i).equals("C30")) {
+                    if(!(b_state.subList(0,i).contains("R15"))) {
+                        return false;
+                    }
+                }
+            } else if (b_state.get(i).charAt(0)=='S') {
+                if(b_state.get(i).equals("S4")) {
+                    if(!(b_state.subList(0,i).contains("R2"))) {
+                        return false;
+                    }
+                } else if(b_state.get(i).equals("S5")) {
+                    if(!(b_state.subList(0,i).contains("R5"))) {
+                        return false;
+                    }
+                } else if (b_state.get(i).equals("S7")) {
+                    if(!(b_state.subList(0,i).contains("R7"))) {
+                        return false;
+                    }
+                } else if (b_state.get(i).equals("S9")) {
+                    if(!(b_state.subList(0,i).contains("R9"))) {
+                        return false;
+                    }
+                } else if(b_state.get(i).equals("S11")) {
+                    if(!(b_state.subList(0,i).contains("R11"))) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+
+
 
     /**
      * Check if the available resources are sufficient to build the
