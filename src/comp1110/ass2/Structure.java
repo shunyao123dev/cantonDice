@@ -1,6 +1,7 @@
 package comp1110.ass2;
 
 import static comp1110.ass2.StructureType.*;
+import static comp1110.ass2.ResourceType.*;
 
 // This class authored by Hugo Heanly u7119555
 public class Structure {
@@ -17,18 +18,28 @@ public class Structure {
     // if the structure is built
     public boolean built;
 
+    // in the case of a knight, if the knight has been used
+
+    public boolean used;
+
+    // in the case of a knight, the type of resource
+
+    public ResourceType resource;
+
     // Constructor for the Structure class that  allows specifying
     // for the structure's coordinates as well as its type (ROAD,
     // SETTLEMENT, CITY)
 
-    public Structure(String position, StructureType type, int value, boolean built) {
+    public Structure(String position, StructureType type, int value, boolean built, boolean used, ResourceType resource) {
         this.position = position;
         this.type = type;
         this.value = value;
         this.built = built;
+        this.used = used;
+        this.resource = resource;
     }
 
-    // Constructor for the Structure class that  allows specifying
+    // Constructor for the Structure class that allows specifying
     // for the structure's position only
 
     public Structure(String position) {
@@ -50,15 +61,19 @@ public class Structure {
     // Returns if the structure is built
     public boolean isBuilt() {return this.built;}
 
-
-
     // Sets the type of the structure according to the given
     // parameter
 
     public void setType(StructureType type) {this.type = type;}
 
-    // Returns whether the structure is the start
+    // Sets the position of the structure according to the given
+    // parameter
 
+    public void setPosition(String position) {this.position = position;}
+
+
+
+    // Returns whether the structure is the start
     public boolean isStart() {
 
         if (type == START) {
@@ -100,6 +115,18 @@ public class Structure {
             return false;
         }
     }
+
+    // Returns whether the structure is a knight
+
+    public boolean isKnight() {
+
+        if (type == KNIGHT) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
 
 
