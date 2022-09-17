@@ -127,9 +127,8 @@ public class GameState {
      * @param structure: A Structure[] that represents the board state
      */
     public GameState(Structure[] structure) {
-
+        this.structures = new Structure[33];
     }
-
 
     /**
      * Returns the board

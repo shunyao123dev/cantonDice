@@ -53,7 +53,18 @@ Shunyao Yang: Completing Task 8 with Zimu, and starting Dice class.
 
 Zimu Li: Completing task 8. 
 
+Meeting 2:
+
+Hugo Heanly: To complete testing for Task 3 and 4
+
+Shunyao Yang: To complete testing for Task 8
+
+Zimu Li: To complete testing for Task 6 and 7
+
+
 ## Week 7
+
+
 
 ## Week 8
 
