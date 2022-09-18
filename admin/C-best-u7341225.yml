@@ -35,9 +35,9 @@ declaration: >-
 # I wish to submit the following methods as entirely my own (remove this if
 # you want to just submit classes):
 method:
-   - checkBuildConstraints
-   - checkAscendingPoints
-   - Building_Valid_Settlement_City
+   - CatonDice.checkBuildConstraints() (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/CatanDice.java#L209-249)
+   - CatonDice.checkAscendingPoints() (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/CatanDice.java#L262-294)
+   - CatonDice.Building_Valid_Settlement_City() (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/CatanDice.java#L304-349)
 
 
 # sign *your* name and uid here

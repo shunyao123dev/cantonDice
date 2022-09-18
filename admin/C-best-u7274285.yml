@@ -35,8 +35,8 @@ declaration: >-
 # I wish to submit the following methods as entirely my own (remove this if
 # you want to just submit classes):
 method:
-   - isActionWellFormed
-   - checkResources
+   - isActionWellFormed() (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/CatanDice.java#L93-152)
+   - checkResources() (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/CatanDice.java#L364-396)
 
 
 # sign *your* name and uid here

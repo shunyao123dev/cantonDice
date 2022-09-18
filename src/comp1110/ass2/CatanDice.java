@@ -248,6 +248,17 @@ public class CatanDice {
         return true;
     }
 
+    /**
+     * check whether Settlements, Cities, Knights and Roads were built
+     * in order of increasing point value
+     * @param h1 a hashmap takes the character representation of each built structure as the key, and uses their corresponding
+     *          point values as values (e.g. R->[R1,R2,R4,R6])
+     * @param C_point the array in order of increasing point values of city
+     * @param S_point the array in order of increasing point values of settlements
+     * @param K_point the array in order of increasing point values of knights
+     * @param R_point the array in order of increasing road point values of roads
+     * @return true if all the structures were built in ascending points, false otherwise
+     */
     public static boolean checkAscendingPoints (HashMap<Character,ArrayList<String>> h1, int[] C_point, int[] S_point, int[] K_point, int[] R_point) {
         for (Character c : h1.keySet()) {
             if (c == 'R') {
@@ -282,6 +293,14 @@ public class CatanDice {
         } return true;
     }
 
+    /**
+     * check if Roads, Settlements and Cities
+     * can form a connected network
+     * @param b_state - the arraylist containing the string representation of board_state
+     * @return true if Roads, Settlements and Cities
+     * can form a connected network, starting
+     * from the initial Road.
+     */
     public static boolean Building_Valid_Settlement_City(ArrayList<String> b_state) {
         for (int i=0;i<b_state.size();i++) {
             if(b_state.get(i).charAt(0)=='C') {
