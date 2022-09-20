@@ -8,7 +8,7 @@ class CheckBuildConstraintJunitTest {
 
     @Test
     void checkRoads() {
-        assertFalse(CatanDice.checkBuildConstraints("R1","R0,S3,R2,R3"));
+        assertFalse(CatanDice.checkBuildConstraints("R1","R0,S3,R2,R3,R4"));
         assertFalse(CatanDice.checkBuildConstraints("R7","R0,S3,R1,C7,R2,R3"));
         assertTrue(CatanDice.checkBuildConstraints("R4","R0,S3,R1,C7,R2,R3,S4"));
         assertTrue(CatanDice.checkBuildConstraints("R7","R0,R1,C7,R2,R3,R4,C12,R5,R6"));
