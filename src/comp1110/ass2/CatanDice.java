@@ -1,5 +1,8 @@
 package comp1110.ass2;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.*;
 
 public class CatanDice {
