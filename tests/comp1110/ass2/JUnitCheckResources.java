@@ -10,6 +10,7 @@ public class JUnitCheckResources {
 
     @Test
     void checkRoads() {
+
         assertFalse(CatanDice.checkResources("R1", new int[]{1, 0, 1, 2, 0, 2}));
         assertFalse(CatanDice.checkResources("R2", new int[]{1, 0, 1, 0, 2, 2}));
         assertFalse(CatanDice.checkResources("R3", new int[]{1, 0, 1, 1, -2, 2}));
@@ -17,10 +18,12 @@ public class JUnitCheckResources {
         assertTrue(CatanDice.checkResources("R5", new int[]{1, 0, 1, 1, 1, 2}));
         assertTrue(CatanDice.checkResources("R6", new int[]{1, 0, 1, 2, 8, 2}));
 
+
     }
 
     @Test
     void checkKnight() {
+
         assertFalse(CatanDice.checkResources("J1", new int[]{0, 0, 1, 2, 0, 2}));
         assertFalse(CatanDice.checkResources("J2", new int[]{0, 1, 0, 0, 2, 2}));
         assertFalse(CatanDice.checkResources("J3", new int[]{1, 0, 0, 1, -2, 2}));
@@ -33,6 +36,7 @@ public class JUnitCheckResources {
 
     @Test
     void checkSettlement() {
+
         assertFalse(CatanDice.checkResources("S3", new int[]{0, 0, 1, 2, 0, 2}));
         assertFalse(CatanDice.checkResources("S4", new int[]{0, 1, 0, 0, 2, 2}));
         assertFalse(CatanDice.checkResources("S5", new int[]{1, 0, 0, 1, -2, 2}));
@@ -44,7 +48,8 @@ public class JUnitCheckResources {
 
 
     @Test
-    void checkCity () {
+    void checkCity() {
+
         assertFalse(CatanDice.checkResources("C7", new int[]{0, 0, 1, 2, 0, 2}));
         assertFalse(CatanDice.checkResources("C7", new int[]{0, 1, 0, 0, 2, 2}));
         assertFalse(CatanDice.checkResources("C12", new int[]{1, 0, 0, 1, -2, 2}));
