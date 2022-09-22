@@ -64,6 +64,11 @@ Zimu Li: To complete testing for Task 6 and 7
 
 ## Week 7
 
+Hugo Heanly: Task 10
+
+Shunyao Yang: Task 9 and 12
+
+Zimu Li: Task 11 and 13
 
 
 ## Week 8
