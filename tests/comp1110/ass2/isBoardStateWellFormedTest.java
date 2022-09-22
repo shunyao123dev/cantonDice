@@ -26,7 +26,6 @@ class isBoardStateWellFormedTest {
         assertFalse(CatanDice.isBoardStateWellFormed("J12"));
         assertFalse(CatanDice.isBoardStateWellFormed("G10"));
 
-    }
 
 
 }
