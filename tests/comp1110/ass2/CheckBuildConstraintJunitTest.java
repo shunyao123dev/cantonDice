@@ -33,7 +33,7 @@ class CheckBuildConstraintJunitTest {
     }
 
     @Test
-    void chekcSettlements() {
+    void checkSettlements() {
         assertFalse(CatanDice.checkBuildConstraints("S5","R0,R1,C7,R2,R3,R4,R5,C12,R5"));
         assertFalse(CatanDice.checkBuildConstraints("S5","R0,R1,S3,R2,R3,R5,C7"));
         assertFalse(CatanDice.checkBuildConstraints("S4","R0,S3,R1,C7,J1,J2,K3"));

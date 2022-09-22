@@ -39,8 +39,8 @@ public class Viewer extends Application {
     private static final String testBoardState=
             "R0,R1,R2,R3,R4,R5,R6,R7,R8," +
             "R9,R10,R11,R12,R13,R14,R15,S3," +
-                    "S4,S5,S7,S9,S11,T7,T12,T20," +
-                    "T30,J1,J2,J3,J4,J5,J6,K1,K2,K3,K4,K5,K6";
+                    "S4,S5,S7,S9,S11,C7,C12,C20," +
+                    "C30,J1,J2,J3,J4,J5,J6,K1,K2,K3,K4,K5,K6";
 
     private final Group root = new Group();
 
@@ -113,13 +113,13 @@ public class Viewer extends Application {
                 buildSettlement(960,355);
             } else if (str.equals("S11")) {
                 buildSettlement(960,200);
-            } else if (str.equals("T7")) {
+            } else if (str.equals("C7")) {
                 buildTown(670,340);
-            } else if (str.equals("T12")) {
+            } else if (str.equals("C12")) {
                 buildTown(670,490);
-            } else if (str.equals("T20")) {
+            } else if (str.equals("C20")) {
                 buildTown(1075,420);
-            } else if (str.equals("T30")) {
+            } else if (str.equals("C30")) {
                 buildTown(1075,260);
             } else if (str.equals("J1")) {
                 buildKnight(731,240);
