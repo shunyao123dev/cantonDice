@@ -30,6 +30,10 @@ collaboration:
 #
 # Add as many "url+licence+comment" entries as necessary
 # (or remove it altogether if you haven't used any external code)
+code:
+  - comment:
+    url:
+    licence:
 
 # Use this to list any assets (artwork, sound, etc) that you used.
 # Provide a comment explaining your use of that asset and the URL
@@ -44,5 +48,5 @@ assets:
 
 
 # sign *your* name and uid here
-name: Shunyao Yang
-uid: u7341225
+name: Hugo Heanly
+uid: u7119555
