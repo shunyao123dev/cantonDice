@@ -411,7 +411,60 @@ public class CatanDice {
     public static boolean checkResourcesWithTradeAndSwap(String structure,
 							 String board_state,
 							 int[] resource_state) {
+        if(checkResources(structure, resource_state)) {
+            return true; }
+
 	return false; // FIXME: Task #12
+    }
+
+    public static boolean checkExistKnight (int re, ArrayList<String> board_state) {
+        boolean flag = false;
+        if(re==0 && board_state.contains("J1")) {
+            flag = true;
+        } else if (re==1 && board_state.contains("J2")) {
+            flag = true;
+        } else if (re==2 && board_state.contains("J3")) {
+            flag = true;
+        } else if (re==3 && board_state.contains("J4")) {
+            flag = true;
+        } else if (re==4 && board_state.contains("J5")) {
+            flag = true;
+        } else if (re==5 && board_state.contains("J6")) {
+            flag = true;
+        }
+        return flag;
+    }
+
+    public static Map<Integer,Integer> missing_resources(String structure, int[] resource_state) {
+        Map<Integer,Integer> missing_resource = new HashMap<>();
+        char name = structure.charAt(0);
+        if(name=='R') {
+            for(int i=3;i<=4;i++) {
+                if(1-resource_state[i]>0) {
+                    missing_resource.put(i,1-resource_state[i]);
+                }
+            }
+
+        } else if (name=='C') {
+            if (3-resource_state[0]>0) {
+                missing_resource.put(0,3-resource_state[0]);
+            } if (2-resource_state[1]>0) {
+                missing_resource.put(1,2-resource_state[1]);
+            }
+        } else if (name=='S') {
+            for (int i=1;i<=4;i++) {
+                if(1-resource_state[i]>0) {
+                    missing_resource.put(i,1-resource_state[i]);
+                }
+            }
+        } else{
+            for (int i=0;i<=2;i++) {
+                if(1-resource_state[i]>0) {
+                    missing_resource.put(i,1-resource_state[i]);
+                }
+            }
+        }
+        return missing_resource;
     }
 
     /**
@@ -426,7 +479,43 @@ public class CatanDice {
     public static boolean canDoAction(String action,
 				      String board_state,
 				      int[] resource_state) {
-	 return false; // FIXME: Task #9
+       return false;
+	  // FIXME: Task #9
+    }
+
+    public static boolean canDoSwap(int swap_resource1, int swap_resource2, String board_state, int[] resource_state) {
+        String[] b_state = board_state.split(",");
+        if(resource_state[swap_resource1]<1) {
+            return false;
+        }
+        ArrayList<String> B_state = new ArrayList<>(Arrays.asList(b_state));
+        boolean res = false;
+        if(swap_resource2==0) {
+            if(B_state.contains("J1")) {
+                res = true;
+            }
+        } else if (swap_resource2==1) {
+            if(B_state.contains("J2")) {
+                res = true;
+            }
+        } else if (swap_resource2==2) {
+            if (B_state.contains("J3")) {
+                res = true;
+            }
+        } else if (swap_resource2==3) {
+            if (B_state.contains("J4")) {
+                res = true;
+            }
+        } else if (swap_resource2 == 4) {
+            if (B_state.contains("J5")) {
+                res = true;
+            }
+        } else if (swap_resource2==5) {
+            if (B_state.contains("J6")) {
+                res = true;
+            }
+        }
+        return res;
     }
 
     /**
