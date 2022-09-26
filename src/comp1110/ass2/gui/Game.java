@@ -3,7 +3,9 @@ package comp1110.ass2.gui;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import comp1110.ass2.gui.Viewer;
 
 public class Game extends Application {
 
@@ -13,7 +15,9 @@ public class Game extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Scene scene = new Scene(this.root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        stage.setTitle("Board State Viewer");
+        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT, Color.GREEN);
+
         stage.setScene(scene);
         stage.show();
         //Task 10 here

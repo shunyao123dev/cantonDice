@@ -12,8 +12,9 @@ public class GameState {
 
     public Structure[] structures;
 
-    //The Knights on the game board
+    public int[] resources;
 
+    //The Knights on the game board
     public final static int STRUCTURES_NO = 33;
 
     //The number of tiles on the board
