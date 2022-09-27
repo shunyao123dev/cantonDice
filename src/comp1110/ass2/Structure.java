@@ -64,6 +64,8 @@ public class Structure {
     // Sets the type of the structure according to the given
     // parameter
 
+    public void setBuilt() {this.built = true;}
+
     public void setType(StructureType type) {this.type = type;}
 
     // Sets the position of the structure according to the given
