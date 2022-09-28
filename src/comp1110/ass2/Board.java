@@ -1,12 +1,10 @@
 package comp1110.ass2;
 
-import comp1110.ass2.Structure;
-
 import static comp1110.ass2.ResourceType.*;
 import static comp1110.ass2.StructureType.*;
 
 // This class authored by Hugo Heanly u7119555
-public class GameState {
+public class Board {
 
     //The structures on the game board
 
@@ -26,7 +24,7 @@ public class GameState {
      * Constructor to instantiate a blank game
      */
 
-    public GameState() {
+    public Board() {
         structures = new Structure[33];
 
         for (int i = 0; i < STRUCTURES_NO; i++) {
@@ -127,9 +125,9 @@ public class GameState {
      *
      * @param structure: A Structure[] that represents the board state
      */
-    public GameState(Structure[] structure) {
-        this.structures = new Structure[33];
-    }
+    //public Board(Structure[] structure) {
+       // this.structures = new Structure[33];
+    //}
 
     /**
      * Returns the board

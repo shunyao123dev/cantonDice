@@ -8,6 +8,31 @@ public class Player {
 
 
     /**
+     * Board for player
+     */
+
+    private Board board;
+
+    /**
+     * Resource state
+     */
+
+    private ResourceState resources;
+
+    /**
+     * Array of score
+     */
+
+    private int[] scores = new int[15];
+
+    /**
+     * Count of turn
+     */
+
+    private int turnCount = 0;
+
+
+    /**
      * The name of the player
      */
     private String name;
@@ -20,12 +45,11 @@ public class Player {
     /**
      * constructor of initialising the field
      * @param name
-     * @param boardstate
      */
 
-    public Player (String name, String boardstate){
-        this.score = score;
+    public Player (String name){
         this.name = name;
+        this.board = new Board();
     }
 
     /**
@@ -36,4 +60,6 @@ public class Player {
     public void update_score (int score) {
 
     }
+
+
 }
