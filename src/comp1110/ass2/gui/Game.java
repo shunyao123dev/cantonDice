@@ -26,10 +26,9 @@ public class Game extends Application {
         //try start viewer in the game file
         //initialise game in the game file
 
-
-
         stage.setScene(scene);
         stage.show();
         //Task 10 here
     }
 }
+
