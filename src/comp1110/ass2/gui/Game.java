@@ -13,10 +13,20 @@ public class Game extends Application {
     private static final int WINDOW_WIDTH = 1200;
     private static final int WINDOW_HEIGHT = 700;
 
+    /**
+     * Might prompts some user
+     *
+     */
+
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Board State Viewer");
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT, Color.GREEN);
+
+        //try start viewer in the game file
+        //initialise game in the game file
+
+
 
         stage.setScene(scene);
         stage.show();

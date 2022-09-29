@@ -10,7 +10,7 @@ public class ResourceState {
         this.state = state;
     }
 
-    // Initialises the resource state to zero
+    // Initialises the resource state to zer
 
     public void initialiseState() {
         this.state = new int[]{0, 0, 0, 0, 0, 0};

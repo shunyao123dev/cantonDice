@@ -12,6 +12,8 @@ public class Structure {
     // the structure type on the given tile and position
     public StructureType type;
 
+    private Structure[] prerequisites;
+
     // the value of the given Structure
     public int value;
 
