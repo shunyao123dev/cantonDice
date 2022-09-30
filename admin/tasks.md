@@ -73,6 +73,12 @@ Zimu Li: Task 11 and 13
 
 ## Week 8
 
+Hugo Heanly: To review Zimu Task 11
+
+Shunyao Yang: To review Hugo's Task 5 (Viewer)
+
+Zimu Li: To review Shunyao review Task 9.
+
 ## Week 9
 
 ## Week 10
