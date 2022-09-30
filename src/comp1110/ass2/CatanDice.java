@@ -480,7 +480,26 @@ public class CatanDice {
     public static boolean canDoAction(String action,
 				      String board_state,
 				      int[] resource_state) {
-       return false;
+        String[] act = action.split(" ");
+        if(act[0].equals("build")) {
+            if(act.length!=2 || !(checkBuildConstraints(act[1],board_state)) || !(checkResources(act[1],resource_state))) {
+                return false;
+            }
+        } else if (act[0].equals("trade")) {
+            if (act.length!=2 || resource_state[5]<2) {
+                return false;
+            }
+
+        } else if (act[0].equals("swap")) {
+            int idx1 = Integer.parseInt(act[1]);
+            int idx2 = Integer.parseInt(act[2]);
+            if (act.length!=3 || !(canDoSwap(idx1,idx2,board_state,resource_state))) {
+                return false;
+            }
+        } else{
+            return false;
+        }
+        return true;
 	  // FIXME: Task #9
     }
 
