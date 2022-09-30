@@ -36,7 +36,7 @@ public class CatanDice {
                     } else {
                         if (Character.getNumericValue(b_state[j].charAt(1)) != 1 && Character.getNumericValue(b_state[j].charAt(1)) != 2 &&
                                 Character.getNumericValue(b_state[j].charAt(1)) != 3 && Character.getNumericValue(b_state[j].charAt(1)) != 5
-                                && Character.getNumericValue(b_state[j].charAt(1)) != 6) {
+                                && Character.getNumericValue(b_state[j].charAt(1)) != 6 && Character.getNumericValue(b_state[j].charAt(1)) !=4) {
                             return false;
                         }
                     }
