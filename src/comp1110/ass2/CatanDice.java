@@ -13,7 +13,7 @@ public class CatanDice {
      *
      * @param board_state: The string representation of the board state.
      * @return true iff the string is a well-formed representation of
-     *         a board state, false otherwise.
+     * a board state, false otherwise.
      */
     public static boolean isBoardStateWellFormed(String board_state) {
         if (board_state.isEmpty()) {
@@ -36,7 +36,7 @@ public class CatanDice {
                     } else {
                         if (Character.getNumericValue(b_state[j].charAt(1)) != 1 && Character.getNumericValue(b_state[j].charAt(1)) != 2 &&
                                 Character.getNumericValue(b_state[j].charAt(1)) != 3 && Character.getNumericValue(b_state[j].charAt(1)) != 5
-                                && Character.getNumericValue(b_state[j].charAt(1)) != 6 && Character.getNumericValue(b_state[j].charAt(1)) !=4) {
+                                && Character.getNumericValue(b_state[j].charAt(1)) != 6 && Character.getNumericValue(b_state[j].charAt(1)) != 4) {
                             return false;
                         }
                     }
@@ -80,7 +80,8 @@ public class CatanDice {
                     }
                 }
             }
-        }  return true; // FIXME: Task #3
+        }
+        return true; // FIXME: Task #3
     }
 
 
@@ -89,7 +90,7 @@ public class CatanDice {
      *
      * @param action: The string representation of the action.
      * @return true iff the string is a well-formed representation of
-     *         a board state, false otherwise.
+     * a board state, false otherwise.
      */
     public static boolean isActionWellFormed(String action) {
         boolean flag = false;
@@ -156,43 +157,43 @@ public class CatanDice {
     /**
      * Roll the specified number of dice and add the result to the
      * resource state.
-     *
+     * <p>
      * The resource state on input is not necessarily empty. This
      * method should only _add_ the outcome of the dice rolled to
      * the resource state, not remove or clear the resources already
      * represented in it.
      *
-     * @param n_dice: The number of dice to roll (>= 0).
+     * @param n_dice:         The number of dice to roll (>= 0).
      * @param resource_state: The available resources that the dice
-     *        roll will be added to.
-     *
-     * This method does not return any value. It should update the given
-     * resource_state.
+     *                        roll will be added to.
+     *                        <p>
+     *                        This method does not return any value. It should update the given
+     *                        resource_state.
      */
     public static void rollDice(int n_dice, int[] resource_state) {
         Random rad = new Random();
-        String[] res = {"ore","grain","wool","lumber","brick","gold"};
-        HashMap<String,Integer> resource = new HashMap<>();
-        for (int i=1;i<=n_dice;i++) {
+        String[] res = {"ore", "grain", "wool", "lumber", "brick", "gold"};
+        HashMap<String, Integer> resource = new HashMap<>();
+        for (int i = 1; i <= n_dice; i++) {
             int num = rad.nextInt(6);
             String s1 = res[num];
-            if(!(resource.containsKey(s1))) {
-                resource.put(s1,1);
-            } else{
-                resource.put(s1,resource.get(s1)+1);
+            if (!(resource.containsKey(s1))) {
+                resource.put(s1, 1);
+            } else {
+                resource.put(s1, resource.get(s1) + 1);
             }
         }
 
-        for (String i1: resource.keySet()) {
-            for(int i=0;i<res.length;i++) {
-                if(i1.equals(res[i])) {
-                    resource_state[i] = resource_state[i]+resource.get(i1);
+        for (String i1 : resource.keySet()) {
+            for (int i = 0; i < res.length; i++) {
+                if (i1.equals(res[i])) {
+                    resource_state[i] = resource_state[i] + resource.get(i1);
                 }
             }
         }
 
 
-	// FIXME: Task #6
+        // FIXME: Task #6
     }
 
     /**
@@ -201,54 +202,77 @@ public class CatanDice {
      * meets the constraints described in section "Building Constraints"
      * of the README file.
      *
-     * @param structure: The string representation of the structure to
-     *        be built.
+     * @param structure:   The string representation of the structure to
+     *                     be built.
      * @param board_state: The string representation of the board state.
      * @return true iff the structure is a possible next build, false
-     *         otherwise.
+     * otherwise.
      */
     public static boolean checkBuildConstraints(String structure,
-						String board_state) {
+                                                String board_state) {
         if (!(isBoardStateWellFormed(board_state))) {
             return false;
         }
         String[] b_state = board_state.split(",");
         ArrayList<String> B_state = new ArrayList<>(Arrays.asList(b_state));
         B_state.add(structure);
-        ArrayList<String> S = new ArrayList<>();
-        ArrayList<String> cit = new ArrayList<>();
-        ArrayList<String> knight = new ArrayList<>();
-        ArrayList<String> Road = new ArrayList<>();
-        HashMap<Character, ArrayList<String>> h1 = new HashMap<>();
         int[] s_point = {3, 4, 5, 7, 9, 11};
         int[] c_point = {7, 12, 20, 30};
-        int[] R_point = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+        int[] R_point = {0, 1, 2, 3, 4, 5, 6, 7};
+        int[] R_point1 = {7, 12, 13, 14, 15};
+        int[] R_point2 = {7, 8, 9, 10, 11};
         int[] K_point = {1, 2, 3, 4, 5, 6};
-        if(!(Building_Valid_Settlement_City(B_state))) {
+        if (!(Building_Valid_Settlement_City(B_state))) {
             return false;
         }
-        for(int i=0;i< B_state.size();i++) {
-            if (B_state.get(i).charAt(0) == 'R') {
-                Road.add(B_state.get(i));
-                h1.put(B_state.get(i).charAt(0), Road);
-            } else if (B_state.get(i).charAt(0) == 'C') {
-                cit.add(B_state.get(i));
-                h1.put(B_state.get(i).charAt(0), cit);
-            } else if (B_state.get(i).charAt(0) == 'J' || B_state.get(i).charAt(0) == 'K') {
-                knight.add(B_state.get(i));
-                h1.put(B_state.get(i).charAt(0), knight);
-            } else if (B_state.get(i).charAt(0) == 'S') {
-                S.add(B_state.get(i));
-                h1.put(B_state.get(i).charAt(0), S);
-            }
-        }
-        if(!(checkAscendingPoints(h1,c_point,s_point,K_point,R_point))) {
+        Map<String, ArrayList<String>> h1 = new HashMap<>();
+        h1 = Builtstructure(B_state);
+        if (!checkAscendingPoints(h1,c_point,s_point,K_point,R_point,R_point1,R_point2)) {
             return false;
         }
-        // FIXME: Task #8
         return true;
     }
 
+    // FIXME: Task #8
+
+
+    public static Map<String,ArrayList<String>> Builtstructure (ArrayList<String> B_state) {
+        Map<String, ArrayList<String>> structure = new HashMap<>();
+        ArrayList<String> S = new ArrayList<>();
+        ArrayList<String> cit = new ArrayList<>();
+        ArrayList<String> Road = new ArrayList<>();
+        ArrayList<String> Road1 = new ArrayList<>();
+        ArrayList<String> Road2 = new ArrayList<>();
+        ArrayList<String> knight = new ArrayList<>();
+        for (int i = 0; i < B_state.size(); i++) {
+            String stru = B_state.get(i).substring(0, 1);
+            if (stru.equals("R")) {
+                int num = Integer.parseInt(B_state.get(i).substring(1));
+                if (num >= 0 && num <= 7) {
+                    Road.add(B_state.get(i));
+                    structure.put(stru, Road);
+                }
+                if (num == 7 || (num >= 12 && num <= 15)) {
+                    Road1.add(B_state.get(i));
+                    structure.put(stru + "_p1", Road1);
+                }
+                if (num >= 7 && num <= 11) {
+                    Road2.add(B_state.get(i));
+                    structure.put(stru + "_p2", Road2);
+                }
+            } else if (stru.equals("C")) {
+                cit.add(B_state.get(i));
+                structure.put(stru, cit);
+            } else if (stru.equals("J") || stru.equals("K")) {
+                knight.add(B_state.get(i));
+                structure.put(stru, knight);
+            } else if (stru.equals("S")) {
+                S.add(B_state.get(i));
+                structure.put(stru, S);
+            }
+        }
+        return structure;
+    }
     /**
      * check whether Settlements, Cities, Knights and Roads were built
      * in order of increasing point value
@@ -260,32 +284,47 @@ public class CatanDice {
      * @param R_point the array in order of increasing road point values of roads
      * @return true if all the structures were built in ascending points, false otherwise
      */
-    public static boolean checkAscendingPoints (HashMap<Character,ArrayList<String>> h1, int[] C_point, int[] S_point, int[] K_point, int[] R_point) {
-        for (Character c : h1.keySet()) {
-            if (c == 'R') {
-                for (int i=0;i<h1.get(c).size();i++) {
-                    int r_point = Integer.parseInt(h1.get(c).get(i).substring(1));
-                    if(r_point!=R_point[i]) {
+    public static boolean checkAscendingPoints (Map<String,ArrayList<String>> h1, int[] C_point, int[] S_point, int[] K_point, int[] R_point,
+                                                int[] R_point1, int[] R_point2) {
+        for (String s : h1.keySet()) {
+            if (s.equals("R")) {
+                for (int i=0;i<h1.get(s).size();i++) {
+                    int r_point = Integer.parseInt(h1.get(s).get(i).substring(1));
+                    if (r_point!=R_point[i]){
                         return false;
                     }
                 }
-            } else if (c == 'K' || c == 'J') {
-                for (int i=0;i<h1.get(c).size();i++) {
-                    int k_point = Integer.parseInt(h1.get(c).get(i).substring(1));
+            } else if (s.equals("R_p1")) {
+                for (int i=0;i<h1.get(s).size();i++) {
+                    int r1_point = Integer.parseInt(h1.get(s).get(i).substring(1));
+                    if (r1_point!=R_point1[i]) {
+                        return false;
+                    }
+                }
+            } else if (s.equals("R_p2")) {
+                for (int i=0;i<h1.get(s).size();i++) {
+                    int r2_point = Integer.parseInt(h1.get(s).get(i).substring(1));
+                    if (r2_point!=R_point2[i]) {
+                        return false;
+                    }
+                }
+            } else if (s.equals("K") || s.equals("J")) {
+                for (int i=0;i<h1.get(s).size();i++) {
+                    int k_point = Integer.parseInt(h1.get(s).get(i).substring(1));
                     if(k_point!=K_point[i]) {
                         return false;
                     }
                 }
-            } else if (c == 'S') {
-                for (int i=0;i<h1.get(c).size();i++) {
-                    int s_point = Integer.parseInt(h1.get(c).get(i).substring(1));
+            } else if (s.equals("S")) {
+                for (int i=0;i<h1.get(s).size();i++) {
+                    int s_point = Integer.parseInt(h1.get(s).get(i).substring(1));
                     if(s_point!=S_point[i]) {
                         return false;
                     }
                 }
             } else{
-                for (int i=0;i<h1.get(c).size();i++) {
-                    int c_point = Integer.parseInt(h1.get(c).get(i).substring(1));
+                for (int i=0;i<h1.get(s).size();i++) {
+                    int c_point = Integer.parseInt(h1.get(s).get(i).substring(1));
                     if (c_point!=C_point[i]) {
                         return false;
                     }
