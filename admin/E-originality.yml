@@ -1,47 +1,47 @@
-# IMPORTANT: It is very important that you correctly complete this originality
-# statement.
+# IMPORTANT: 正确完成此原创性非常重要
+＃ 陈述。
 #
-# This is your statement of your submitted work being your own.
-# Incorrectly filling out this statement could lead to charges
-# of academic misconduct.
-# 
-# For information on how to fill this out correctly, see
+# 这是你提交的作品是你自己的声明。
+# 错误填写此声明可能会导致收费
+# 学术不端行为。
+#
+# 有关如何正确填写的信息，请参阅
 # https://cs.anu.edu.au/courses/comp1110/help/faq/09-originality/
 #
 
-declaration: >-
-  We declare that everything we have submitted for Stage E of this assignment
-  and all stages before it is entirely our own work, with the following
-  exceptions:
+声明：>-
+  我们声明我们为此作业的 E 阶段提交的所有内容
+  以及之前的所有阶段完全是我们自己的工作，以下是
+  例外：
 
-# Use this to list names of people who you collaborated with, and a
-# comment about what you collaborated on.
+# 用它来列出你合作过的人的名字，以及
+# 评论你合作的内容。
 #
-# Add as many "name+comment" entries as necessary
-# (or remove it altogether if you haven't collaborated with anyone)
+# 根据需要添加尽可能多的“name+comment”条目
+# （如果你没有与任何人合作，或者完全删除它）
 
-# Use this to list any code that you used that you did not write,
-# aside from code provided by the lecturer.  Provide a comment
-# explaining your use and the URL to that code and the licence for
-# that code
+# 用它来列出你用过但不是你写的任何代码，
+# 除了讲师提供的代码。提供评论
+# 解释你的使用和该代码的 URL 和许可证
+# 那段代码
 #
-# Add as many "url+licence+comment" entries as necessary
-# (or remove it altogether if you haven't used any external code)
+# 根据需要添加尽可能多的“url+licence+comment”条目
+# （如果你没有使用任何外部代码，或者完全删除它）
 
 
-# Use this to list any assets (artwork, sound, etc) that you used.
-# Provide a comment explaining your use of that asset and the URL
-# and license for the asset
+# 使用它来列出您使用的任何资产（艺术品、声音等）。
+# 提供注释说明您对该资产和 URL 的使用
+# 和资产许可证
 #
-# Add as many "url+licence+comment" entries as necessary
-# (or remove it altogether if you haven't used any external assets)
+# 根据需要添加尽可能多的“url+licence+comment”条目
+# （如果你没有使用任何外部资源，或者完全删除它）
 
-# Sign *your* name and uids here. (Remove entries if you have fewer
-# than three members.)
-signatures:
-  - name: Shunyao Yang
-    uid: u7341225
-  - name:
-    uid:
-  - name:
-    uid:
+# 在此处签名 *your* 姓名和 uid。（如果您的条目较少，请删除条目
+# 超过三个成员。）
+签名：
+  - 姓名：杨顺尧
+    用户名：u7341225
+  - 姓名：Zimu Li
+    用户名：u7274285
+  - 姓名：
+    用户名：
