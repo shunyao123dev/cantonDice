@@ -1,13 +1,16 @@
 ## Code Review
 
-Reviewed by: <your full name>, <your uid>
+Reviewed by: <Shunyao Yang>, <u7341225>
 
-Reviewing code written by: <the other person's full name> <other uid>
+Reviewing code written by: <Hugo Heanly> <u7119555>
 
-Component: <the component being reviewed>
+Component: <task 5 Viewer Class>
 
 ### Comments 
 
-<write your comments here>
+<The best features of the code is that it is very organized, and has good readability and understandability.
+ The code is well-documented, and the class and method structure of the program is appropriate.It fully follows 
+ Java code conventions by naming all the methods and variables very properly and keeping the style consistent.
+ It is suggested to use more object-programming features for implementing the task.>
 
 
