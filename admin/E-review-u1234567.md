@@ -8,6 +8,6 @@ Component: <the component being reviewed>
 
 ### Comments 
 
-<write your comments here>
+<write your comments here>;
 
 
