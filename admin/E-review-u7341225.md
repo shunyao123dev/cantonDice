@@ -11,6 +11,6 @@ Component: <task 5 Viewer Class>
 <The best features of the code is that it is very organized, and has good readability and understandability.
  The code is well-documented, and the class and method structure of the program is appropriate.It fully follows 
  Java code conventions by naming all the methods and variables very properly and keeping the style consistent.
- It is suggested to use more object-programming features for implementing the task.>
+ Overall, it is pretty good.>
 
 
