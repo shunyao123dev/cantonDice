@@ -456,9 +456,115 @@ public class CatanDice {
                                                          int[] resource_state) {
         if (checkResources(structure, resource_state)) {
             return true;
+        } else {
+            Map<Integer, Integer> missing_resource;
+            missing_resource = missing_resources(structure, resource_state);
+            int total_miss = 0;
+            int count = 0;
+            for (Integer missing_re : missing_resource.keySet()) {
+                total_miss += missing_resource.get(missing_re);
+            }
+            ArrayList<String> b_state = new ArrayList<>(Arrays.asList(board_state.split(",")));
+            if (resource_state[5] < 2) { // cannot do any trade, only consider swap
+                for (Integer miss_num : missing_resource.keySet()) {
+                    if (missing_resource.get(miss_num) == 1) {
+                        if (!(checkExistKnight(miss_num, b_state))) {
+                            return false;
+                        }
+                    }
+                    else if (missing_resource.get(miss_num) == 2) {
+                        count++;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                if (count>0) {
+                    if (count>=2) return false;
+                    else{
+                        if (!b_state.contains("J6")) {
+                            return false;
+                        }
+                    }
+
+                }
+
+            } else { // can do the trade
+                if (resource_state[5] / 2 >= total_miss) { // trade action is enough to get all missing resources
+                    return true;
+                } else {// trade not enough, also consider swap
+                    int[] resource_after = resource_state.clone();
+                    after_possibleTrade(resource_after, missing_resource);
+                    for (Integer re : missing_resource.keySet()) {
+                        if (missing_resource.get(re) == 1) {
+                            if(!checkExistKnight(re,b_state)) {
+                                return false;
+                            }
+                        } else if (missing_resource.get(re)==2) {
+                            if (missing_resource.get(re) == 2) {
+                                count++;
+                            } else {
+                                return false;
+                            }
+                        }
+                        if (count >= 2 || !b_state.contains("J6")) return false;
+                        }
+                    }
+
+                }
+
+            }
+            return true;
+            // FIXME: Task #12
         }
 
-        return false; // FIXME: Task #12
+    public static boolean checkToSwap (int[] re_state, Map<Integer,Integer> missing_resource,String structure) {
+        char s = structure.charAt(0);
+
+        if (s=='C') {
+            for (int i=2;i< re_state.length;i++) {
+                if (re_state[i] >= 1) {
+                    return true;
+                }
+            }
+            for (int i=0;i<2;i++) {
+                if(re_state[0]>3 || re_state[1]>2) {
+                    return true;
+                }
+            }
+        } else if (s=='S') {
+           for (int i=1;i<=4;i++) {
+               if (re_state[i]>1) {
+                   return true;
+               }
+           }
+           if(re_state[0]>0 || re_state[5]>0) return true;
+
+        } else if (s=='R') {
+           if(re_state[3]>1 || re_state[4]>1) {
+               return true;
+           }
+           if(re_state[0]>0 || re_state[1]>0 || re_state[2]>0 || re_state[5]>0) {
+               return true;
+           }
+        } else {
+            if (re_state[0] > 1 || re_state[1] > 1 || re_state[2] > 1 || re_state[3] > 0 || re_state[4] > 0 || re_state[5] > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void after_possibleTrade(int[] re_state, Map<Integer,Integer> missing_resource) {
+        int total = re_state[5]/2;
+        for (Integer re: missing_resource.keySet()) {
+            while(missing_resource.get(re)>0 && total>0) {
+                missing_resource.put(re,missing_resource.get(re)-1);
+                total--;
+                re_state[5]-=2;
+                re_state[re]++;
+            }
+        }
     }
 
     public static boolean checkExistKnight(int re, ArrayList<String> board_state) {
@@ -519,6 +625,7 @@ public class CatanDice {
      * @param action:         String representatiion of the action to check.
      * @param board_state:    The string representation of the board state.
      * @param resource_state: The available resources.
+     *                      
      * @return true iff the action is applicable, false otherwise.
      */
     public static boolean canDoAction(String action,
@@ -794,7 +901,11 @@ public class CatanDice {
     public static String[] buildPlan(String target_structure,
                                      String board_state,
                                      int[] resource_state) {
-        return null; // FIXME: Task #14
+        System.out.println(target_structure);
+        System.out.println(board_state);
+        System.out.println(Arrays.toString(resource_state));
+        String[] s1 = board_state.split(",");
+        return s1; // FIXME: Task #14
     }
 
 }
