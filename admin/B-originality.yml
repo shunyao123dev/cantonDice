@@ -41,7 +41,7 @@ declaration: >-
 # Sign *your* name and uids here. (Remove entries if you have fewer
 # than three members.)
 signatures:
-  - name:Hugo Heanly
+  - name: Hugo Heanly
     uid: u7119555
   - name: Shunyao Yang
     uid: u7341225
