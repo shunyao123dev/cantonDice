@@ -81,6 +81,8 @@ public class Game extends Application {
 
     void launchStartMenu () {
 
+        //Create menu
+
         MenuBar start = new MenuBar();
 
         Menu startBut = new Menu("Start");
@@ -100,16 +102,31 @@ public class Game extends Application {
 
         VBox menu = new VBox();
         menu.getChildren().add(start);
-        menu.setLayoutX(50);
+        menu.setLayoutX(10);
         menu.setLayoutY(100);
 
+        Rectangle textBox = new Rectangle();
+        textBox.setHeight(40);
+        textBox.setWidth(400);
+        textBox.setX(10);
+        textBox.setY(50);
+        textBox.setFill(Color.WHITE);
+        textBox.setStroke(Color.BLACK);
+        Text text = new Text("Welcome to Catan! Select from the menu to start");
+        text.setFont(Font.font("Verdana", 12));
+        text.setX(15);
+        text.setY(75);
 
-        controls.getChildren().add(menu);
+
+
+        controls.getChildren().addAll(menu, textBox, text);
+
         onePlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
                 startGame();
                 menu.setVisible(false);
+                text.setVisible(false);
             }
         });
 
@@ -118,6 +135,7 @@ public class Game extends Application {
             public void handle(ActionEvent actionEvent) {
                 startGame();
                 menu.setVisible(false);
+                text.setVisible(false);
             }
         });
 
@@ -126,6 +144,7 @@ public class Game extends Application {
             public void handle(ActionEvent actionEvent) {
                 startGame();
                 menu.setVisible(false);
+                text.setVisible(false);
             }
         });
 
@@ -134,6 +153,7 @@ public class Game extends Application {
             public void handle(ActionEvent actionEvent) {
                 startGame();
                 menu.setVisible(false);
+                text.setVisible(false);
             }
         });
 
@@ -310,6 +330,8 @@ public class Game extends Application {
         HBox hb = new HBox();
         hb.getChildren().addAll(boardLabel, boardTextField, button);
         hb.setSpacing(10);
+        hb.setLayoutX(5);
+        hb.setLayoutY(10);
         controls.getChildren().add(hb);
 
         //rollDiceButton();
