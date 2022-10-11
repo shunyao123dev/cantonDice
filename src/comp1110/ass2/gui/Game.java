@@ -1,18 +1,25 @@
 package comp1110.ass2.gui;
 
 import comp1110.ass2.Board;
+import comp1110.ass2.MoveControls;
 import comp1110.ass2.Structure;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -20,17 +27,23 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.*;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 public class Game extends Application {
 
@@ -50,8 +63,11 @@ public class Game extends Application {
     private final Group objects = new Group();
     private final Group controls = new Group();
 
+    private final Group dieRoll = new Group();
+
     private final Group hexagons = new Group();
 
+    private final Group menu = new Group();
     private final Group structures = new Group();
 
 
@@ -62,6 +78,81 @@ public class Game extends Application {
     /**
      * Object orientated board to board string
      */
+
+    void launchStartMenu () {
+
+        MenuBar start = new MenuBar();
+
+        Menu startBut = new Menu("Start");
+        MenuItem onePlayer = new MenuItem("One player with AI");
+        MenuItem twoPlayer = new MenuItem("Two players");
+        MenuItem threePlayer = new MenuItem("Three players");
+        MenuItem fourPlayer = new MenuItem("Four players");
+        startBut.getItems().addAll(onePlayer, twoPlayer, threePlayer, fourPlayer);
+
+        Menu endBut  = new Menu ("Exit");
+        MenuItem close = new MenuItem("Close");
+        endBut.getItems().add(close);
+
+        Font f = new Font("Verdana", 15);
+
+        start.getMenus().addAll(startBut, endBut);
+
+        VBox menu = new VBox();
+        menu.getChildren().add(start);
+        menu.setLayoutX(50);
+        menu.setLayoutY(100);
+
+
+        controls.getChildren().add(menu);
+        onePlayer.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                startGame();
+                menu.setVisible(false);
+            }
+        });
+
+        twoPlayer.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                startGame();
+                menu.setVisible(false);
+            }
+        });
+
+        threePlayer.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                startGame();
+                menu.setVisible(false);
+            }
+        });
+
+        fourPlayer.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                startGame();
+                menu.setVisible(false);
+            }
+        });
+
+        close.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                Platform.exit();
+            }
+        });
+
+
+    }
+
+    public void startGame() {
+        menu.getChildren().clear();
+
+    }
+
+
 
     public String boardToString(Board board)  {
         String boardString = "";
@@ -221,16 +312,32 @@ public class Game extends Application {
         hb.setSpacing(10);
         controls.getChildren().add(hb);
 
+        //rollDiceButton();
+
+
+    }
+
+    private void rollDiceButton() {
         Button rollDice = new Button("Roll!");
         rollDice.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
+                int[] list = new int[]{0,0,0,0,0,0};
+                MoveControls.rollDice(6, list);
+                try {
+                    displayDice(list);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
 
             }
         });
 
-
-
+        HBox hb2 = new HBox();
+        hb2.getChildren().addAll(rollDice);
+        hb2.setLayoutX(50);
+        hb2.setLayoutY(150);
+        controls.getChildren().add(hb2);
     }
 
     /**
@@ -378,6 +485,7 @@ public class Game extends Application {
         root.getChildren().add(objects); //adds resource key, scoreboard, title and ocean
         root.getChildren().add(hexagons); //adds all hexagons
         root.getChildren().add(structures); //adds all structures to the board
+        root.getChildren().add(dieRoll); // adds dice to the board
 
     }
 
@@ -728,15 +836,77 @@ public class Game extends Application {
         structures.getChildren().add(circle);
     }
 
-    public void displayDice() {
-        HBox hb = new HBox();
 
-    }
+    public void displayDice(int[] dice) throws FileNotFoundException{
 
-    public HBox currentDice(int[] dice) {
-        HBox hb = new HBox();
+        dieRoll.getChildren().clear();
 
-        return hb;
+        Image oreDice = new Image(new FileInputStream("assets/Ore_dice.png"));
+        Image grainDice = new Image(new FileInputStream("assets/Wheat_dice.png"));
+        Image woolDice = new Image(new FileInputStream("assets/Wool_dice.png"));
+        Image timberDice = new Image(new FileInputStream("assets/Timber_dice.png"));
+        Image brickDice = new Image(new FileInputStream("assets/Brick_dice.png"));
+        Image goldDice = new Image(new FileInputStream("assets/Gold_dice.png"));
+
+        ArrayList<Image> diceImages = new ArrayList<>();
+
+        for (int die : dice) {
+            Image currentDie = new WritableImage(500,500);
+            if (die == 0) {
+                currentDie = oreDice;
+            } else if (die == 1) {
+                currentDie = grainDice;
+            } else if (die == 2) {
+                currentDie = woolDice;
+            } else if (die == 3) {
+                currentDie = timberDice;
+            } else if (die == 4) {
+                currentDie = brickDice;
+            } else if (die == 5) {
+                currentDie = goldDice;
+            }
+            diceImages.add(currentDie);
+        }
+
+        ImageView dice1 = new ImageView(diceImages.get(0));
+        dice1.setFitHeight(100);
+        dice1.setFitWidth(100);
+        dice1.setX(50);
+        dice1.setY(175);
+
+        ImageView dice2 = new ImageView(diceImages.get(1));
+        dice2.setFitHeight(100);
+        dice2.setFitWidth(100);
+        dice2.setX(175);
+        dice2.setY(175);
+
+        ImageView dice3 = new ImageView(diceImages.get(2));
+        dice3.setFitHeight(100);
+        dice3.setFitWidth(100);
+        dice3.setX(300);
+        dice3.setY(175);
+
+        ImageView dice4 = new ImageView(diceImages.get(3));
+        dice4.setFitHeight(100);
+        dice4.setFitWidth(100);
+        dice4.setX(50);
+        dice4.setY(300);
+
+        ImageView dice5 = new ImageView(diceImages.get(4));
+        dice5.setFitHeight(100);
+        dice5.setFitWidth(100);
+        dice5.setX(175);
+        dice5.setY(300);
+
+        ImageView dice6 = new ImageView(diceImages.get(5));
+        dice6.setFitHeight(100);
+        dice6.setFitWidth(100);
+        dice6.setX(300);
+        dice6.setY(300);
+
+        dieRoll.getChildren().addAll(dice1, dice2, dice3, dice4, dice5, dice6);
+
+
     }
 
 
@@ -746,6 +916,7 @@ public class Game extends Application {
         Scene scene = new Scene(root, VIEWER_WIDTH, VIEWER_HEIGHT, Color.GREEN);
 
         makeBaseBoard();
+        launchStartMenu();
         makeControls();
 
         stage.setScene(scene);
