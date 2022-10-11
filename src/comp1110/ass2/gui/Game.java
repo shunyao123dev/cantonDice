@@ -84,7 +84,9 @@ public class Game extends Application {
 
 
     //Players 1 goes (need to display who's turn it is)
-    // Needs to roll, then build, trade or swap. Need to check if action,
+    // Needs to roll. Need to change and display resource state each time.
+    // Player must be able to select dice to put aside and roll up to three times.
+    // After rolling then build, trade or swap. Need to check if action,
     // can be made. Need to then change board and update viewer.
 
     //Display next player. Repeat.
@@ -218,6 +220,17 @@ public class Game extends Application {
         hb.getChildren().addAll(boardLabel, boardTextField, button);
         hb.setSpacing(10);
         controls.getChildren().add(hb);
+
+        Button rollDice = new Button("Roll!");
+        rollDice.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+
+            }
+        });
+
+
+
     }
 
     /**
@@ -225,7 +238,7 @@ public class Game extends Application {
      * @throws FileNotFoundException
      */
 
-    void makeBaseBoard() throws FileNotFoundException {
+    private void makeBaseBoard() throws FileNotFoundException {
 
         //Setting ocean image background
 
@@ -714,6 +727,18 @@ public class Game extends Application {
         structures.getChildren().add(stack);
         structures.getChildren().add(circle);
     }
+
+    public void displayDice() {
+        HBox hb = new HBox();
+
+    }
+
+    public HBox currentDice(int[] dice) {
+        HBox hb = new HBox();
+
+        return hb;
+    }
+
 
     @Override
     public void start(Stage stage) throws Exception {
