@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import static comp1110.ass2.ResourceType.*;
 import static comp1110.ass2.StructureType.*;
+import static comp1110.ass2.ResourceState.*;
 
 // This class authored by Hugo Heanly u7119555
 public class Board {
@@ -171,8 +172,6 @@ public class Board {
 
 
         }
-
-
 
     }
 

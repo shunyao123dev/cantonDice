@@ -3,6 +3,8 @@ package comp1110.ass2;
 import org.junit.jupiter.api.Test;
 import comp1110.ass2.Structure;
 
+import java.util.ArrayList;
+
 import static comp1110.ass2.StructureType.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,10 +14,10 @@ class StructureTests {
 
     @Test
     void constructorTest() {
-        Structure road = new Structure("R0", StructureType.ROAD, 1, false, false, ResourceType.NIL);
-        Structure settlement = new Structure("S3", StructureType.SETTLEMENT, 3, false, false, ResourceType.NIL);
-        Structure city = new Structure("C7", StructureType.CITY, 7, false, false, ResourceType.NIL);
-        Structure knight = new Structure("J1", StructureType.KNIGHT, 1, true, false, ResourceType.ORE);
+        Structure road = new Structure("R0", StructureType.ROAD, 1, false, false, ResourceType.NIL, new ArrayList<>());
+        Structure settlement = new Structure("S3", StructureType.SETTLEMENT, 3, false, false, ResourceType.NIL, new ArrayList<>());
+        Structure city = new Structure("C7", StructureType.CITY, 7, false, false, ResourceType.NIL, new ArrayList<>());
+        Structure knight = new Structure("J1", StructureType.KNIGHT, 1, true, false, ResourceType.ORE, new ArrayList<>());
 
         assertNotEquals(road, null, "Expected to be non-null object, but got null");
         assertEquals(settlement.position, "S3");

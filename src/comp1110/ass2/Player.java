@@ -37,10 +37,6 @@ public class Player {
      */
     private String name;
 
-    /**
-     * The score of the player
-     */
-    private int score;
 
     /**
      * constructor of initialising the field
@@ -52,6 +48,7 @@ public class Player {
         this.board = new Board();
         this.scores = scores;
         this.turnCount = turnCount;
+        this.resources = new ResourceState();
     }
 
     /**
