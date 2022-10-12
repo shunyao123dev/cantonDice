@@ -57,7 +57,6 @@ public class Game extends Application {
                     "C30,J1,J2,J3,J4,J5,J6,K1,K2,K3,K4,K5,K6";
 
     private final Group root = new Group();
-
     private final Group objects = new Group();
     private final Group controls = new Group();
 
@@ -76,7 +75,11 @@ public class Game extends Application {
     private TextField playerTextField;
     private TextField boardTextField;
 
+    private Group currentPlayersBoard = new Group();
+
     private int rollCount = 1;
+
+    private int[] currentDie = new int[6];
 
 
     /**
@@ -199,10 +202,7 @@ public class Game extends Application {
         controls.getChildren().addAll(controlMenu, controlHeader, header);
 
         rollDiceButton();
-
         actionBar();
-
-
 
     }
 
@@ -240,6 +240,10 @@ public class Game extends Application {
 
     //
 
+    /**
+     * Switch to start the game
+     */
+
     public void startGame(int players) {
         switch (players) {
             case 1 -> gameOnePlayer();
@@ -252,25 +256,94 @@ public class Game extends Application {
     }
 
 
+    /**
+     * Starts game with one player and AI
+     */
     public void gameOnePlayer() {
 
     }
+
+    /**
+     * Starts game with two players
+     */
 
     public void gameTwoPlayer() {
         Player player1 = new Player("Player 1");
         Player player2 = new Player("Player 2");
 
         Boolean gameOver = false;
-        int playerTurn = 1;
+        int playerTurn = 1; //initiates as player 1's turn
+        launchControls(); //launches the control menu
 
-        launchControls();
+        if ((player1.getScores()).length == 15 && (player2.getScores().length == 15)) { //If both players have had 15 turns, game is over
+            gameOver = true;
+        }
+
+//        public Player (String name){
+//            this.name = name;
+//            this.board = new Board();
+//            this.scores = scores;
+//            this.turnCount = turnCount;
+//            this.resources = new ResourceState();
+//        }
 
         while (!gameOver) {
             if (playerTurn == 1) {
                 Text playerOnePlaying = textBox("Player 1's turn. Please roll");
-                controls.getChildren().add(playerOnePlaying);
+                playerOnePlaying.setFont(Font.font("Verdana", 12));
+                playerOnePlaying.setX(15);
+                playerOnePlaying.setY(75);
+                instructions.getChildren().add(playerOnePlaying);
+
+                displayStateCurrent(boardToString(player1.getCurrentBoard())); //displays the board of the current player
 
 
+                //the player has a turn
+                rollDiceButton();
+                ResourceState currentResourceState = new ResourceState();
+
+                int oreCount = 0;
+                int grainCount = 0;
+                int woolCount = 0;
+                int timberCount = 0;
+                int brickCount = 0;
+                int goldCount = 0;
+
+
+                for (var i : currentDie) {
+                    if (i == 0) {
+                        oreCount +=1;
+                    } else if (i == 1) {
+                        grainCount +=1;
+                    } else if (i == 2) {
+                        woolCount +=1;
+                    } else if (i == 3) {
+                        timberCount +=1;
+                    } else if (i == 4) {
+                        brickCount +=1;
+                    } else {
+                        goldCount +=1;
+                    }
+                }
+
+                currentResourceState.changeResource(ResourceType.ORE, oreCount);
+                currentResourceState.changeResource(ResourceType.GRAIN, grainCount);
+                currentResourceState.changeResource(ResourceType.WOOL, woolCount);
+
+                //
+
+
+                //add scores, increase turn count
+
+                rollCount = 0;
+                playerTurn -= 1;
+                currentPlayersBoard.getChildren().clear();
+            } else {
+
+
+                rollCount = 0;
+                playerTurn +=1;
+                currentPlayersBoard.getChildren().clear();
             }
 
 
@@ -280,18 +353,25 @@ public class Game extends Application {
 
     }
 
+    /**
+     * Starts game with three players
+     */
     public void gameThreePlayer() {
 
     }
-
+    /**
+     * Starts game with four players
+     */
     public void gameFourPlayer() {
 
     }
 
 
-
-
-
+    /**
+     * Converts object orientated board into string.
+     * @param board
+     * @return
+     */
     public String boardToString(Board board)  {
         String boardString = "";
         Structure[] currentStructures = board.getBoard();
@@ -323,12 +403,6 @@ public class Game extends Application {
     //Once turn count is equal to 15, game ends for player.
 
     //Add players scores up and depict winner.
-
-
-
-
-
-
 
 
 
@@ -431,6 +505,93 @@ public class Game extends Application {
 
     }
 
+    void displayStateCurrent(String board_state) {
+        // FIXME Task 5: implement the state viewer
+        String[] boardArr = board_state.split(",");
+
+        for (var str : boardArr) {
+            if (str.equals("R0")) {
+                buildRoadCurrent(805, 300, 30);
+            } else if (str.equals("R1")) {
+                buildRoadCurrent(720,370,-90);
+            } else if (str.equals("R2")) {
+                buildRoadCurrent(778,382,-30);
+            } else if (str.equals("R3")) {
+                buildRoadCurrent(815,450,30);
+            } else if (str.equals("R4")) {
+                buildRoadCurrent(720,518,-90);
+            } else if (str.equals("R5")) {
+                buildRoadCurrent(790,530,-30);
+            } else if (str.equals("R6")) {
+                buildRoadCurrent(853,596,-90);
+            } else if (str.equals("R7")) {
+                buildRoadCurrent(937,535,30);
+            } else if (str.equals("R8")) {
+                buildRoadCurrent(922,458,-30);
+            } else if (str.equals("R9")) {
+                buildRoadCurrent(953,380,30);
+            } else if (str.equals("R10")) {
+                buildRoadCurrent(928,300,-30);
+            } else if (str.equals("R11")) {
+                buildRoadCurrent(945,225,30);
+            } else if (str.equals("R12")) {
+                buildRoadCurrent(989,518,-90);
+            } else if (str.equals("R13")) {
+                buildRoadCurrent(1070,460,30);
+            } else if (str.equals("R14")) {
+                buildRoadCurrent(1044,375,-30);
+            } else if (str.equals("R15")) {
+                buildRoadCurrent(1073,300,30);
+            } else if (str.equals("S3")) {
+                buildSettlementCurrent(825,290);
+            } else if (str.equals("S4")) {
+                buildSettlementCurrent(818,425);
+            } else if (str.equals("S5")) {
+                buildSettlementCurrent(820,580);
+            } else if (str.equals("S7")) {
+                buildSettlementCurrent(955,510);
+            } else if (str.equals("S9")) {
+                buildSettlementCurrent(960,355);
+            } else if (str.equals("S11")) {
+                buildSettlementCurrent(960,200);
+            } else if (str.equals("C7")) {
+                buildTownCurrent(670,340);
+            } else if (str.equals("C12")) {
+                buildTownCurrent(670,490);
+            } else if (str.equals("C20")) {
+                buildTownCurrent(1075,420);
+            } else if (str.equals("C30")) {
+                buildTownCurrent(1075,260);
+            } else if (str.equals("J1")) {
+                buildKnightCurrent(731,240);
+            } else if (str.equals("J2")) {
+                buildKnightCurrent(731,395);
+            } else if (str.equals("J3")) {
+                buildKnightCurrent(866,475);
+            } else if (str.equals("J4")) {
+                buildKnightCurrent(1003,395);
+            } else if (str.equals("J5")) {
+                buildKnightCurrent(1003,240);
+            } else if (str.equals("J6")) {
+                buildKnightCurrent(866,160);
+            } else if (str.equals("K1")) {
+                useKnightCurrent(731,240);
+            } else if (str.equals("K2")) {
+                useKnightCurrent(731,395);
+            } else if (str.equals("K3")) {
+                useKnightCurrent(866,475);
+            } else if (str.equals("K4")) {
+                useKnightCurrent(1003,395);
+            } else if (str.equals("K5")) {
+                useKnightCurrent(1003,240);
+            } else { //K6
+                useKnightCurrent(866,160);
+            }
+
+        }
+
+    }
+
     /**
      * Create a basic text field for input and a refresh button.
      */
@@ -455,6 +616,9 @@ public class Game extends Application {
 
     }
 
+    /**
+     * Creates a button that rolls the dice.
+     */
     private void rollDiceButton() {
         Button rollDice = new Button("Roll!");
             rollDice.setOnAction(new EventHandler<ActionEvent>() {
@@ -487,6 +651,9 @@ public class Game extends Application {
                             rollCountText.setY(287.5);
                             rollCounter.getChildren().add(rollCountText);
                             rollCount += 1;
+                            if (rollCount == 3) {
+                                currentDie = list;
+                            }
                             try {
                                 displayDice(list);
                             } catch (FileNotFoundException e) {
@@ -660,6 +827,7 @@ public class Game extends Application {
         root.getChildren().add(structures); //adds all structures to the board
         root.getChildren().add(dieRoll); // adds dice to the board
         root.getChildren().add(rollCounter);
+        root.getChildren().add(instructions);
 
     }
 
@@ -888,6 +1056,22 @@ public class Game extends Application {
         structures.getChildren().add(stack);
     }
 
+    public void buildRoadCurrent(double xCoord, double yCoord, int rotation) {
+        Rectangle rect = new Rectangle();
+        rect.setHeight(45);
+        rect.setWidth(15);
+        rect.setFill(Color.BLACK);
+        rect.setStroke(Color.BLACK);
+        rect.setOpacity(0.5);
+        StackPane stack = new StackPane();
+        stack.getChildren().add(rect);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        stack.getTransforms().add(new Rotate(rotation));
+        currentPlayersBoard.getChildren().add(stack);
+    }
+
+
     /**
      * Adds a built settlement to the board
      * @param xCoord: The x-coordinate of the settlement
@@ -920,6 +1104,32 @@ public class Game extends Application {
         structures.getChildren().add(tri);
     }
 
+    public void buildSettlementCurrent(double xCoord, double yCoord) {
+        Rectangle rect = new Rectangle();
+        rect.setX(0);
+        rect.setY(0);
+        rect.setHeight(20);
+        rect.setWidth(20);
+        rect.setFill(Color.BLACK);
+        rect.setStroke(Color.BLACK);
+        rect.setOpacity(0.5);
+
+        Polygon tri = new Polygon(15, 0, 30, 15, 0, 15);
+        tri.setFill(Color.BLACK);
+        tri.setStroke(Color.BLACK);
+        tri.setOpacity(0.5);
+
+        StackPane stack = new StackPane();
+        stack.getChildren().add(rect);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        tri.setLayoutX(xCoord - 4);
+        tri.setLayoutY(yCoord - 13);
+
+        currentPlayersBoard.getChildren().add(stack);
+        currentPlayersBoard.getChildren().add(tri);
+    }
+
     /**
      * Adds a built town to the board
      * @param xCoord: The x-coordinate of the town
@@ -946,6 +1156,28 @@ public class Game extends Application {
 
         structures.getChildren().add(stack);
         structures.getChildren().add(tri);
+    }
+
+    public void buildTownCurrent(double xCoord, double yCoord) {
+        Polygon base = new Polygon(0, 10, 20, 10, 20, 0, 40, 0, 40, 30, 0, 30);
+        base.setFill(Color.BLACK);
+        base.setStroke(Color.BLACK);
+        base.setOpacity(0.5);
+
+        Polygon tri = new Polygon(15, 0, 30, 15, 0, 15);
+        tri.setFill(Color.BLACK);
+        tri.setStroke(Color.BLACK);
+        tri.setOpacity(0.5);
+
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(base);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        tri.setLayoutX(xCoord + 16);
+        tri.setLayoutY(yCoord - 14);
+
+        currentPlayersBoard.getChildren().add(stack);
+        currentPlayersBoard.getChildren().add(tri);
     }
 
     /**
@@ -980,6 +1212,32 @@ public class Game extends Application {
         structures.getChildren().add(circle);
     }
 
+    public void buildKnightCurrent (double xCoord, double yCoord) {
+        Ellipse ellp = new Ellipse();
+        ellp.setCenterX(0);
+        ellp.setCenterY(0);
+        ellp.setRadiusX(10);
+        ellp.setRadiusY(15);
+        ellp.setFill(Color.LIGHTGREEN);
+        ellp.setStroke(Color.BLACK);
+        ellp.setOpacity(0.5);
+
+        Circle circle = new Circle(7.5);
+        circle.setFill(Color.LIGHTGREEN);
+        circle.setStroke(Color.BLACK);
+        circle.setOpacity(0.5);
+
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(ellp);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        circle.setCenterX(xCoord + 10);
+        circle.setCenterY(yCoord - 5);
+
+        currentPlayersBoard.getChildren().add(stack);
+        currentPlayersBoard.getChildren().add(circle);
+    }
+
     /**
      * Adds a used knight to the board
      * @param xCoord: The x-coordinate of the used knight
@@ -1010,6 +1268,36 @@ public class Game extends Application {
         structures.getChildren().add(circle);
     }
 
+    public void useKnightCurrent (double xCoord, double yCoord) {
+        Ellipse ellp = new Ellipse();
+        ellp.setCenterX(0);
+        ellp.setCenterY(0);
+        ellp.setRadiusX(10);
+        ellp.setRadiusY(15);
+        ellp.setFill(Color.BLACK);
+        ellp.setStroke(Color.BLACK);
+
+        Circle circle = new Circle(7.5);
+        circle.setFill(Color.BLACK);
+        circle.setStroke(Color.BLACK);
+
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(ellp);
+        stack.setLayoutX(xCoord);
+        stack.setLayoutY(yCoord);
+        circle.setCenterX(xCoord + 10);
+        circle.setCenterY(yCoord - 5);
+
+        currentPlayersBoard.getChildren().add(stack);
+        currentPlayersBoard.getChildren().add(circle);
+    }
+
+
+    /**
+     * Generates the dice images and displays them
+     * @param dice
+     * @throws FileNotFoundException
+     */
 
     public void displayDice(int[] dice) throws FileNotFoundException{
 
@@ -1083,6 +1371,11 @@ public class Game extends Application {
 
     }
 
+    /**
+     * Generates a text box given a string
+     * @param string
+     * @return
+     */
     public Text textBox(String string) {
         Rectangle textBox = new Rectangle();
         textBox.setHeight(40);
@@ -1111,10 +1404,6 @@ public class Game extends Application {
         stage.setScene(scene);
         stage.show();
         //Task 10 here
-    }
-
-    public void actionPerformed(ActionEvent e) {
-
     }
 
 

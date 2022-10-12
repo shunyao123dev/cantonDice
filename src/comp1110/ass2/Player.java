@@ -60,5 +60,25 @@ public class Player {
 
     }
 
+    public int[] getScores() {
+        return this.scores;
+    }
+
+    public Board getCurrentBoard() {
+        return this.board;
+    }
+
+    public int getTurnCount() {
+        return this.turnCount;
+    }
+
+    public ResourceState getCurrentResources() {
+        return this.resources;
+    }
+
+    public void setResources(ResourceState resources) {
+        this.resources = resources;
+    }
+
 
 }
