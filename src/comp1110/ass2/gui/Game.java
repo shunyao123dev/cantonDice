@@ -1,8 +1,6 @@
 package comp1110.ass2.gui;
 
-import comp1110.ass2.Board;
-import comp1110.ass2.MoveControls;
-import comp1110.ass2.Structure;
+import comp1110.ass2.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -70,18 +68,24 @@ public class Game extends Application {
     private final Group menu = new Group();
     private final Group structures = new Group();
 
+    private final Group rollCounter = new Group();
+
+    private final Group instructions = new Group();
+
 
     private TextField playerTextField;
     private TextField boardTextField;
 
+    private int rollCount = 1;
+
 
     /**
-     * Object orientated board to board string
+     * Creates the launch menu
      */
 
     void launchStartMenu () {
 
-        //Create menu
+        //Creates the start menu
 
         MenuBar start = new MenuBar();
 
@@ -93,7 +97,7 @@ public class Game extends Application {
         startBut.getItems().addAll(onePlayer, twoPlayer, threePlayer, fourPlayer);
 
         Menu endBut  = new Menu ("Exit");
-        MenuItem close = new MenuItem("Close");
+        MenuItem close = new MenuItem("Close"); //Closes the app
         endBut.getItems().add(close);
 
         Font f = new Font("Verdana", 15);
@@ -117,14 +121,12 @@ public class Game extends Application {
         text.setX(15);
         text.setY(75);
 
-
-
         controls.getChildren().addAll(menu, textBox, text);
 
-        onePlayer.setOnAction(new EventHandler<ActionEvent>() {
+        onePlayer.setOnAction(new EventHandler<ActionEvent>() { //When the player selects an options the menu will disappear and start the game
             @Override
             public void handle(ActionEvent actionEvent) {
-                startGame();
+                startGame(1);
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -133,7 +135,7 @@ public class Game extends Application {
         twoPlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                startGame();
+                startGame(2);
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -142,7 +144,7 @@ public class Game extends Application {
         threePlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                startGame();
+                startGame(3);
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -151,7 +153,7 @@ public class Game extends Application {
         fourPlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                startGame();
+                startGame(4);
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -167,10 +169,126 @@ public class Game extends Application {
 
     }
 
-    public void startGame() {
-        menu.getChildren().clear();
+    /**
+     * Launches the control menu after the player has selected a game mode.
+     */
+
+    public void launchControls() {
+
+        //Launches the control menu
+
+        Rectangle controlMenu = new Rectangle();
+        controlMenu.setHeight(260);
+        controlMenu.setWidth(150);
+        controlMenu.setX(430);
+        controlMenu.setY(140);
+        controlMenu.setFill(Color.WHITE);
+        controlMenu.setStroke(Color.BLACK);
+
+        Rectangle controlHeader = new Rectangle();
+        controlHeader.setHeight(30);
+        controlHeader.setWidth(150);
+        controlHeader.setX(430);
+        controlHeader.setY(140);
+        controlHeader.setFill(Color.LIGHTGRAY);
+        controlHeader.setStroke(Color.BLACK);
+        Text header = textBox("Controls");
+        header.setY(159);
+        header.setX(480);
+
+        controls.getChildren().addAll(controlMenu, controlHeader, header);
+
+        rollDiceButton();
+
+        actionBar();
+
+
 
     }
+
+    /**
+     * Creates the action bar where players will input strings of what they want to do
+     */
+
+    public void actionBar() {
+        boardTextField = new TextField();
+        boardTextField.setPrefWidth(80);
+        Button button = new Button("Enter");
+        button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+
+
+
+            }
+        });
+        HBox hb = new HBox();
+        hb.getChildren().addAll(boardTextField, button);
+        hb.setSpacing(10);
+        hb.setLayoutX(438);
+        hb.setLayoutY(365);
+        Text actionBarText = textBox("Action Bar");
+        actionBarText.setX(475.5);
+        actionBarText.setY(350);
+        controls.getChildren().addAll(hb, actionBarText);
+
+    }
+
+    //Things to do in start game
+
+    //create player class for as many players
+
+    //
+
+    public void startGame(int players) {
+        switch (players) {
+            case 1 -> gameOnePlayer();
+            case 2 -> gameTwoPlayer();
+            case 3 -> gameThreePlayer();
+            case 4 -> gameFourPlayer();
+        }
+
+
+    }
+
+
+    public void gameOnePlayer() {
+
+    }
+
+    public void gameTwoPlayer() {
+        Player player1 = new Player("Player 1");
+        Player player2 = new Player("Player 2");
+
+        Boolean gameOver = false;
+        int playerTurn = 1;
+
+        launchControls();
+
+        while (!gameOver) {
+            if (playerTurn == 1) {
+                Text playerOnePlaying = textBox("Player 1's turn. Please roll");
+                controls.getChildren().add(playerOnePlaying);
+
+
+            }
+
+
+        }
+//
+
+
+    }
+
+    public void gameThreePlayer() {
+
+    }
+
+    public void gameFourPlayer() {
+
+    }
+
+
 
 
 
@@ -334,32 +452,65 @@ public class Game extends Application {
         hb.setLayoutY(10);
         controls.getChildren().add(hb);
 
-        //rollDiceButton();
-
 
     }
 
     private void rollDiceButton() {
         Button rollDice = new Button("Roll!");
-        rollDice.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                int[] list = new int[]{0,0,0,0,0,0};
-                MoveControls.rollDice(6, list);
-                try {
-                    displayDice(list);
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
+            rollDice.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    if (rollCount < 4) {
+                        if (rollCount == 1) {
+                            int[] list = new int[]{0, 0, 0, 0, 0, 0};
+                            MoveControls.rollDice(6, list);
+                            Text rollCountText = textBox(String.valueOf(rollCount));
+                            Font font = new Font("Verdana", 20);
+                            rollCountText.setFont(font);
+                            rollCountText.setX(500);
+                            rollCountText.setY(287.5);
+                            rollCounter.getChildren().add(rollCountText);
+                            rollCount += 1;
+                            try {
+                                displayDice(list);
+                            } catch (FileNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            rollCounter.getChildren().clear();
+                            int[] list = new int[]{0, 0, 0, 0, 0, 0};
+                            MoveControls.rollDice(6, list);
+                            Text rollCountText = textBox(String.valueOf(rollCount));
+                            Font font = new Font("Verdana", 20);
+                            rollCountText.setFont(font);
+                            rollCountText.setX(500);
+                            rollCountText.setY(287.5);
+                            rollCounter.getChildren().add(rollCountText);
+                            rollCount += 1;
+                            try {
+                                displayDice(list);
+                            } catch (FileNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                    }
+            });
 
-            }
-        });
+        Rectangle rollCounterRect = new Rectangle();
+        rollCounterRect.setHeight(75);
+        rollCounterRect.setWidth(62.5);
+        rollCounterRect.setFill(Color.WHITE);
+        rollCounterRect.setStroke(Color.BLACK);
+        rollCounterRect.setX(475);
+        rollCounterRect.setY(243);
+
 
         HBox hb2 = new HBox();
         hb2.getChildren().addAll(rollDice);
-        hb2.setLayoutX(50);
-        hb2.setLayoutY(150);
-        controls.getChildren().add(hb2);
+        hb2.setLayoutX(485);
+        hb2.setLayoutY(200);
+        controls.getChildren().addAll(rollCounterRect, hb2);
     }
 
     /**
@@ -508,6 +659,7 @@ public class Game extends Application {
         root.getChildren().add(hexagons); //adds all hexagons
         root.getChildren().add(structures); //adds all structures to the board
         root.getChildren().add(dieRoll); // adds dice to the board
+        root.getChildren().add(rollCounter);
 
     }
 
@@ -929,6 +1081,21 @@ public class Game extends Application {
         dieRoll.getChildren().addAll(dice1, dice2, dice3, dice4, dice5, dice6);
 
 
+    }
+
+    public Text textBox(String string) {
+        Rectangle textBox = new Rectangle();
+        textBox.setHeight(40);
+        textBox.setWidth(400);
+        textBox.setX(10);
+        textBox.setY(50);
+        textBox.setFill(Color.WHITE);
+        textBox.setStroke(Color.BLACK);
+        Text text = new Text(string);
+        text.setFont(Font.font("Verdana", 12));
+        text.setX(15);
+        text.setY(75);
+        return text;
     }
 
 
