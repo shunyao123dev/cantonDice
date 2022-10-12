@@ -75,11 +75,22 @@ public class Game extends Application {
     private TextField playerTextField;
     private TextField boardTextField;
 
-    private Group currentPlayersBoard = new Group();
+    private Group currentPlayersBoardDisplay = new Group();
+
+    private Board currentPlayersBoard = new Board();
+
+    private Board boardAfterMove = new Board();
+    private ResourceState currentPlayersResourceState = new ResourceState();
+
+    private Structure[] builtStructures = new Structure[33];
+
+    private Structure[] currentStructures = new Structure[33];
 
     private int rollCount = 1;
 
     private int[] currentDie = new int[6];
+
+    private final Group controlsForPlayerTurn = new Group();
 
 
     /**
@@ -201,44 +212,15 @@ public class Game extends Application {
 
         controls.getChildren().addAll(controlMenu, controlHeader, header);
 
-        rollDiceButton();
-        actionBar();
-
     }
 
     /**
      * Creates the action bar where players will input strings of what they want to do
      */
 
-    public void actionBar() {
-        boardTextField = new TextField();
-        boardTextField.setPrefWidth(80);
-        Button button = new Button("Enter");
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
+    //needs to check if input valid, check if move valid (prerequisites, resources), change currentBoard
 
 
-
-            }
-        });
-        HBox hb = new HBox();
-        hb.getChildren().addAll(boardTextField, button);
-        hb.setSpacing(10);
-        hb.setLayoutX(438);
-        hb.setLayoutY(365);
-        Text actionBarText = textBox("Action Bar");
-        actionBarText.setX(475.5);
-        actionBarText.setY(350);
-        controls.getChildren().addAll(hb, actionBarText);
-
-    }
-
-    //Things to do in start game
-
-    //create player class for as many players
-
-    //
 
     /**
      * Switch to start the game
@@ -275,7 +257,7 @@ public class Game extends Application {
         int playerTurn = 1; //initiates as player 1's turn
         launchControls(); //launches the control menu
 
-        if ((player1.getScores()).length == 15 && (player2.getScores().length == 15)) { //If both players have had 15 turns, game is over
+        if ((player1.getScores()).size() == 15 && (player2.getScores().size() == 15)) { //If both players have had 15 turns, game is over
             gameOver = true;
         }
 
@@ -289,18 +271,21 @@ public class Game extends Application {
 
         while (!gameOver) {
             if (playerTurn == 1) {
+                currentPlayersBoard = player1.getCurrentBoard();
+                currentPlayersBoardDisplay.getChildren().clear();
+                controlsForPlayerTurn.getChildren().clear();
+
+                displayStateCurrent(boardToString(currentPlayersBoard)); //displays the board of the current player
+
                 Text playerOnePlaying = textBox("Player 1's turn. Please roll");
                 playerOnePlaying.setFont(Font.font("Verdana", 12));
                 playerOnePlaying.setX(15);
                 playerOnePlaying.setY(75);
                 instructions.getChildren().add(playerOnePlaying);
 
-                displayStateCurrent(boardToString(player1.getCurrentBoard())); //displays the board of the current player
+                //the player has a turn. Need to roll dice, complete move
 
-
-                //the player has a turn
                 rollDiceButton();
-                ResourceState currentResourceState = new ResourceState();
 
                 int oreCount = 0;
                 int grainCount = 0;
@@ -326,24 +311,41 @@ public class Game extends Application {
                     }
                 }
 
-                currentResourceState.changeResource(ResourceType.ORE, oreCount);
-                currentResourceState.changeResource(ResourceType.GRAIN, grainCount);
-                currentResourceState.changeResource(ResourceType.WOOL, woolCount);
+                currentPlayersResourceState.changeResource(ResourceType.ORE, oreCount);
+                currentPlayersResourceState.changeResource(ResourceType.GRAIN, grainCount);
+                currentPlayersResourceState.changeResource(ResourceType.WOOL, woolCount);
+                currentPlayersResourceState.changeResource(ResourceType.TIMBER, timberCount);
+                currentPlayersResourceState.changeResource(ResourceType.BRICK, brickCount);
+                currentPlayersResourceState.changeResource(ResourceType.GOLD, goldCount);
 
-                //
+                //updates player 1 resource state
 
+                player1.setResources(currentPlayersResourceState);
 
-                //add scores, increase turn count
+                instructions.getChildren().clear();
+                Text playerOneMoving = textBox("Player 1 please input a move into the action bar");
+                playerOneMoving.setFont(Font.font("Verdana", 12));
+                playerOneMoving.setX(15);
+                playerOneMoving.setY(75);
+                instructions.getChildren().add(playerOnePlaying);
+
+                actionBar();
 
                 rollCount = 0;
                 playerTurn -= 1;
-                currentPlayersBoard.getChildren().clear();
+                currentPlayersBoardDisplay.getChildren().clear();
             } else {
+                currentPlayersBoard = player2.getCurrentBoard();
+                currentPlayersBoardDisplay.getChildren().clear();
+                controlsForPlayerTurn.getChildren().clear();
+
+                displayStateCurrent(boardToString(currentPlayersBoard)); //displays the board of the current player
+
 
 
                 rollCount = 0;
                 playerTurn +=1;
-                currentPlayersBoard.getChildren().clear();
+                currentPlayersBoardDisplay.getChildren().clear();
             }
 
 
@@ -365,6 +367,136 @@ public class Game extends Application {
     public void gameFourPlayer() {
 
     }
+
+    public void actionBar() {
+
+        boardTextField = new TextField();
+        boardTextField.setPrefWidth(80);
+        Button button = new Button("Enter");
+        HBox hb = new HBox();
+        hb.getChildren().addAll(boardTextField, button);
+        hb.setSpacing(10);
+        hb.setLayoutX(438);
+        hb.setLayoutY(365);
+        Text actionBarText = textBox("Action Bar");
+        actionBarText.setX(475.5);
+        actionBarText.setY(350);
+        controlsForPlayerTurn.getChildren().addAll(hb, actionBarText);
+
+        button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                String input = boardTextField.getText();
+                String pos = input.substring(Math.max(input.length() - 2, 0));
+                String boardString = boardToString(currentPlayersBoard);
+                currentStructures = currentPlayersBoard.structures;
+                Boolean moveComplete = false;
+
+                while (!moveComplete) {
+
+                    if (CatanDice.isActionWellFormed(input)) {
+                        if (CatanDice.checkResources(pos, currentDie)) {
+                            if (CatanDice.checkBuildConstraints(pos, boardString)) {
+                                for (var structure : currentStructures) {
+                                    if (input.equals(structure.getPosition())) {
+                                        structure.setBuilt();
+                                        moveComplete = true;
+                                    }
+                                }
+
+                            } else {
+                                instructions.getChildren().clear();
+                                instructions.getChildren().add(textBox("Insufficient prerequisites"));
+
+                            }
+
+                        } else {
+                            instructions.getChildren().clear();
+                            instructions.getChildren().add(textBox("Insufficient resources. Please select different move"));
+                        }
+
+
+                    } else {
+                        instructions.getChildren().clear();
+                        instructions.getChildren().add(textBox("Invalid input. Please type correctly"));
+                    }
+
+
+                }
+            }
+        });
+
+    }
+
+    /**
+     * Creates a button that rolls the dice.
+     */
+    private void rollDiceButton() {
+        Button rollDice = new Button("Roll!");
+        rollDice.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if (rollCount < 4) {
+                    if (rollCount == 1) {
+                        int[] list = new int[]{0, 0, 0, 0, 0, 0};
+                        MoveControls.rollDice(6, list);
+                        Text rollCountText = textBox(String.valueOf(rollCount));
+                        Font font = new Font("Verdana", 20);
+                        rollCountText.setFont(font);
+                        rollCountText.setX(500);
+                        rollCountText.setY(287.5);
+                        rollCounter.getChildren().add(rollCountText);
+                        rollCount += 1;
+                        try {
+                            displayDice(list);
+                        } catch (FileNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        rollCounter.getChildren().clear();
+                        int[] list = new int[]{0, 0, 0, 0, 0, 0};
+                        MoveControls.rollDice(6, list);
+                        Text rollCountText = textBox(String.valueOf(rollCount));
+                        Font font = new Font("Verdana", 20);
+                        rollCountText.setFont(font);
+                        rollCountText.setX(500);
+                        rollCountText.setY(287.5);
+                        rollCounter.getChildren().add(rollCountText);
+                        rollCount += 1;
+                        if (rollCount == 3) {
+                            currentDie = list;
+                        }
+                        try {
+                            displayDice(list);
+                        } catch (FileNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        });
+
+        Rectangle rollCounterRect = new Rectangle();
+        rollCounterRect.setHeight(75);
+        rollCounterRect.setWidth(62.5);
+        rollCounterRect.setFill(Color.WHITE);
+        rollCounterRect.setStroke(Color.BLACK);
+        rollCounterRect.setX(475);
+        rollCounterRect.setY(243);
+
+
+        HBox hb2 = new HBox();
+        hb2.getChildren().addAll(rollDice);
+        hb2.setLayoutX(485);
+        hb2.setLayoutY(200);
+        controlsForPlayerTurn.getChildren().addAll(rollCounterRect, hb2);
+    }
+
+    //Things to do in start game
+
+    //create player class for as many players
+
+    //
 
 
     /**
@@ -617,70 +749,6 @@ public class Game extends Application {
     }
 
     /**
-     * Creates a button that rolls the dice.
-     */
-    private void rollDiceButton() {
-        Button rollDice = new Button("Roll!");
-            rollDice.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    if (rollCount < 4) {
-                        if (rollCount == 1) {
-                            int[] list = new int[]{0, 0, 0, 0, 0, 0};
-                            MoveControls.rollDice(6, list);
-                            Text rollCountText = textBox(String.valueOf(rollCount));
-                            Font font = new Font("Verdana", 20);
-                            rollCountText.setFont(font);
-                            rollCountText.setX(500);
-                            rollCountText.setY(287.5);
-                            rollCounter.getChildren().add(rollCountText);
-                            rollCount += 1;
-                            try {
-                                displayDice(list);
-                            } catch (FileNotFoundException e) {
-                                throw new RuntimeException(e);
-                            }
-                        } else {
-                            rollCounter.getChildren().clear();
-                            int[] list = new int[]{0, 0, 0, 0, 0, 0};
-                            MoveControls.rollDice(6, list);
-                            Text rollCountText = textBox(String.valueOf(rollCount));
-                            Font font = new Font("Verdana", 20);
-                            rollCountText.setFont(font);
-                            rollCountText.setX(500);
-                            rollCountText.setY(287.5);
-                            rollCounter.getChildren().add(rollCountText);
-                            rollCount += 1;
-                            if (rollCount == 3) {
-                                currentDie = list;
-                            }
-                            try {
-                                displayDice(list);
-                            } catch (FileNotFoundException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-                    }
-            });
-
-        Rectangle rollCounterRect = new Rectangle();
-        rollCounterRect.setHeight(75);
-        rollCounterRect.setWidth(62.5);
-        rollCounterRect.setFill(Color.WHITE);
-        rollCounterRect.setStroke(Color.BLACK);
-        rollCounterRect.setX(475);
-        rollCounterRect.setY(243);
-
-
-        HBox hb2 = new HBox();
-        hb2.getChildren().addAll(rollDice);
-        hb2.setLayoutX(485);
-        hb2.setLayoutY(200);
-        controls.getChildren().addAll(rollCounterRect, hb2);
-    }
-
-    /**
      * Creates the base board for Catan Island 1
      * @throws FileNotFoundException
      */
@@ -828,6 +896,7 @@ public class Game extends Application {
         root.getChildren().add(dieRoll); // adds dice to the board
         root.getChildren().add(rollCounter);
         root.getChildren().add(instructions);
+        root.getChildren().add(controlsForPlayerTurn);
 
     }
 
@@ -1068,7 +1137,7 @@ public class Game extends Application {
         stack.setLayoutX(xCoord);
         stack.setLayoutY(yCoord);
         stack.getTransforms().add(new Rotate(rotation));
-        currentPlayersBoard.getChildren().add(stack);
+        currentPlayersBoardDisplay.getChildren().add(stack);
     }
 
 
@@ -1126,8 +1195,8 @@ public class Game extends Application {
         tri.setLayoutX(xCoord - 4);
         tri.setLayoutY(yCoord - 13);
 
-        currentPlayersBoard.getChildren().add(stack);
-        currentPlayersBoard.getChildren().add(tri);
+        currentPlayersBoardDisplay.getChildren().add(stack);
+        currentPlayersBoardDisplay.getChildren().add(tri);
     }
 
     /**
@@ -1176,8 +1245,8 @@ public class Game extends Application {
         tri.setLayoutX(xCoord + 16);
         tri.setLayoutY(yCoord - 14);
 
-        currentPlayersBoard.getChildren().add(stack);
-        currentPlayersBoard.getChildren().add(tri);
+        currentPlayersBoardDisplay.getChildren().add(stack);
+        currentPlayersBoardDisplay.getChildren().add(tri);
     }
 
     /**
@@ -1234,8 +1303,8 @@ public class Game extends Application {
         circle.setCenterX(xCoord + 10);
         circle.setCenterY(yCoord - 5);
 
-        currentPlayersBoard.getChildren().add(stack);
-        currentPlayersBoard.getChildren().add(circle);
+        currentPlayersBoardDisplay.getChildren().add(stack);
+        currentPlayersBoardDisplay.getChildren().add(circle);
     }
 
     /**
@@ -1288,8 +1357,8 @@ public class Game extends Application {
         circle.setCenterX(xCoord + 10);
         circle.setCenterY(yCoord - 5);
 
-        currentPlayersBoard.getChildren().add(stack);
-        currentPlayersBoard.getChildren().add(circle);
+        currentPlayersBoardDisplay.getChildren().add(stack);
+        currentPlayersBoardDisplay.getChildren().add(circle);
     }
 
 
@@ -1370,6 +1439,35 @@ public class Game extends Application {
 
 
     }
+
+    /**
+     * Assumes move is valid
+     * @param string
+     * @param board
+     * @param resources
+     * @return
+     */
+
+    public Board stringMoveToBoard(String string, Board board) {
+        Character firstLetter = string.charAt(0);
+        String pos = string.substring(Math.max(string.length() - 2, 0));
+        if (firstLetter.equals('b')) { //check if enough resources, check if prerequisites
+            for (var structure : board.structures) {
+                if (structure.getPosition().equals(pos) && !structure.isBuilt()){
+                    structure.setBuilt();
+                }
+            }
+        } else if (firstLetter.equals('t')) {
+
+
+        } else {
+
+        }
+
+        return board;
+
+    }
+
 
     /**
      * Generates a text box given a string

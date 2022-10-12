@@ -1,5 +1,7 @@
 package comp1110.ass2;
 
+import java.util.ArrayList;
+
 public class Player {
     /**
      * This class add a player into the Catan Dice game and offer methods for player updating their
@@ -23,7 +25,7 @@ public class Player {
      * Array of score
      */
 
-    private int[] scores = new int[15];
+    private ArrayList<Integer> scores = new ArrayList<>();
 
     /**
      * Count of turn
@@ -60,7 +62,7 @@ public class Player {
 
     }
 
-    public int[] getScores() {
+    public ArrayList<Integer> getScores() {
         return this.scores;
     }
 
