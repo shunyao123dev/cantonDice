@@ -83,4 +83,10 @@ Zimu Li: To review Shunyao review Task 9.
 
 ## Week 10
 
+Hugo Heanly: To continue building game class
+
+Shunyao Yang: Working Task 15 / changing other tasks to use object orientation
+
+Zimu Li: Working Task 15 / changing other tasks to use object orientation
+
 ## Week 11

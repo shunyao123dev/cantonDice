@@ -6,15 +6,10 @@ public class ResourceState {
     //The type of Resource for the given tile
     public int[] state;
 
-    public ResourceState(int[] state) {
-        this.state = state;
-    }
-
-    // Initialises the resource state to zer
-
-    public void initialiseState() {
+    public ResourceState() {
         this.state = new int[]{0, 0, 0, 0, 0, 0};
     }
+
 
     //Update Resource State with by given parameters
 

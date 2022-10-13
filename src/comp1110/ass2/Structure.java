@@ -1,5 +1,7 @@
 package comp1110.ass2;
 
+import java.util.ArrayList;
+
 import static comp1110.ass2.StructureType.*;
 import static comp1110.ass2.ResourceType.*;
 
@@ -12,7 +14,7 @@ public class Structure {
     // the structure type on the given tile and position
     public StructureType type;
 
-    private Structure[] prerequisites;
+    private ArrayList<String> prerequisites;
 
     // the value of the given Structure
     public int value;
@@ -32,13 +34,14 @@ public class Structure {
     // for the structure's coordinates as well as its type (ROAD,
     // SETTLEMENT, CITY)
 
-    public Structure(String position, StructureType type, int value, boolean built, boolean used, ResourceType resource) {
+    public Structure(String position, StructureType type, int value, boolean built, boolean used, ResourceType resource, ArrayList<String> prerequisites) {
         this.position = position;
         this.type = type;
         this.value = value;
         this.built = built;
         this.used = used;
         this.resource = resource;
+        this.prerequisites = prerequisites;
     }
 
     // Constructor for the Structure class that allows specifying
