@@ -90,6 +90,7 @@ public class CatanDice {
      * Check if the string encoding of a player action is well formed.
      *
      * @param action: The string representation of the action.
+     * @author Zimu Li
      * @return true iff the string is a well-formed representation of
      * a board state, false otherwise.
      */
@@ -405,6 +406,7 @@ public class CatanDice {
      * @param structure:      The string representation of the structure to
      *                        be built.
      * @param resource_state: The available resources.
+     * @author Zimu Li
      * @return true iff the structure can be built with the available
      * resources, false otherwise.
      */
@@ -802,6 +804,7 @@ public class CatanDice {
      * <p>
      * Note that on the Island One map, there is a unique path to every
      * structure.
+     * @author Zimu Li
      *
      * @param target_structure: The string representation of the structure
      *                          to reach.
