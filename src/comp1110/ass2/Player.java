@@ -82,5 +82,7 @@ public class Player {
         this.resources = resources;
     }
 
+    public void setScores(ArrayList<Integer> score) {this.scores = score;}
+
 
 }

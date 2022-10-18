@@ -79,6 +79,8 @@ public class Game extends Application {
 
     private Group currentPlayersBoardDisplay = new Group();
 
+    private Group currentPlayersScoreDisplay = new Group();
+
     private Board currentPlayersBoard = new Board();
 
     private Board boardAfterMove = new Board();
@@ -107,8 +109,9 @@ public class Game extends Application {
     private Player player3 = new Player("Player 3");
     private Player player4 = new Player("Player 4");
     private Player playerAI = new Player("AI");
-
     private Player currentPlayer = new Player("current");
+
+    private ArrayList<Integer> testScores = new ArrayList<>(Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15));
 
     /**
      * Creates the launch menu
@@ -119,7 +122,12 @@ public class Game extends Application {
         startMenu.getChildren().clear();
         controls.getChildren().clear();
         currentPlayersBoardDisplay.getChildren().clear();
+        currentPlayersScoreDisplay.getChildren().clear();
         currentPlayersBoardDisplay.setVisible(false);
+
+        currentPlayer.setScores(testScores);
+
+        displayScore(currentPlayer);
 
         //Creates the start menu
 
@@ -390,11 +398,14 @@ public class Game extends Application {
                 }
             });
 
-            //Change current board to current players board
+            //Current player set to player 1. Display current state and score.
+
+            displayStateCurrent(boardToString(currentPlayer.getCurrentBoard()));
 
 
 
-            //display state of current player and prompt them to roll
+
+            //Prompt player to roll
 
 
 
@@ -445,6 +456,7 @@ public class Game extends Application {
 
 
             controls.getChildren().addAll(controlMenu, controlHeader, header, hb, actionBarText, hb2, rollCounterRect, resetGameBox);
+            currentPlayersBoardDisplay.getChildren().clear();
 
 
         } else { //the game is over
@@ -957,6 +969,203 @@ public class Game extends Application {
 
     }
 
+    private void displayScore(Player player) {
+        ArrayList<Integer> scores = player.getScores();
+
+        for (int i = 0; i < scores.size(); i ++) {
+            Text score = textBox(String.valueOf(scores.get(i)));
+            int lengthScore = 1;
+            if (scores.get(i) > 9) {
+                lengthScore = 2;
+            }
+            Font font = new Font("Verdana", 20);
+            score.setFont(font);
+
+            if (i == 0) {
+                if (lengthScore == 1) {
+                    score.setX(372.5);
+                    score.setY(458);
+                } else {
+                    score.setX(367);
+                    score.setY(458);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else if (i == 1) {
+                if (lengthScore == 1) {
+                    score.setX(415.5);
+                    score.setY(458);
+                } else {
+                    score.setX(410);
+                    score.setY(458);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else if (i == 2) {
+                if (lengthScore == 1) {
+                    score.setX(458.5);
+                    score.setY(458);
+                } else {
+                    score.setX(458.5);
+                    score.setY(458);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else if (i == 3) {
+                if (lengthScore == 1) {
+                    score.setX(501.5);
+                    score.setY(458);
+                } else {
+                    score.setX(501.5);
+                    score.setY(458);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else if (i == 4) {
+                if (lengthScore == 1) {
+                    score.setX(542.5);
+                    score.setY(458);
+                } else {
+                    score.setX(542.5);
+                    score.setY(458);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else if (i == 5) {
+                if (lengthScore == 1) {
+                    score.setX(542.5);
+                    score.setY(501);
+                } else {
+                    score.setX(542.5);
+                    score.setY(501);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else if (i == 6) {
+                if (lengthScore == 1) {
+                    score.setX(542.5);
+                    score.setY(544);
+                } else {
+                    score.setX(542.5);
+                    score.setY(544);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else if (i == 7) {
+                if (lengthScore == 1) {
+                    score.setX(501.5);
+                    score.setY(544);
+                } else {
+                    score.setX(501.5);
+                    score.setY(544);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else if (i == 8) {
+                if (lengthScore == 1) {
+                    score.setX(458.5);
+                    score.setY(544);
+                } else {
+                    score.setX(458.5);
+                    score.setY(544);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else if (i == 9) {
+                if (lengthScore == 1) {
+                    score.setX(415.5);
+                    score.setY(458);
+                } else {
+                    score.setX(410);
+                    score.setY(458);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+                score.setX(415.5);
+                score.setY(544);
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else if (i == 10) {
+                if (lengthScore == 1) {
+                    score.setX(415.5);
+                    score.setY(458);
+                } else {
+                    score.setX(410);
+                    score.setY(458);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+                score.setX(372.5);
+                score.setY(544);
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else if (i == 11) {
+                if (lengthScore == 1) {
+                    score.setX(415.5);
+                    score.setY(458);
+                } else {
+                    score.setX(410);
+                    score.setY(458);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+                score.setX(372.5);
+                score.setY(587);
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else if (i == 12) {
+                if (lengthScore == 1) {
+                    score.setX(415.5);
+                    score.setY(458);
+                } else {
+                    score.setX(410);
+                    score.setY(458);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+                score.setX(372.5);
+                score.setY(587);
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else if (i == 13) {
+                if (lengthScore == 1) {
+                    score.setX(415.5);
+                    score.setY(458);
+                } else {
+                    score.setX(410);
+                    score.setY(458);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+                score.setX(372.5);
+                score.setY(287.5);
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            } else {
+                if (lengthScore == 1) {
+                    score.setX(415.5);
+                    score.setY(458);
+                } else {
+                    score.setX(410);
+                    score.setY(458);
+                }
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+                score.setX(500);
+                score.setY(287.5);
+                currentPlayersScoreDisplay.getChildren().add(score);
+
+            }
+        }
+        currentPlayersScoreDisplay.toFront();
+
+
+
+
+    }
+
+
+
     /**
      * Create a basic text field for input and a refresh button.
      */
@@ -1119,11 +1328,13 @@ public class Game extends Application {
         titleView.setFitWidth(300);
         titleView.setPreserveRatio(true);
         objects.getChildren().add(titleView);
+        objects.toBack();
 
         //Nodes
 
         root.getChildren().add(controls); //adds control bar
         root.getChildren().add(currentPlayersBoardDisplay); //adds current players board
+        root.getChildren().add(currentPlayersScoreDisplay); //adds current players scores
         root.getChildren().add(startMenu); // adds start menu
         root.getChildren().add(objects); //adds resource key, scoreboard, title and ocean
         root.getChildren().add(hexagons); //adds all hexagons
