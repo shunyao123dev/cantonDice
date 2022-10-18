@@ -60,11 +60,13 @@ public class Game extends Application {
     private final Group objects = new Group();
     private final Group controls = new Group();
 
+    private final Group menu = new Group();
+
     private final Group dieRoll = new Group();
 
     private final Group hexagons = new Group();
 
-    private final Group menu = new Group();
+    private final Group startMenu = new Group();
     private final Group structures = new Group();
 
     private final Group rollCounter = new Group();
@@ -92,12 +94,32 @@ public class Game extends Application {
 
     private final Group controlsForPlayerTurn = new Group();
 
+    private int playerNumber = 0;
+
+    private boolean gameStarted = false;
+
+    private boolean gameOver = false;
+
+    //Players
+
+    private Player player1 = new Player("Player 1");
+    private Player player2 = new Player("Player 2");
+    private Player player3 = new Player("Player 3");
+    private Player player4 = new Player("Player 4");
+    private Player playerAI = new Player("AI");
+
+    private Player currentPlayer = new Player("current");
 
     /**
      * Creates the launch menu
      */
 
     void launchStartMenu () {
+
+        startMenu.getChildren().clear();
+        controls.getChildren().clear();
+        currentPlayersBoardDisplay.getChildren().clear();
+        currentPlayersBoardDisplay.setVisible(false);
 
         //Creates the start menu
 
@@ -135,12 +157,15 @@ public class Game extends Application {
         text.setX(15);
         text.setY(75);
 
-        controls.getChildren().addAll(menu, textBox, text);
+        startMenu.getChildren().addAll(menu, textBox, text);
 
         onePlayer.setOnAction(new EventHandler<ActionEvent>() { //When the player selects an options the menu will disappear and start the game
             @Override
             public void handle(ActionEvent actionEvent) {
-                startGame(1);
+                launchControls();
+                gameStarted = true;
+                playerNumber = 1;
+                currentPlayer = player1;
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -149,7 +174,10 @@ public class Game extends Application {
         twoPlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                startGame(2);
+                launchControls();
+                gameStarted = true;
+                playerNumber = 2;
+                currentPlayer = player1;
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -158,7 +186,10 @@ public class Game extends Application {
         threePlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                startGame(3);
+                launchControls();
+                gameStarted = true;
+                playerNumber = 3;
+                currentPlayer = player1;
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -167,7 +198,10 @@ public class Game extends Application {
         fourPlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                startGame(4);
+                launchControls();
+                gameStarted = true;
+                playerNumber = 4;
+                currentPlayer = player1;
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -189,28 +223,244 @@ public class Game extends Application {
 
     public void launchControls() {
 
-        //Launches the control menu
+        if (!gameOver) {
 
-        Rectangle controlMenu = new Rectangle();
-        controlMenu.setHeight(260);
-        controlMenu.setWidth(150);
-        controlMenu.setX(430);
-        controlMenu.setY(140);
-        controlMenu.setFill(Color.WHITE);
-        controlMenu.setStroke(Color.BLACK);
+            //Reset game button
 
-        Rectangle controlHeader = new Rectangle();
-        controlHeader.setHeight(30);
-        controlHeader.setWidth(150);
-        controlHeader.setX(430);
-        controlHeader.setY(140);
-        controlHeader.setFill(Color.LIGHTGRAY);
-        controlHeader.setStroke(Color.BLACK);
-        Text header = textBox("Controls");
-        header.setY(159);
-        header.setX(480);
+            Button resetGame = new Button("Reset game");
+            HBox resetGameBox = new HBox();
+            resetGameBox.getChildren().addAll(resetGame);
+            resetGameBox.setLayoutX(10);
+            resetGameBox.setLayoutY(12);
 
-        controls.getChildren().addAll(controlMenu, controlHeader, header);
+            resetGame.setOnAction(actionEvent -> {
+                controls.getChildren().clear();
+                rollCounter.getChildren().clear();
+                dieRoll.getChildren().clear();
+                currentPlayersBoardDisplay.getChildren().clear();
+                currentPlayersResourceState = new ResourceState();
+                currentDie = new int[6];
+                builtStructures = new Structure[33];
+                currentStructures = new Structure[33];
+                playerNumber = 0;
+                gameStarted = false;
+                player1 = new Player("Player 1");
+                player2 = new Player("Player 2");
+                player3 = new Player("Player 3");
+                player4 = new Player("Player 4");
+                playerAI = new Player("AI");
+                launchStartMenu();
+            });
+
+            //Launches the control menu
+
+            Rectangle controlMenu = new Rectangle();
+            controlMenu.setHeight(260);
+            controlMenu.setWidth(150);
+            controlMenu.setX(430);
+            controlMenu.setY(140);
+            controlMenu.setFill(Color.WHITE);
+            controlMenu.setStroke(Color.BLACK);
+            Rectangle controlHeader = new Rectangle();
+            controlHeader.setHeight(30);
+            controlHeader.setWidth(150);
+            controlHeader.setX(430);
+            controlHeader.setY(140);
+            controlHeader.setFill(Color.LIGHTGRAY);
+            controlHeader.setStroke(Color.BLACK);
+            Text header = textBox("Controls");
+            header.setY(159);
+            header.setX(480);
+
+            //Action bar
+
+            boardTextField = new TextField();
+            boardTextField.setPrefWidth(80);
+            Button button = new Button("Enter");
+            HBox hb = new HBox();
+            hb.getChildren().addAll(boardTextField, button);
+            hb.setSpacing(10);
+            hb.setLayoutX(438);
+            hb.setLayoutY(365);
+            Text actionBarText = textBox("Action Bar");
+            actionBarText.setX(475.5);
+            actionBarText.setY(350);
+
+            //Roll dice button and counter
+
+            Button rollDice = new Button("Roll!");
+            Rectangle rollCounterRect = new Rectangle();
+            rollCounterRect.setHeight(75);
+            rollCounterRect.setWidth(62.5);
+            rollCounterRect.setFill(Color.WHITE);
+            rollCounterRect.setStroke(Color.BLACK);
+            rollCounterRect.setX(475);
+            rollCounterRect.setY(243);
+            HBox hb2 = new HBox();
+            hb2.getChildren().addAll(rollDice);
+            hb2.setLayoutX(485);
+            hb2.setLayoutY(200);
+
+            //Action bar action
+
+            button.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e) {
+                    String input = boardTextField.getText();
+                    String pos = input.substring(Math.max(input.length() - 2, 0));
+                    String boardString = boardToString(currentPlayersBoard);
+                    currentStructures = currentPlayersBoard.structures;
+                    Boolean moveComplete = false;
+
+                    while (!moveComplete) {
+
+                        if (CatanDice.isActionWellFormed(input)) {
+                            if (CatanDice.checkResources(pos, currentDie)) {
+                                if (CatanDice.checkBuildConstraints(pos, boardString)) {
+                                    for (var structure : currentStructures) {
+                                        if (input.equals(structure.getPosition())) {
+                                            structure.setBuilt();
+                                            moveComplete = true;
+                                        }
+                                    }
+
+                                } else {
+                                    instructions.getChildren().clear();
+                                    instructions.getChildren().add(textBox("Insufficient prerequisites"));
+
+                                }
+
+                            } else {
+                                instructions.getChildren().clear();
+                                instructions.getChildren().add(textBox("Insufficient resources. Please select different move"));
+                            }
+
+
+                        } else {
+                            instructions.getChildren().clear();
+                            instructions.getChildren().add(textBox("Invalid input. Please type correctly"));
+                        }
+
+
+                    }
+                }
+            });
+
+            //Roll dice action
+            rollDice.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    if (rollCount < 4) {
+                        if (rollCount == 1) {
+                            int[] list = new int[]{0, 0, 0, 0, 0, 0};
+                            MoveControls.rollDice(6, list);
+                            Text rollCountText = textBox(String.valueOf(rollCount));
+                            Font font = new Font("Verdana", 20);
+                            rollCountText.setFont(font);
+                            rollCountText.setX(500);
+                            rollCountText.setY(287.5);
+                            rollCounter.getChildren().add(rollCountText);
+                            rollCount += 1;
+                            try {
+                                displayDice(list);
+                            } catch (FileNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            rollCounter.getChildren().clear();
+                            int[] list = new int[]{0, 0, 0, 0, 0, 0};
+                            MoveControls.rollDice(6, list);
+                            Text rollCountText = textBox(String.valueOf(rollCount));
+                            Font font = new Font("Verdana", 20);
+                            rollCountText.setFont(font);
+                            rollCountText.setX(500);
+                            rollCountText.setY(287.5);
+                            rollCounter.getChildren().add(rollCountText);
+                            rollCount += 1;
+                            if (rollCount == 3) {
+                                currentDie = list;
+                            }
+                            try {
+                                displayDice(list);
+                            } catch (FileNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                }
+            });
+
+            //Change current board to current players board
+
+
+
+            //display state of current player and prompt them to roll
+
+
+
+            //get them to roll three times
+
+
+
+            //change their current resource state and current die
+
+
+
+            //prompt them to make a move
+
+
+
+            //check if move is valid
+
+
+
+            //update current displayed state
+
+
+
+            //update scores
+
+
+
+            //display scores
+
+
+
+            //update turn count
+
+
+
+            //update board state
+
+
+
+            //change player to next player
+
+
+
+            //check if game is over
+
+
+            //recursively call launchControls
+
+
+            controls.getChildren().addAll(controlMenu, controlHeader, header, hb, actionBarText, hb2, rollCounterRect, resetGameBox);
+
+
+        } else { //the game is over
+
+
+            //display final scores and winner
+
+
+
+
+        }
+
+
+
+
+
 
     }
 
@@ -221,21 +471,6 @@ public class Game extends Application {
     //needs to check if input valid, check if move valid (prerequisites, resources), change currentBoard
 
 
-
-    /**
-     * Switch to start the game
-     */
-
-    public void startGame(int players) {
-        switch (players) {
-            case 1 -> gameOnePlayer();
-            case 2 -> gameTwoPlayer();
-            case 3 -> gameThreePlayer();
-            case 4 -> gameFourPlayer();
-        }
-
-
-    }
 
 
     /**
@@ -255,7 +490,6 @@ public class Game extends Application {
 
         Boolean gameOver = false;
         int playerTurn = 1; //initiates as player 1's turn
-        launchControls(); //launches the control menu
 
         if ((player1.getScores()).size() == 15 && (player2.getScores().size() == 15)) { //If both players have had 15 turns, game is over
             gameOver = true;
@@ -638,7 +872,6 @@ public class Game extends Application {
     }
 
     void displayStateCurrent(String board_state) {
-        // FIXME Task 5: implement the state viewer
         String[] boardArr = board_state.split(",");
 
         for (var str : boardArr) {
@@ -890,6 +1123,8 @@ public class Game extends Application {
         //Nodes
 
         root.getChildren().add(controls); //adds control bar
+        root.getChildren().add(currentPlayersBoardDisplay); //adds current players board
+        root.getChildren().add(startMenu); // adds start menu
         root.getChildren().add(objects); //adds resource key, scoreboard, title and ocean
         root.getChildren().add(hexagons); //adds all hexagons
         root.getChildren().add(structures); //adds all structures to the board
@@ -1444,7 +1679,7 @@ public class Game extends Application {
      * Assumes move is valid
      * @param string
      * @param board
-     * @param resources
+     * @param
      * @return
      */
 
@@ -1497,7 +1732,6 @@ public class Game extends Application {
 
         makeBaseBoard();
         launchStartMenu();
-        makeControls();
 
         stage.setScene(scene);
         stage.show();
