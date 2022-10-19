@@ -19,11 +19,7 @@ public class Board {
     public int[] resources;
 
     //The Knights on the game board
-    public final static int STRUCTURES_NO = 33;
-
-    //The number of tiles on the board
-
-    public final static int TILES_NO = 6;
+    public final static int STRUCTURES_NO = 32;
 
 
     /**
@@ -31,13 +27,11 @@ public class Board {
      */
 
     public Board() {
-        structures = new Structure[33];
+        structures = new Structure[32];
 
         //The prerequisite structures for each to be built
 
         //Roads
-
-        ArrayList<String> preReqStart = new ArrayList<>();
         ArrayList<String> preReqR0 = new ArrayList<>();
         ArrayList<String> preReqR1 = new ArrayList<>(Arrays.asList("R0"));
         ArrayList<String> preReqR2 = new ArrayList<>(Arrays.asList("R0"));
@@ -57,7 +51,7 @@ public class Board {
 
         //Settlements
 
-        ArrayList<String> preReqS3 = new ArrayList<>();
+        ArrayList<String> preReqS3 = new ArrayList<>(Arrays.asList("S3", "R0", "R2"));
         ArrayList<String> preReqS4 = new ArrayList<>(Arrays.asList("S3", "R0", "R2"));
         ArrayList<String> preReqS5 = new ArrayList<>(Arrays.asList("S3", "R0", "R2", "S4", "R3", "R5"));
         ArrayList<String> preReqS7 = new ArrayList<>(Arrays.asList("S3", "R0", "R2", "S4", "R3", "R5", "S5", "R6", "R7"));
@@ -84,7 +78,7 @@ public class Board {
         for (int i = 0; i < STRUCTURES_NO; i++) {
             // if the structure is the starting road
             if (i == 0) {
-                structures[i] = new Structure("R0", START, 0, false, false, NIL, preReqStart);
+                structures[i] = new Structure("R0", ROAD, 1, false, false, NIL, preReqR0);
             }
             // if the structure is a settlement
             else if ((i == 1) | (i == 4) | (i == 7) | (i == 10) | (i == 13) | (i == 16)) {
@@ -104,7 +98,7 @@ public class Board {
 
             } // if the structure is a city
 
-            else if ((i == 18) | (i == 20) | (i == 23) | (i == 26)) {
+            else if ((i == 18) | (i == 20) | (i == 23) | (i == 25)) {
                 if (i == 18) {
                     structures[i] = new Structure("C7", CITY, 7, false, false, NIL, preReqC7);
                 } else if (i == 20) {
@@ -117,16 +111,16 @@ public class Board {
 
             } //if the structure is a knight
 
-            else if ((i == 27) | (i == 28) | (i == 29) | (i == 30) | (i == 31) | (i == 32)) {
-                if (i == 27) {
+            else if ((i == 26) | (i == 27) | (i == 28) | (i == 29) | (i == 30) | (i == 31)) {
+                if (i == 26) {
                     structures[i] = new Structure("J1", KNIGHT, 7, false, false, ORE, preReqK1);
-                } else if (i == 28) {
+                } else if (i == 27) {
                     structures[i] = new Structure("J2", KNIGHT, 12, false, false, GRAIN, preReqK2);
-                } else if (i == 29) {
+                } else if (i == 28) {
                     structures[i] = new Structure("J3", KNIGHT, 20, false, false, WOOL, preReqK3);
-                } else if (i == 30) {
+                } else if (i == 29) {
                     structures[i] = new Structure("J4", KNIGHT, 20, false, false, TIMBER, preReqK4);
-                } else if (i == 31) {
+                } else if (i == 30) {
                     structures[i] = new Structure("J5", KNIGHT, 20, false, false, BRICK, preReqK5);
                 } else {
                     structures[i] = new Structure("J6", KNIGHT, 30, false, false, MYSTERY, preReqK6);
@@ -137,36 +131,34 @@ public class Board {
 
             else {
                 if (i == 2) {
-                    structures[i] = new Structure("R0", ROAD, 1, false, false, NIL, preReqR0);
-                } else if (i == 3) {
                     structures[i] = new Structure("R1", ROAD, 1, false, false, NIL, preReqR1);
-                } else if (i == 5) {
+                } else if (i == 3) {
                     structures[i] = new Structure("R2", ROAD, 1, false, false, NIL, preReqR2);
-                } else if (i == 6) {
+                } else if (i == 5) {
                     structures[i] = new Structure("R3", ROAD, 1, false, false, NIL, preReqR3);
-                } else if (i == 8) {
+                } else if (i == 6) {
                     structures[i] = new Structure("R4", ROAD, 1, false, false, NIL, preReqR4);
-                } else if (i == 9) {
+                } else if (i == 8) {
                     structures[i] = new Structure("R5", ROAD, 1, false, false, NIL, preReqR5);
-                } else if (i == 11) {
+                } else if (i == 9) {
                     structures[i] = new Structure("R6", ROAD, 1, false, false, NIL, preReqR6);
-                } else if (i == 12) {
+                } else if (i == 11) {
                     structures[i] = new Structure("R7", ROAD, 1, false, false, NIL, preReqR7);
-                } else if (i == 14) {
+                } else if (i == 12) {
                     structures[i] = new Structure("R8", ROAD, 1, false, false, NIL, preReqR8);
-                } else if (i == 15) {
+                } else if (i == 14) {
                     structures[i] = new Structure("R9", ROAD, 1, false, false, NIL, preReqR9);
-                } else if (i == 17) {
+                } else if (i == 15) {
                     structures[i] = new Structure("R10", ROAD, 1, false, false, NIL, preReqR10);
-                } else if (i == 19) {
+                } else if (i == 17) {
                     structures[i] = new Structure("R11", ROAD, 1, false, false, NIL, preReqR11);
-                } else if (i == 21) {
+                } else if (i == 19) {
                     structures[i] = new Structure("R12", ROAD, 1, false, false, NIL, preReqR12);
-                } else if (i == 22) {
+                } else if (i == 21) {
                     structures[i] = new Structure("R13", ROAD, 1, false, false, NIL, preReqR13);
-                } else if (i == 24) {
+                } else if (i == 22) {
                     structures[i] = new Structure("R14", ROAD, 1, false, false, NIL, preReqR14);
-                } else {
+                } else if (i == 24) {
                     structures[i] = new Structure("R15", ROAD, 1, false, false, NIL, preReqR15);
                 }
             }

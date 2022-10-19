@@ -14,6 +14,10 @@ public class ResourceState {
         this.state = resources;
     }
 
+    public int[] getResourceState() {
+        return this.state;
+    }
+
 
     //Update Resource State with by given parameters
 
@@ -27,4 +31,41 @@ public class ResourceState {
             case GOLD -> this.state[5] = num;
         }
     }
+
+    public void changeResourceWithDice(int[] die) {
+        int oreCount = countDice(0, die);
+        int grainCount = countDice(1, die);
+        int woolCount = countDice(2, die);
+        int timberCount = countDice(3, die);
+        int brickCount = countDice(4, die);
+        int goldCount = countDice(5, die);
+
+        for (int i = 0; i < 6; i ++) {
+            if (i == 0) {
+                this.state[0] = oreCount;
+            } else if (i == 1) {
+                this.state[1] = grainCount;
+            } else if (i == 2) {
+                this.state[1] = woolCount;
+            } else if (i == 3) {
+                this.state[1] = timberCount;
+            } else if (i == 4) {
+                this.state[1] = brickCount;
+            } else {
+                this.state[1] = goldCount;
+            }
+        }
+    }
+
+    public int countDice(int resource, int[] die) {
+        int count = 0;
+        for (int i = 0; i < die.length; i++) {
+            if (die[i] == resource) {
+                count+=1;
+            }
+        }
+        return count;
+    }
+
+
 }

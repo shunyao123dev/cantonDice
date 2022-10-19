@@ -87,6 +87,8 @@ public class Game extends Application {
 
     private Board currentPlayersBoard = new Board();
 
+    private ArrayList<Integer> currentPlayersScore = new ArrayList<>();
+
     private Board boardAfterMove = new Board();
     private ResourceState currentPlayersResourceState = new ResourceState();
 
@@ -195,64 +197,64 @@ public class Game extends Application {
         onePlayer.setOnAction(new EventHandler<ActionEvent>() { //When the player selects an options the menu will disappear and start the game
             @Override
             public void handle(ActionEvent actionEvent) {
-                try {
-                    launchControls();
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
                 gameStarted = true;
                 playerNumber = 1;
                 playerTurn = 1;
                 menu.setVisible(false);
                 text.setVisible(false);
+                try {
+                    launchControls();
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
         twoPlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                try {
-                    launchControls();
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
                 gameStarted = true;
                 playerNumber = 2;
                 playerTurn = 1;
                 menu.setVisible(false);
                 text.setVisible(false);
+                try {
+                    launchControls();
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
         threePlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                try {
-                    launchControls();
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
                 gameStarted = true;
                 playerNumber = 3;
                 playerTurn = 1;
                 menu.setVisible(false);
                 text.setVisible(false);
+                try {
+                    launchControls();
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
         fourPlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                try {
-                    launchControls();
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
                 gameStarted = true;
                 playerNumber = 4;
                 playerTurn = 1;
                 menu.setVisible(false);
                 text.setVisible(false);
+                try {
+                    launchControls();
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -319,6 +321,8 @@ public class Game extends Application {
             resetGame.setOnAction(actionEvent -> {
                 controls.getChildren().clear();
                 rollCounter.getChildren().clear();
+                rollCount = 1;
+                dieSelected = new int[]{0,0,0,0,0,0};
                 dieRoll.getChildren().clear();
                 redDie.getChildren().clear();
                 instructions.getChildren().clear();
@@ -587,15 +591,236 @@ public class Game extends Application {
                 @Override
                 public void handle(ActionEvent e) {
                     String input = boardTextField.getText();
-                    String pos = input.substring(Math.max(input.length() - 2, 0));
+                    String[] act = input.split(" ");
                     String boardString = boardToString(currentPlayersBoard);
                     currentStructures = currentPlayersBoard.structures;
 
-                    if (!CatanDice.isActionWellFormed(input)) {
-                        displayInstructions("Invalid action. Please type again");
-                    }
+                    int[] stringResourceState = currentPlayersResourceState.getResourceState();
 
+                    if (!CatanDice.isActionWellFormed(input)) { //not valid input
+                        displayInstructions("Invalid action input. Please type again");
+
+                    } else if (!CatanDice.canDoAction(input, boardString,stringResourceState)) {
+                        String returnString = "";
+                        if (act[0].equals("build")) {
+                            if (act.length != 2) {
+                                returnString = "Invalid build command entered";
+                            } else if (!(CatanDice.checkBuildConstraints(act[1], boardString))) {
+                                returnString = "Insufficient building prerequisites to build " + act[1];
+                            } else if (!(CatanDice.checkResources(act[1], stringResourceState))) {
+                                returnString = "Insufficient resources to build " + act[1];
+                            }
+                        } else if (act[0].equals("trade")) {
+                            if (act.length != 2) {
+                                returnString = "Invalid trade command entered";
+                            } else if (stringResourceState[5] < 2) {
+                                returnString = "Insufficient gold to execute trade";
+                            }
+                        } else if (act[0].equals("swap")) {
+                            int idx1 = Integer.parseInt(act[1]);
+                            int idx2 = Integer.parseInt(act[2]);
+                            if (act.length != 3) {
+                                returnString = "Invalid swap command entered";
+                            } else if (!(CatanDice.canDoSwap(idx1, idx2, boardString, stringResourceState))) {
+                                returnString = "Insufficient resources to execute swap";
+                            }
+                        }
+                        displayInstructions(returnString);
+
+                    } else {
+                        if (act[0].equals("build")) {
+                            String pos = input.substring(Math.max(input.length() - 2, 0));
+                            for (Structure structure : currentStructures) {
+                                if (structure.getPosition().equals(pos)) {
+                                    structure.setBuilt();
+                                    if (structure.isRoad()) {
+                                        int currentTimber = stringResourceState[3];
+                                        currentTimber -= 1;
+                                        stringResourceState[3] = currentTimber;
+                                        int currentBrick = stringResourceState[4];
+                                        currentBrick -= 1;
+                                        stringResourceState[4] = currentBrick;
+                                        
+                                    } else if (structure.isSettlement()) {
+                                        int currentGrain = stringResourceState[1];
+                                        currentGrain -= 1;
+                                        stringResourceState[1] = currentGrain;
+                                        int currentWool= stringResourceState[2];
+                                        currentWool -= 1;
+                                        stringResourceState[2] = currentWool;
+                                        int currentTimber = stringResourceState[3];
+                                        currentTimber -= 1;
+                                        stringResourceState[3] = currentTimber;
+                                        int currentBrick = stringResourceState[4];
+                                        currentBrick -= 1;
+                                        stringResourceState[4] = currentBrick;
+                                        
+                                    } else if (structure.isCity()) {
+                                        int currentOre = stringResourceState[0];
+                                        currentOre -= 3;
+                                        stringResourceState[0] = currentOre;
+                                        int currentGrain = stringResourceState[1];
+                                        currentGrain -= 2;
+                                        stringResourceState[1] = currentGrain;
+
+                                    } else if (structure.isKnight()) {
+                                        int currentGrain = stringResourceState[1];
+                                        currentGrain -= 1;
+                                        stringResourceState[1] = currentGrain;
+                                        int currentWool= stringResourceState[2];
+                                        currentWool -= 1;
+                                        stringResourceState[2] = currentWool;
+                                        int currentOre = stringResourceState[0];
+                                        currentOre -= 1;
+                                        stringResourceState[0] = currentOre;
+                                    }
+
+
+                                    if (currentPlayersScore.isEmpty()) {
+                                        currentPlayersScore.add(structure.getValue());
+                                    } else {
+                                        int currentTurnScore = currentPlayersScore.get(currentPlayer.getTurnCount());
+                                        currentTurnScore += structure.getValue();
+                                        currentPlayersScore.add(currentPlayer.getTurnCount(), currentTurnScore);
+                                    }
+                                }
+                            }
+
+                            currentPlayersResourceState.changeResourceState(stringResourceState);
+                            currentPlayer.setResources(currentPlayersResourceState);
+                            currentPlayersBoard.setStructures(currentStructures);
+                            currentPlayer.setBoard(currentPlayersBoard);
+                            try {
+                                displayResourceState(stringResourceState);
+                                displayStateCurrent(currentPlayer);
+                            } catch (FileNotFoundException ex) {
+                                throw new RuntimeException(ex);
+                            }
+
+
+
+                            
+                        } else if (act[0].equals("trade")) {
+                            String pos = input.substring(Math.max(input.length() - 1, 0));
+                            if (pos.equals("0")) {
+                                int currentOre = stringResourceState[0];
+                                currentOre +=1;
+                                stringResourceState[0] = currentOre;
+                                int currentGold = stringResourceState[5];
+                                currentGold -= 2;
+                                stringResourceState[5] = currentGold;
+
+                            } else if (pos.equals("1")) {
+                                int currentGrain = stringResourceState[1];
+                                currentGrain +=1;
+                                stringResourceState[1] = currentGrain;
+                                int currentGold = stringResourceState[5];
+                                currentGold -= 2;
+                                stringResourceState[5] = currentGold;
+                                
+                            } else if (pos.equals("2")) {
+                                int currentWool = stringResourceState[2];
+                                currentWool +=1;
+                                stringResourceState[2] = currentWool;
+                                int currentGold = stringResourceState[5];
+                                currentGold -= 2;
+                                stringResourceState[5] = currentGold;
+
+                            } else if (pos.equals("3")) {
+                                int currentTimber = stringResourceState[3];
+                                currentTimber +=1;
+                                stringResourceState[3] = currentTimber;
+                                int currentGold = stringResourceState[5];
+                                currentGold -= 2;
+                                stringResourceState[5] = currentGold;
+
+                            } else if (pos.equals("4")) {
+                                int currentBricks = stringResourceState[4];
+                                currentBricks +=1;
+                                stringResourceState[4] = currentBricks;
+                                int currentGold = stringResourceState[5];
+                                currentGold -= 2;
+                                stringResourceState[5] = currentGold;
+                            }
+
+                            try {
+                                dieRoll.getChildren().clear();
+
+                                displayResourceState(stringResourceState);
+
+                            } catch (FileNotFoundException ex) {
+                                throw new RuntimeException(ex);
+                            }
+
+                            currentPlayersResourceState.changeResourceState(stringResourceState);
+                            currentPlayer.setResources(currentPlayersResourceState);
+
+
+                        } else if (act[0].equals("swap")) {
+                            int idx1 = Integer.parseInt(act[1]);
+                            int idx2 = Integer.parseInt(act[2]);
+
+                            if (idx1 == 0) {
+                               int currentLevel = stringResourceState[0];
+                               currentLevel +=1;
+                               stringResourceState[0] = currentLevel;
+                            } else if (idx1 == 1) {
+                                int currentLevel = stringResourceState[1];
+                                currentLevel +=1;
+                                stringResourceState[1] = currentLevel;
+                            } else if (idx1 == 2) {
+                                int currentLevel = stringResourceState[2];
+                                currentLevel +=1;
+                                stringResourceState[2] = currentLevel;
+                            } else if (idx1 == 3) {
+                                int currentLevel = stringResourceState[3];
+                                currentLevel +=1;
+                                stringResourceState[3] = currentLevel;
+                            } else if (idx1 == 4) {
+                                int currentLevel = stringResourceState[4];
+                                currentLevel +=1;
+                                stringResourceState[4] = currentLevel;
+                            } else if (idx1 == 5) {
+                                int currentLevel = stringResourceState[5];
+                                currentLevel +=1;
+                                stringResourceState[5] = currentLevel;
+                            }
+
+                            if (idx2 == 0) {
+                                int currentLevel = stringResourceState[0];
+                                currentLevel -=1;
+                                stringResourceState[0] = currentLevel;
+                            } else if (idx2 == 1) {
+                                int currentLevel = stringResourceState[1];
+                                currentLevel -=1;
+                                stringResourceState[1] = currentLevel;
+                            } else if (idx2 == 2) {
+                                int currentLevel = stringResourceState[2];
+                                currentLevel -=1;
+                                stringResourceState[2] = currentLevel;
+                            } else if (idx2 == 3) {
+                                int currentLevel = stringResourceState[3];
+                                currentLevel -=1;
+                                stringResourceState[3] = currentLevel;
+                            } else if (idx2 == 4) {
+                                int currentLevel = stringResourceState[4];
+                                currentLevel -=1;
+                                stringResourceState[4] = currentLevel;
+                            } else if (idx2 == 5) {
+                                int currentLevel = stringResourceState[5];
+                                currentLevel -=1;
+                                stringResourceState[5] = currentLevel;
+                            }
+
+                            currentPlayersResourceState.changeResourceState(stringResourceState);
+                            currentPlayer.setResources(currentPlayersResourceState);
+                        }
+
+
+                    }
                 }
+
+
             });
 
             //Roll dice action
@@ -613,6 +838,8 @@ public class Game extends Application {
                          rollCounter.getChildren().add(rollCountText);
                          currentDie = rolledDice;
                          rollCount += 1;
+                         int[] newState = resourceStateFromDice(currentDie);
+                         currentPlayersResourceState.changeResourceState(newState);
                          try {
                              displayDice(rolledDice);
                          } catch (FileNotFoundException e) {
@@ -662,6 +889,8 @@ public class Game extends Application {
                          }
 
                          currentDie = finalList;
+                         int[] newState = resourceStateFromDice(currentDie);
+                         currentPlayersResourceState.changeResourceState(newState);
                          try {
                              displayDice(finalList);
                          } catch (FileNotFoundException e) {
@@ -700,7 +929,17 @@ public class Game extends Application {
                              die4.setStroke(Color.BLACK);
                              die5.setStroke(Color.BLACK);
                              die6.setStroke(Color.BLACK);
-                             currentPlayersResourceState.changeResourceState(finalList);
+
+                             selectedAtRoll1[0] = false;
+                             selectedAtRoll2[0] = false;
+                             selectedAtRoll3[0] = false;
+                             selectedAtRoll4[0] = false;
+                             selectedAtRoll5[0] = false;
+                             selectedAtRoll6[0] = false;
+
+
+                             int[] newState = resourceStateFromDice(currentDie);
+                             currentPlayersResourceState.changeResourceState(newState);
                              displayInstructions("Well done! Please now type a move into the action bar");
 
                          } catch (FileNotFoundException e) {
@@ -720,6 +959,8 @@ public class Game extends Application {
             //Prompt player to roll
 
             displayInstructions(currentPlayer.getName() + " is playing. Please roll!");
+
+
 
             //get them to roll three times
 
@@ -786,10 +1027,6 @@ public class Game extends Application {
 
 
             //display final scores and winner
-
-
-
-
         }
 
 
@@ -798,292 +1035,6 @@ public class Game extends Application {
 
 
     }
-
-    /**
-     * Creates the action bar where players will input strings of what they want to do
-     */
-
-    //needs to check if input valid, check if move valid (prerequisites, resources), change currentBoard
-
-
-
-
-    /**
-     * Starts game with one player and AI
-     */
-    public void gameOnePlayer() {
-
-    }
-
-    /**
-     * Starts game with two players
-     */
-
-    public void gameTwoPlayer() {
-        Player player1 = new Player("Player 1");
-        Player player2 = new Player("Player 2");
-
-        Boolean gameOver = false;
-        int playerTurn = 1; //initiates as player 1's turn
-
-        if ((player1.getScores()).size() == 15 && (player2.getScores().size() == 15)) { //If both players have had 15 turns, game is over
-            gameOver = true;
-        }
-
-//        public Player (String name){
-//            this.name = name;
-//            this.board = new Board();
-//            this.scores = scores;
-//            this.turnCount = turnCount;
-//            this.resources = new ResourceState();
-//        }
-
-        while (!gameOver) {
-            if (playerTurn == 1) {
-                currentPlayersBoard = player1.getCurrentBoard();
-                currentPlayersBoardDisplay.getChildren().clear();
-                controlsForPlayerTurn.getChildren().clear();
-
-                displayStateCurrent(currentPlayer); //displays the board of the current player
-
-                Text playerOnePlaying = textBox("Player 1's turn. Please roll");
-                playerOnePlaying.setFont(Font.font("Verdana", 12));
-                playerOnePlaying.setX(15);
-                playerOnePlaying.setY(75);
-                instructions.getChildren().add(playerOnePlaying);
-
-                //the player has a turn. Need to roll dice, complete move
-
-                rollDiceButton();
-
-                int oreCount = 0;
-                int grainCount = 0;
-                int woolCount = 0;
-                int timberCount = 0;
-                int brickCount = 0;
-                int goldCount = 0;
-
-
-                for (var i : currentDie) {
-                    if (i == 0) {
-                        oreCount +=1;
-                    } else if (i == 1) {
-                        grainCount +=1;
-                    } else if (i == 2) {
-                        woolCount +=1;
-                    } else if (i == 3) {
-                        timberCount +=1;
-                    } else if (i == 4) {
-                        brickCount +=1;
-                    } else {
-                        goldCount +=1;
-                    }
-                }
-
-                currentPlayersResourceState.changeResource(ResourceType.ORE, oreCount);
-                currentPlayersResourceState.changeResource(ResourceType.GRAIN, grainCount);
-                currentPlayersResourceState.changeResource(ResourceType.WOOL, woolCount);
-                currentPlayersResourceState.changeResource(ResourceType.TIMBER, timberCount);
-                currentPlayersResourceState.changeResource(ResourceType.BRICK, brickCount);
-                currentPlayersResourceState.changeResource(ResourceType.GOLD, goldCount);
-
-                //updates player 1 resource state
-
-                player1.setResources(currentPlayersResourceState);
-
-                instructions.getChildren().clear();
-                Text playerOneMoving = textBox("Player 1 please input a move into the action bar");
-                playerOneMoving.setFont(Font.font("Verdana", 12));
-                playerOneMoving.setX(15);
-                playerOneMoving.setY(75);
-                instructions.getChildren().add(playerOnePlaying);
-
-                actionBar();
-
-                rollCount = 0;
-                playerTurn -= 1;
-                currentPlayersBoardDisplay.getChildren().clear();
-            } else {
-                currentPlayersBoard = player2.getCurrentBoard();
-                currentPlayersBoardDisplay.getChildren().clear();
-                controlsForPlayerTurn.getChildren().clear();
-
-                displayStateCurrent(currentPlayer); //displays the board of the current player
-
-
-
-                rollCount = 0;
-                playerTurn +=1;
-                currentPlayersBoardDisplay.getChildren().clear();
-            }
-
-
-        }
-//
-
-
-    }
-
-    /**
-     * Starts game with three players
-     */
-    public void gameThreePlayer() {
-
-    }
-    /**
-     * Starts game with four players
-     */
-    public void gameFourPlayer() {
-
-    }
-
-    public void actionBar() {
-
-        boardTextField = new TextField();
-        boardTextField.setPrefWidth(80);
-        Button button = new Button("Enter");
-        HBox hb = new HBox();
-        hb.getChildren().addAll(boardTextField, button);
-        hb.setSpacing(10);
-        hb.setLayoutX(438);
-        hb.setLayoutY(365);
-        Text actionBarText = textBox("Action Bar");
-        actionBarText.setX(475.5);
-        actionBarText.setY(350);
-        controlsForPlayerTurn.getChildren().addAll(hb, actionBarText);
-
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                String input = boardTextField.getText();
-                String pos = input.substring(Math.max(input.length() - 2, 0));
-                String boardString = boardToString(currentPlayersBoard);
-                currentStructures = currentPlayersBoard.structures;
-                Boolean moveComplete = false;
-
-                while (!moveComplete) {
-
-                    if (CatanDice.isActionWellFormed(input)) {
-                        if (CatanDice.checkResources(pos, currentDie)) {
-                            if (CatanDice.checkBuildConstraints(pos, boardString)) {
-                                for (var structure : currentStructures) {
-                                    if (input.equals(structure.getPosition())) {
-                                        structure.setBuilt();
-                                        moveComplete = true;
-                                    }
-                                }
-
-                            } else {
-                                instructions.getChildren().clear();
-                                instructions.getChildren().add(textBox("Insufficient prerequisites"));
-
-                            }
-
-                        } else {
-                            instructions.getChildren().clear();
-                            instructions.getChildren().add(textBox("Insufficient resources. Please select different move"));
-                        }
-
-
-                    } else {
-                        instructions.getChildren().clear();
-                        instructions.getChildren().add(textBox("Invalid input. Please type correctly"));
-                    }
-
-
-                }
-            }
-        });
-
-    }
-
-    /**
-     * Creates a button that rolls the dice.
-     */
-    private void rollDiceButton() {
-        Button rollDice = new Button("Roll!");
-        rollDice.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                if (rollCount < 4) {
-                    if (rollCount == 1) {
-                        int[] list = new int[]{0, 0, 0, 0, 0, 0};
-                        MoveControls.rollDice(6, list);
-                        Text rollCountText = textBox(String.valueOf(rollCount));
-                        Font font = new Font("Verdana", 20);
-                        rollCountText.setFont(font);
-                        rollCountText.setX(500);
-                        rollCountText.setY(287.5);
-                        rollCounter.getChildren().add(rollCountText);
-                        rollCount += 1;
-                        try {
-                            displayDice(list);
-                        } catch (FileNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    } else {
-                        rollCounter.getChildren().clear();
-                        int[] list = new int[]{0, 0, 0, 0, 0, 0};
-                        MoveControls.rollDice(6, list);
-                        Text rollCountText = textBox(String.valueOf(rollCount));
-                        Font font = new Font("Verdana", 20);
-                        rollCountText.setFont(font);
-                        rollCountText.setX(500);
-                        rollCountText.setY(287.5);
-                        rollCounter.getChildren().add(rollCountText);
-                        rollCount += 1;
-                        if (rollCount == 3) {
-                            currentDie = list;
-                        }
-                        try {
-                            displayDice(list);
-                        } catch (FileNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
-            }
-        });
-
-        Rectangle rollCounterRect = new Rectangle();
-        rollCounterRect.setHeight(75);
-        rollCounterRect.setWidth(62.5);
-        rollCounterRect.setFill(Color.WHITE);
-        rollCounterRect.setStroke(Color.BLACK);
-        rollCounterRect.setX(475);
-        rollCounterRect.setY(243);
-
-
-        HBox hb2 = new HBox();
-        hb2.getChildren().addAll(rollDice);
-        hb2.setLayoutX(485);
-        hb2.setLayoutY(200);
-        controlsForPlayerTurn.getChildren().addAll(rollCounterRect, hb2);
-    }
-
-    //Things to do in start game
-
-    //create player class for as many players
-
-    //
-
-
-    //Need to get number of players and create player profiles for each of these
-    //Player 1 to go first and display Player 1 board.
-
-
-    //Players 1 goes (need to display who's turn it is)
-    // Needs to roll. Need to change and display resource state each time.
-    // Player must be able to select dice to put aside and roll up to three times.
-    // After rolling then build, trade or swap. Need to check if action,
-    // can be made. Need to then change board and update viewer.
-
-    //Display next player. Repeat.
-
-    //Once turn count is equal to 15, game ends for player.
-
-    //Add players scores up and depict winner.
-
 
 
 
@@ -1186,6 +1137,9 @@ public class Game extends Application {
     }
 
     void displayStateCurrent(Player player) {
+
+        currentPlayersScoreDisplay.getChildren().clear();
+        currentPlayersBoardDisplay.getChildren().clear();
 
         Board board = player.getCurrentBoard();
         String board_state = boardToString(board);
@@ -2119,6 +2073,148 @@ public class Game extends Application {
         currentPlayersBoardDisplay.getChildren().add(circle);
     }
 
+    public void displayResourceState(int[] resourceState) throws FileNotFoundException {
+        Image oreDice = new Image(new FileInputStream("assets/Ore_dice.png"));
+        Image grainDice = new Image(new FileInputStream("assets/Wheat_dice.png"));
+        Image woolDice = new Image(new FileInputStream("assets/Wool_dice.png"));
+        Image timberDice = new Image(new FileInputStream("assets/Timber_dice.png"));
+        Image brickDice = new Image(new FileInputStream("assets/Brick_dice.png"));
+        Image goldDice = new Image(new FileInputStream("assets/Gold_dice.png"));
+
+        int currentResource = 0;
+        ArrayList<String> resources = new ArrayList<>();
+
+        for (int i = 0; i < resourceState.length; i++) {
+            if (resourceState[i] == 6) {
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                currentResource += 1;
+
+            } else if (resourceState[i] == 5) {
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                currentResource += 1;
+
+            } else if (resourceState[i] == 4) {
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                currentResource += 1;
+
+            } else if (resourceState[i] == 3) {
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                currentResource += 1;
+
+            } else if (resourceState[i] == 2) {
+                resources.add(resourceReturner(currentResource));
+                resources.add(resourceReturner(currentResource));
+                currentResource += 1;
+
+            } else if (resourceState[i] == 1) {
+                resources.add(resourceReturner(currentResource));
+                currentResource += 1;
+
+            } else if (resourceState[i] == 0) {
+
+            }
+        }
+
+        for (int i = 0; i < resources.size(); i++) {
+            if (i == 0) {
+                switch (resources.get(i)) {
+                    case "ore" -> die1.setFill(new ImagePattern(oreDice));
+                    case "grain" -> die1.setFill(new ImagePattern(grainDice));
+                    case "wool" -> die1.setFill(new ImagePattern(woolDice));
+                    case "timber" -> die1.setFill(new ImagePattern(timberDice));
+                    case "bricks" -> die1.setFill(new ImagePattern(brickDice));
+                    case "gold" -> die1.setFill(new ImagePattern(goldDice));
+                }
+            } else if (i == 1) {
+                switch (resources.get(i)) {
+                    case "ore" -> die2.setFill(new ImagePattern(oreDice));
+                    case "grain" -> die2.setFill(new ImagePattern(grainDice));
+                    case "wool" -> die2.setFill(new ImagePattern(woolDice));
+                    case "timber" -> die2.setFill(new ImagePattern(timberDice));
+                    case "bricks" -> die2.setFill(new ImagePattern(brickDice));
+                    case "gold" -> die2.setFill(new ImagePattern(goldDice));
+                }
+            } else if (i == 2) {
+                switch (resources.get(i)) {
+                    case "ore" -> die3.setFill(new ImagePattern(oreDice));
+                    case "grain" -> die3.setFill(new ImagePattern(grainDice));
+                    case "wool" -> die3.setFill(new ImagePattern(woolDice));
+                    case "timber" -> die3.setFill(new ImagePattern(timberDice));
+                    case "bricks" -> die3.setFill(new ImagePattern(brickDice));
+                    case "gold" -> die3.setFill(new ImagePattern(goldDice));
+                }
+            } else if (i == 3) {
+                switch (resources.get(i)) {
+                    case "ore" -> die4.setFill(new ImagePattern(oreDice));
+                    case "grain" -> die4.setFill(new ImagePattern(grainDice));
+                    case "wool" -> die4.setFill(new ImagePattern(woolDice));
+                    case "timber" -> die4.setFill(new ImagePattern(timberDice));
+                    case "bricks" -> die4.setFill(new ImagePattern(brickDice));
+                    case "gold" -> die4.setFill(new ImagePattern(goldDice));
+                }
+            } else if (i == 4) {
+                switch (resources.get(i)) {
+                    case "ore" -> die5.setFill(new ImagePattern(oreDice));
+                    case "grain" -> die5.setFill(new ImagePattern(grainDice));
+                    case "wool" -> die5.setFill(new ImagePattern(woolDice));
+                    case "timber" -> die5.setFill(new ImagePattern(timberDice));
+                    case "bricks" -> die5.setFill(new ImagePattern(brickDice));
+                    case "gold" -> die5.setFill(new ImagePattern(goldDice));
+                }
+            } else if (i == 5) {
+                switch (resources.get(i)) {
+                    case "ore" -> die6.setFill(new ImagePattern(oreDice));
+                    case "grain" -> die6.setFill(new ImagePattern(grainDice));
+                    case "wool" -> die6.setFill(new ImagePattern(woolDice));
+                    case "timber" -> die6.setFill(new ImagePattern(timberDice));
+                    case "bricks" -> die6.setFill(new ImagePattern(brickDice));
+                    case "gold" -> die6.setFill(new ImagePattern(goldDice));
+                }
+            }
+
+
+        }
+    }
+
+    public String resourceReturner(int i) throws FileNotFoundException {
+
+        switch (i) {
+            case 0 -> {
+                return "ore";
+            }
+            case 1 -> {
+                return "grain";
+            }
+            case 2 -> {
+                return "wool";
+            }
+            case 3 -> {
+                return "timber";
+            }
+            case 4 -> {
+                return "brick";
+            }
+            case 5 -> {
+                return "gold";
+            }
+        }
+        return "";
+    }
+
 
     /**
      * Generates the dice images and displays them
@@ -2242,7 +2338,7 @@ public class Game extends Application {
         shape.setHeight(100);
         shape.setWidth(100);
         shape.setFill(Color.TRANSPARENT);
-        shape.setFill(Color.TRANSPARENT);
+        shape.setStroke(Color.TRANSPARENT);
 
         if (die == 1) {
             shape.setX(50);
@@ -2330,15 +2426,17 @@ public class Game extends Application {
     public String boardToString(Board board)  {
         String boardString = "";
         Structure[] currentStructures = board.structures;
-        int count = 0;
         for (Structure structure : currentStructures) {
-            if (structure.isBuilt() && count != 32) {
+            if (structure.isBuilt()) {
                 boardString = boardString + structure.getPosition() + ",";
-                count += 1;
-            } else if (structure.isBuilt() && count == 32) {
-                boardString = boardString + structure.getPosition();
+
             }
         }
+
+        if (boardString.equals("")) {
+            return boardString;
+        }
+        boardString = boardString.substring(0, boardString.length() -1);
         return boardString;
     }
 
@@ -2369,6 +2467,36 @@ public class Game extends Application {
             rolledDice[i] = rolledDie;
         }
         return rolledDice;
+    }
+
+    public int[] resourceStateFromDice(int[] dice) {
+        int oreCount = 0;
+        int grainCount = 0;
+        int woolCount = 0;
+        int timberCount = 0;
+        int brickCount = 0;
+        int goldCount = 0;
+
+        for (int i = 0; i < dice.length; i++) {
+            if (dice[i] == 0) {
+                oreCount+=1;
+            } else if (dice[i] == 1) {
+                grainCount+=1;
+            } else if (dice[i] == 2) {
+                woolCount+=1;
+            } else if (dice[i] == 3) {
+                timberCount+=1;
+            } else if (dice[i] == 4) {
+                brickCount+=1;
+            } else if (dice[i] == 5) {
+                goldCount+=1;
+            }
+        }
+
+        int[] resourceState = {oreCount,grainCount,woolCount,timberCount,brickCount,goldCount};
+
+        return resourceState;
+
     }
 
 

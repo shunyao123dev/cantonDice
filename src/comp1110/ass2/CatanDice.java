@@ -216,6 +216,8 @@ public class CatanDice {
                                                 String board_state) {
         if (!(isBoardStateWellFormed(board_state))) {
             return false;
+        } else if (structure.equals("R0") || structure.equals("S3") || structure.equals("J1")) {
+            return true;
         }
         String[] b_state = board_state.split(",");
         ArrayList<String> B_state = new ArrayList<>(Arrays.asList(b_state));
@@ -710,6 +712,43 @@ public class CatanDice {
         // FIXME: Task #9
     }
 
+    public static String canDoActionWithPhrase(String action,
+                                      String board_state,
+                                      int[] resource_state) {
+        String returnString = "";
+        String[] act = action.split(" ");
+        if (act[0].equals("build")) {
+            if (act.length != 2) {
+                returnString = "Invalid build command entered";
+            } else if (!(checkBuildConstraints(act[1], board_state))) {
+                returnString =  "Insufficient building prerequisites to build " + act[1];
+            } else if (!(checkResources(act[1], resource_state))) {
+                returnString = "Insufficient resources to build " + act[1];
+            }
+        } else if (act[0].equals("trade")) {
+            if (act.length != 2) {
+                returnString = "Invalid trade command entered";
+            } else if (resource_state[5] < 2) {
+                returnString = "Insufficient gold to execute trade";
+            }
+        } else if (act[0].equals("swap")) {
+            int idx1 = Integer.parseInt(act[1]);
+            int idx2 = Integer.parseInt(act[2]);
+            if (act.length != 3) {
+                returnString = "Invalid swap command entered";
+            } else if (!(canDoSwap(idx1, idx2, board_state, resource_state))) {
+                returnString = "Insufficient resources to execute swap";
+            }
+
+        } else {
+            return returnString;
+        }
+        return returnString;
+    }
+
+
+
+
     /**
      * check if there is available resource can be used to swap
      * @param swap_resource1: the index of the resource that used to swap
@@ -906,7 +945,7 @@ public class CatanDice {
     /**
      * Generate a plan (sequence of player actions) to build the target
      * structure from the given board and resource state. The plan may
-     * include trades and swaps, as well as bulding other structures if
+     * include trades and swaps, as well as building other structures if
      * needed to reach the target structure or to satisfy the build order
      * constraints.
      * <p>
