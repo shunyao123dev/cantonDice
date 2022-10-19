@@ -413,6 +413,8 @@ public class Game extends Application {
 
 
 
+
+
             //get them to roll three times
 
 
@@ -1878,6 +1880,11 @@ public class Game extends Application {
 
 
     }
+
+    public void displayInstructions(String string) {
+
+    }
+
 
     /**
      * Generates a text box given a string

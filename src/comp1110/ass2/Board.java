@@ -176,20 +176,82 @@ public class Board {
 
     }
 
-    public void buildStructure(String structure) {
-        for (Structure pos : this.structures) {
-            if (pos.getPosition().equals(structure)) {
-                pos.setBuilt();
+    public void buildStructures(String string) {
+        ArrayList<String> structureStrings = new ArrayList<>(List.of(string.split(",")));
+        for (String pos : structureStrings) {
+            for (Structure structure : this.structures) {
+                if (pos.equals(structure.getPosition())) {
+                    structure.setBuilt();
+            }
             }
         }
 
     }
 
-    public void setKnightUsed() {
-
-    }
-
     public void setStructures(Structure[] structures) {
         this.structures = structures;
+    }
+
+    /**
+     * Given the string board state, returns the equivalent Board
+     * @return board: OO Board
+     */
+    public Board stringToBoard(String boardState) {
+        ArrayList<String> structureStrings = new ArrayList<>(List.of(boardState.split(",")));
+        Board currentBoard = new Board();
+        Structure[] playersStructures = currentBoard.structures;
+
+        for (String builtString : structureStrings) {
+            for (Structure unBuiltStructure : playersStructures) {
+                if (builtString.equals(unBuiltStructure.getPosition()) && isUsedKnight(builtString)) {
+                    unBuiltStructure.setBuilt();
+                    unBuiltStructure.setKnightUsed();
+                } else if (builtString.equals(unBuiltStructure.getPosition())) {
+                    unBuiltStructure.setBuilt();
+                }
+            }
+        }
+        currentBoard.setStructures(playersStructures);
+        return currentBoard;
+    }
+
+    /**
+     * Converts object orientated board into string.
+     * @param board
+     * @return
+     */
+    public String boardToString(Board board)  {
+        String boardString = "";
+        Structure[] currentStructures = board.structures;
+        int count = 0;
+        int builtCount = 0;
+
+        for (Structure structure : currentStructures) {
+            if (structure.isBuilt()) {
+                builtCount +=1;
+            }
+        }
+
+        for (Structure structure : currentStructures) {
+            if (structure.isBuilt() && (count != builtCount - 1)) {
+                boardString = boardString + structure.getPosition() + ",";
+                count += 1;
+            } else if (structure.isBuilt() && count == builtCount - 1) {
+                boardString = boardString + structure.getPosition();
+            }
+        }
+        int lengthString = boardString.length();
+        boardString = boardString.substring(3,lengthString);
+        return boardString;
+    }
+
+    public boolean isUsedKnight(String knight) {
+        if (knight.equals("K1") || knight.equals("K2") ||
+                knight.equals("K3") || knight.equals("K4") ||
+                knight.equals("K5") || knight.equals("K6")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

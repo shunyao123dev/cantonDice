@@ -78,7 +78,12 @@ public class Structure {
 
     public void setPosition(String position) {this.position = position;}
 
-    public void setKnightUsed() {this.used = true;}
+    public void setKnightUsed() {
+        this.used = true;
+        String unBuiltKnight = this.position;
+        String builtKnight = "K" + unBuiltKnight.substring(unBuiltKnight.length() - 1);
+        this.position = builtKnight;
+    }
 
 
     // Returns whether the structure is the start
