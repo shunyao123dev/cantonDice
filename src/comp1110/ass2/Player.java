@@ -55,14 +55,7 @@ public class Player {
         this.resources = new ResourceState();
     }
 
-    /**
-     * This method update the player's score in each turn
-     *
-     * @param score no return
-     */
-    public void update_score(int score) {
-
-    }
+    public String getName() {return this.name;}
 
     public ArrayList<Integer> getScores() {
         return this.scores;

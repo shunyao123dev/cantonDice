@@ -19,6 +19,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -28,10 +30,12 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.*;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import org.w3c.dom.css.Rect;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,10 +43,8 @@ import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Stack;
 
 public class Game extends Application {
 
@@ -95,6 +97,14 @@ public class Game extends Application {
 
     private int[] currentDie = new int[6];
 
+    private Group redDie = new Group();
+
+    private int[] dieSelected = new int[6];
+
+    private ArrayList<Rectangle> dieHighlighted = new ArrayList<>();
+
+    private ArrayList<Integer> dieToKeep = new ArrayList<>(Arrays.asList(0,0,0,0,0,0));
+
     private final Group controlsForPlayerTurn = new Group();
 
     private int playerNumber = 0;
@@ -103,8 +113,18 @@ public class Game extends Application {
 
     private boolean gameOver = false;
 
-    //Players
+    private boolean turnStarted = false;
 
+    //Die
+
+    private Rectangle die1 = new Rectangle();
+    private Rectangle die2 = new Rectangle();
+    private Rectangle die3 = new Rectangle();
+    private Rectangle die4 = new Rectangle();
+    private Rectangle die5 = new Rectangle();
+    private Rectangle die6 = new Rectangle();
+
+    //Players
     private Player player1 = new Player("Player 1");
     private Player player2 = new Player("Player 2");
     private Player player3 = new Player("Player 3");
@@ -173,7 +193,11 @@ public class Game extends Application {
         onePlayer.setOnAction(new EventHandler<ActionEvent>() { //When the player selects an options the menu will disappear and start the game
             @Override
             public void handle(ActionEvent actionEvent) {
-                launchControls();
+                try {
+                    launchControls();
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
                 gameStarted = true;
                 playerNumber = 1;
                 currentPlayer = player1;
@@ -185,7 +209,11 @@ public class Game extends Application {
         twoPlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                launchControls();
+                try {
+                    launchControls();
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
                 gameStarted = true;
                 playerNumber = 2;
                 currentPlayer = player1;
@@ -197,7 +225,11 @@ public class Game extends Application {
         threePlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                launchControls();
+                try {
+                    launchControls();
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
                 gameStarted = true;
                 playerNumber = 3;
                 currentPlayer = player1;
@@ -209,7 +241,11 @@ public class Game extends Application {
         fourPlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                launchControls();
+                try {
+                    launchControls();
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
                 gameStarted = true;
                 playerNumber = 4;
                 currentPlayer = player1;
@@ -232,7 +268,8 @@ public class Game extends Application {
      * Launches the control menu after the player has selected a game mode.
      */
 
-    public void launchControls() {
+    public void launchControls() throws FileNotFoundException {
+        turnStarted = false;
 
         if (!gameOver) {
 
@@ -312,6 +349,112 @@ public class Game extends Application {
             hb2.setLayoutX(485);
             hb2.setLayoutY(200);
 
+            //Dice empty
+            makeDieTransparent(die1, 1);
+            makeDieTransparent(die2, 2);
+            makeDieTransparent(die3, 3);
+            makeDieTransparent(die4, 4);
+            makeDieTransparent(die5, 5);
+            makeDieTransparent(die6, 6);
+
+            dieRoll.getChildren().addAll(die1, die2, die3, die4, die5, die6);
+
+            EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie1 =
+                    new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent mouseEvent) {
+                            if (dieSelected[0] == 0 && rollCount > 1) {
+                                die1.setStroke(Color.RED);
+                                dieSelected[0] = 1;
+                            } else if (dieSelected[0] == 1 && rollCount > 1) {
+                                die1.setStroke(Color.BLACK);
+                                dieSelected[0] = 0;
+                            }
+                        }
+                    };
+
+            die1.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie1);
+
+            EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie2 =
+                    new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent mouseEvent) {
+                            if (dieSelected[1] == 0 && rollCount > 1) {
+                                die1.setStroke(Color.RED);
+                                dieSelected[1] = 1;
+                            } else if (dieSelected[1] == 1 && rollCount > 1) {
+                                die1.setStroke(Color.BLACK);
+                                dieSelected[1] = 0;
+                            }
+                        }
+                    };
+
+            die2.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie2);
+
+            EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie3 =
+                    new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent mouseEvent) {
+                            if (dieSelected[2] == 0 && rollCount > 1) {
+                                die1.setStroke(Color.RED);
+                                dieSelected[2] = 1;
+                            } else if (dieSelected[1] == 1 && rollCount > 1) {
+                                die1.setStroke(Color.BLACK);
+                                dieSelected[2] = 0;
+                            }
+                        }
+                    };
+
+            die3.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie3);
+
+            EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie4 =
+                    new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent mouseEvent) {
+                            if (dieSelected[3] == 0 && rollCount > 1) {
+                                die1.setStroke(Color.RED);
+                                dieSelected[3] = 1;
+                            } else if (dieSelected[1] == 1 && rollCount > 1) {
+                                die1.setStroke(Color.BLACK);
+                                dieSelected[3] = 0;
+                            }
+                        }
+                    };
+
+            die4.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie3);
+
+            EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie5 =
+                    new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent mouseEvent) {
+                            if (dieSelected[4] == 0 && rollCount > 1) {
+                                die1.setStroke(Color.RED);
+                                dieSelected[4] = 1;
+                            } else if (dieSelected[1] == 1 && rollCount > 1) {
+                                die1.setStroke(Color.BLACK);
+                                dieSelected[4] = 0;
+                            }
+                        }
+                    };
+
+            die5.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie5);
+
+            EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie6 =
+                    new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent mouseEvent) {
+                            if (dieSelected[5] == 0 && rollCount > 1) {
+                                die1.setStroke(Color.RED);
+                                dieSelected[5] = 1;
+                            } else if (dieSelected[1] == 1 && rollCount > 1) {
+                                die1.setStroke(Color.BLACK);
+                                dieSelected[5] = 0;
+                            }
+                        }
+                    };
+
+            die6.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie6);
+
             //Action bar action
 
             button.setOnAction(new EventHandler<ActionEvent>() {
@@ -359,47 +502,85 @@ public class Game extends Application {
 
             //Roll dice action
             rollDice.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    if (rollCount < 4) {
-                        if (rollCount == 1) {
-                            int[] list = new int[]{0, 0, 0, 0, 0, 0};
-                            MoveControls.rollDice(6, list);
-                            Text rollCountText = textBox(String.valueOf(rollCount));
-                            Font font = new Font("Verdana", 20);
-                            rollCountText.setFont(font);
-                            rollCountText.setX(500);
-                            rollCountText.setY(287.5);
-                            rollCounter.getChildren().add(rollCountText);
-                            rollCount += 1;
-                            try {
-                                displayDice(list);
-                            } catch (FileNotFoundException e) {
-                                throw new RuntimeException(e);
-                            }
-                        } else {
-                            rollCounter.getChildren().clear();
-                            int[] list = new int[]{0, 0, 0, 0, 0, 0};
-                            MoveControls.rollDice(6, list);
-                            Text rollCountText = textBox(String.valueOf(rollCount));
-                            Font font = new Font("Verdana", 20);
-                            rollCountText.setFont(font);
-                            rollCountText.setX(500);
-                            rollCountText.setY(287.5);
-                            rollCounter.getChildren().add(rollCountText);
-                            rollCount += 1;
-                            if (rollCount == 3) {
-                                currentDie = list;
-                            }
-                            try {
-                                displayDice(list);
-                            } catch (FileNotFoundException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-                }
-            });
+                 @Override
+                 public void handle(ActionEvent actionEvent) {
+                     if (rollCount < 4) {
+                         if (rollCount == 1) {
+                             int[] list = new int[]{0, 0, 0, 0, 0, 0};
+                             MoveControls.rollDice(6, list);
+                             Text rollCountText = textBox(String.valueOf(rollCount));
+                             Font font = new Font("Verdana", 20);
+                             rollCountText.setFont(font);
+                             rollCountText.setX(500);
+                             rollCountText.setY(287.5);
+                             rollCounter.getChildren().add(rollCountText);
+                             currentDie = list;
+                             rollCount += 1;
+                             try {
+                                 displayDice(list);
+                             } catch (FileNotFoundException e) {
+                                 throw new RuntimeException(e);
+                             }
+                         } else if (rollCount == 2) {
+                             int[] list = new int[6-countZeros(dieSelected)];
+                             MoveControls.rollDice(6-countZeros(dieSelected), list);
+
+
+
+                             Text rollCountText = textBox(String.valueOf(rollCount));
+                             Font font = new Font("Verdana", 20);
+                             rollCountText.setFont(font);
+                             rollCountText.setX(500);
+                             rollCountText.setY(287.5);
+                             rollCounter.getChildren().add(rollCountText);
+                             rollCount += 1;
+                             try {
+                                 int count = 0;
+                                 int[] finalList = new int[6];
+                                 for (int i = 0; i < 6 ; i++) {
+                                     if (dieToKeep.get(i) == 1) {
+                                         finalList[i] = currentDie[i];
+                                     } else {
+                                         finalList[i] = list[count];
+                                         count +=1;
+                                     }
+                                 }
+                                 currentDie = finalList;
+                                 displayDice(finalList);
+                             } catch (FileNotFoundException e) {
+                                 throw new RuntimeException(e);
+                             }
+
+                         }
+
+
+                     } else {
+                         rollCounter.getChildren().clear();
+                         int[] list = new int[]{0, 0, 0, 0, 0, 0};
+                         MoveControls.rollDice(6, list);
+                         Text rollCountText = textBox(String.valueOf(rollCount));
+                         Font font = new Font("Verdana", 20);
+                         rollCountText.setFont(font);
+                         rollCountText.setX(500);
+                         rollCountText.setY(287.5);
+                         rollCounter.getChildren().add(rollCountText);
+                         rollCount += 1;
+                         if (rollCount == 3) {
+                             currentDie = list;
+                             ResourceState holdResources = new ResourceState();
+                             holdResources.changeResourceState(list);
+                             currentPlayer.setResources(holdResources);
+                         }
+                         try {
+                             displayDice(list);
+                         } catch (FileNotFoundException e) {
+                             throw new RuntimeException(e);
+                         }
+                     }
+                 }
+
+
+             });
 
             //Current player set to player 1. Display current state and score.
 
@@ -408,12 +589,7 @@ public class Game extends Application {
 
             //Prompt player to roll
 
-
-
-
-
-
-
+            displayInstructions(currentPlayer.getName() + " is playing. Please roll!");
 
             //get them to roll three times
 
@@ -1330,6 +1506,7 @@ public class Game extends Application {
         root.getChildren().add(controls); //adds control bar
         root.getChildren().add(currentPlayersBoardDisplay); //adds current players board
         root.getChildren().add(currentPlayersScoreDisplay); //adds current players scores
+        root.getChildren().add(redDie); //Shows selected die
         root.getChildren().add(startMenu); // adds start menu
         root.getChildren().add(objects); //adds resource key, scoreboard, title and ocean
         root.getChildren().add(hexagons); //adds all hexagons
@@ -1809,7 +1986,7 @@ public class Game extends Application {
      * @throws FileNotFoundException
      */
 
-    public void displayDice(int[] dice) throws FileNotFoundException{
+    public void displayDice(int[] dice, int[] diceToChange) throws FileNotFoundException {
 
         dieRoll.getChildren().clear();
 
@@ -1820,69 +1997,153 @@ public class Game extends Application {
         Image brickDice = new Image(new FileInputStream("assets/Brick_dice.png"));
         Image goldDice = new Image(new FileInputStream("assets/Gold_dice.png"));
 
-        ArrayList<Image> diceImages = new ArrayList<>();
+        ArrayList<Rectangle> diceShapes = new ArrayList<>();
+
+        int position = 0;
 
         for (int die : dice) {
-            Image currentDie = new WritableImage(500,500);
-            if (die == 0) {
-                currentDie = oreDice;
-            } else if (die == 1) {
-                currentDie = grainDice;
-            } else if (die == 2) {
-                currentDie = woolDice;
-            } else if (die == 3) {
-                currentDie = timberDice;
-            } else if (die == 4) {
-                currentDie = brickDice;
-            } else if (die == 5) {
-                currentDie = goldDice;
+            for (int i = 0; i < diceToChange.length; i++) {
+
             }
-            diceImages.add(currentDie);
+
+
+            if (position == 0) {
+                position += 1;
+                if (die == 0) {
+                    die1.setFill(new ImagePattern(oreDice));
+                } else if (die == 1) {
+                    die1.setFill(new ImagePattern(grainDice));
+                } else if (die == 2) {
+                    die1.setFill(new ImagePattern(woolDice));
+                } else if (die == 3) {
+                    die1.setFill(new ImagePattern(timberDice));
+                } else if (die == 4) {
+                    die1.setFill(new ImagePattern(brickDice));
+                } else if (die == 5) {
+                    die1.setFill(new ImagePattern(goldDice));
+                }
+            } else if (position == 1) {
+                position += 1;
+                if (die == 0) {
+                    die2.setFill(new ImagePattern(oreDice));
+                } else if (die == 1) {
+                    die2.setFill(new ImagePattern(grainDice));
+                } else if (die == 2) {
+                    die2.setFill(new ImagePattern(woolDice));
+                } else if (die == 3) {
+                    die2.setFill(new ImagePattern(timberDice));
+                } else if (die == 4) {
+                    die2.setFill(new ImagePattern(brickDice));
+                } else if (die == 5) {
+                    die2.setFill(new ImagePattern(goldDice));
+                }
+            } else if (position == 2) {
+                position += 1;
+                if (die == 0) {
+                    die3.setFill(new ImagePattern(oreDice));
+                } else if (die == 1) {
+                    die3.setFill(new ImagePattern(grainDice));
+                } else if (die == 2) {
+                    die3.setFill(new ImagePattern(woolDice));
+                } else if (die == 3) {
+                    die3.setFill(new ImagePattern(timberDice));
+                } else if (die == 4) {
+                    die3.setFill(new ImagePattern(brickDice));
+                } else if (die == 5) {
+                    die3.setFill(new ImagePattern(goldDice));
+                }
+            } else if (position == 3) {
+                position += 1;
+                if (die == 0) {
+                    die4.setFill(new ImagePattern(oreDice));
+                } else if (die == 1) {
+                    die4.setFill(new ImagePattern(grainDice));
+                } else if (die == 2) {
+                    die4.setFill(new ImagePattern(woolDice));
+                } else if (die == 3) {
+                    die4.setFill(new ImagePattern(timberDice));
+                } else if (die == 4) {
+                    die4.setFill(new ImagePattern(brickDice));
+                } else if (die == 5) {
+                    die4.setFill(new ImagePattern(goldDice));
+                }
+            } else if (position == 4) {
+                position += 1;
+                if (die == 0) {
+                    die5.setFill(new ImagePattern(oreDice));
+                } else if (die == 1) {
+                    die5.setFill(new ImagePattern(grainDice));
+                } else if (die == 2) {
+                    die5.setFill(new ImagePattern(woolDice));
+                } else if (die == 3) {
+                    die5.setFill(new ImagePattern(timberDice));
+                } else if (die == 4) {
+                    die5.setFill(new ImagePattern(brickDice));
+                } else if (die == 5) {
+                    die5.setFill(new ImagePattern(goldDice));
+                }
+            } else if (position == 5) {
+                position += 1;
+                if (die == 0) {
+                    die6.setFill(new ImagePattern(oreDice));
+                } else if (die == 1) {
+                    die6.setFill(new ImagePattern(grainDice));
+                } else if (die == 2) {
+                    die6.setFill(new ImagePattern(woolDice));
+                } else if (die == 3) {
+                    die6.setFill(new ImagePattern(timberDice));
+                } else if (die == 4) {
+                    die6.setFill(new ImagePattern(brickDice));
+                } else if (die == 5) {
+                    die6.setFill(new ImagePattern(goldDice));
+                }
+            }
         }
-
-        ImageView dice1 = new ImageView(diceImages.get(0));
-        dice1.setFitHeight(100);
-        dice1.setFitWidth(100);
-        dice1.setX(50);
-        dice1.setY(175);
-
-        ImageView dice2 = new ImageView(diceImages.get(1));
-        dice2.setFitHeight(100);
-        dice2.setFitWidth(100);
-        dice2.setX(175);
-        dice2.setY(175);
-
-        ImageView dice3 = new ImageView(diceImages.get(2));
-        dice3.setFitHeight(100);
-        dice3.setFitWidth(100);
-        dice3.setX(300);
-        dice3.setY(175);
-
-        ImageView dice4 = new ImageView(diceImages.get(3));
-        dice4.setFitHeight(100);
-        dice4.setFitWidth(100);
-        dice4.setX(50);
-        dice4.setY(300);
-
-        ImageView dice5 = new ImageView(diceImages.get(4));
-        dice5.setFitHeight(100);
-        dice5.setFitWidth(100);
-        dice5.setX(175);
-        dice5.setY(300);
-
-        ImageView dice6 = new ImageView(diceImages.get(5));
-        dice6.setFitHeight(100);
-        dice6.setFitWidth(100);
-        dice6.setX(300);
-        dice6.setY(300);
-
-        dieRoll.getChildren().addAll(dice1, dice2, dice3, dice4, dice5, dice6);
-
-
     }
 
-    public void displayInstructions(String string) {
+    /**
+     * Generates the dice shapes
+     * @param
+     * @throws FileNotFoundException
+     */
 
+    public void makeDieTransparent(Rectangle shape, int die) throws FileNotFoundException {
+        shape.setHeight(100);
+        shape.setWidth(100);
+        shape.setFill(Color.TRANSPARENT);
+        shape.setFill(Color.TRANSPARENT);
+
+        if (die == 1) {
+            shape.setX(50);
+            shape.setY(175);
+        } else if (die == 2) {
+            shape.setX(175);
+            shape.setY(175);
+        } else if (die == 3) {
+            shape.setX(300);
+            shape.setY(175);
+        } else if (die == 4) {
+            shape.setX(50);
+            shape.setY(300);
+        } else if (die == 5) {
+            shape.setX(175);
+            shape.setY(300);
+        } else if (die == 6) {
+            shape.setX(300);
+            shape.setY(300);
+        }
+    }
+
+
+
+
+    public void displayInstructions(String string) {
+        instructions.getChildren().clear();
+        Text text = new Text(string);
+        text.setFont(Font.font("Verdana", 12));
+        text.setX(15);
+        text.setY(75);
+        instructions.getChildren().add(text);
     }
 
 
@@ -1958,6 +2219,16 @@ public class Game extends Application {
         } else {
             return false;
         }
+    }
+
+    public int countZeros(int[] ints) {
+        int count = 0;
+        for (int i = 0; i < ints.length; i++) {
+            if (ints[i] == 0) {
+                count +=1;
+            }
+        }
+        return count;
     }
 
 

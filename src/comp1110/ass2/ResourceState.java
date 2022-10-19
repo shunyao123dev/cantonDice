@@ -10,6 +10,10 @@ public class ResourceState {
         this.state = new int[]{0, 0, 0, 0, 0, 0};
     }
 
+    public void changeResourceState(int[] resources) {
+        this.state = resources;
+    }
+
 
     //Update Resource State with by given parameters
 
