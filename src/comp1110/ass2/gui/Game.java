@@ -100,7 +100,7 @@ public class Game extends Application {
 
     private Group redDie = new Group();
 
-    private int[] dieSelected = new int[6];
+    private int[] dieSelected = new int[]{0,0,0,0,0,0};
 
     private ArrayList<Rectangle> dieHighlighted = new ArrayList<>();
 
@@ -139,8 +139,6 @@ public class Game extends Application {
     private ArrayList<Integer> testScores4 = new ArrayList<>(Arrays.asList(10,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
     private ArrayList<Integer> testScores5 = new ArrayList<>(Arrays.asList(5,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
 
-
-
     /**
      * Creates the launch menu
      */
@@ -152,6 +150,7 @@ public class Game extends Application {
         currentPlayersBoardDisplay.getChildren().clear();
         currentPlayersScoreDisplay.getChildren().clear();
         currentPlayersBoardDisplay.setVisible(false);
+        currentPlayer = player1;
 
         //Creates the start menu
 
@@ -201,7 +200,6 @@ public class Game extends Application {
                 }
                 gameStarted = true;
                 playerNumber = 1;
-                currentPlayer = player1;
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -217,7 +215,6 @@ public class Game extends Application {
                 }
                 gameStarted = true;
                 playerNumber = 2;
-                currentPlayer = player1;
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -233,7 +230,6 @@ public class Game extends Application {
                 }
                 gameStarted = true;
                 playerNumber = 3;
-                currentPlayer = player1;
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -249,7 +245,6 @@ public class Game extends Application {
                 }
                 gameStarted = true;
                 playerNumber = 4;
-                currentPlayer = player1;
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -270,8 +265,6 @@ public class Game extends Application {
      */
 
     public void launchControls() throws FileNotFoundException {
-        turnStarted = false;
-
         if (!gameOver) {
 
             //Reset game button
@@ -286,6 +279,8 @@ public class Game extends Application {
                 controls.getChildren().clear();
                 rollCounter.getChildren().clear();
                 dieRoll.getChildren().clear();
+                redDie.getChildren().clear();
+                instructions.getChildren().clear();
                 currentPlayersBoardDisplay.getChildren().clear();
                 currentPlayersResourceState = new ResourceState();
                 currentDie = new int[6];
@@ -298,6 +293,17 @@ public class Game extends Application {
                 player3 = new Player("Player 3");
                 player4 = new Player("Player 4");
                 playerAI = new Player("AI");
+                currentPlayer = new Player("current");
+                try {
+                    makeDieTransparent(die1, 1);
+                    makeDieTransparent(die2, 2);
+                    makeDieTransparent(die3, 3);
+                    makeDieTransparent(die4, 4);
+                    makeDieTransparent(die5, 5);
+                    makeDieTransparent(die6, 6);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
                 launchStartMenu();
             });
 
@@ -352,11 +358,17 @@ public class Game extends Application {
 
             //Dice empty
             makeDieTransparent(die1, 1);
+            final boolean[] selectedAtRoll1 = {false};
             makeDieTransparent(die2, 2);
+            final boolean[] selectedAtRoll2 = {false};
             makeDieTransparent(die3, 3);
+            final boolean[] selectedAtRoll3 = {false};
             makeDieTransparent(die4, 4);
+            final boolean[] selectedAtRoll4 = {false};
             makeDieTransparent(die5, 5);
+            final boolean[] selectedAtRoll5 = {false};
             makeDieTransparent(die6, 6);
+            final boolean[] selectedAtRoll6 = {false};
 
             dieRoll.getChildren().addAll(die1, die2, die3, die4, die5, die6);
 
@@ -364,12 +376,24 @@ public class Game extends Application {
                     new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent mouseEvent) {
-                            if (dieSelected[0] == 0 && rollCount > 1) {
+                            if (dieSelected[0] == 0 && rollCount == 2) {
                                 die1.setStroke(Color.RED);
+                                die1.setStrokeWidth(2);
                                 dieSelected[0] = 1;
-                            } else if (dieSelected[0] == 1 && rollCount > 1) {
+                            } else if (dieSelected[0] == 1 && rollCount == 2) {
                                 die1.setStroke(Color.BLACK);
+                                die1.setStrokeWidth(1);
                                 dieSelected[0] = 0;
+                            } else if (rollCount == 3 && selectedAtRoll1[0]) {
+                                if (dieSelected[0] == 0) {
+                                    die1.setStroke(Color.RED);
+                                    die1.setStrokeWidth(2);
+                                    dieSelected[0] = 1;
+                                } else if (dieSelected[0] == 1) {
+                                    die1.setStroke(Color.BLACK);
+                                    die1.setStrokeWidth(1);
+                                    dieSelected[0] = 0;
+                                }
                             }
                         }
                     };
@@ -380,12 +404,24 @@ public class Game extends Application {
                     new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent mouseEvent) {
-                            if (dieSelected[1] == 0 && rollCount > 1) {
-                                die1.setStroke(Color.RED);
+                            if (dieSelected[1] == 0 && rollCount == 2) {
+                                die2.setStroke(Color.RED);
+                                die2.setStrokeWidth(2);
                                 dieSelected[1] = 1;
-                            } else if (dieSelected[1] == 1 && rollCount > 1) {
-                                die1.setStroke(Color.BLACK);
+                            } else if (dieSelected[1] == 1 && rollCount == 2) {
+                                die2.setStroke(Color.BLACK);
+                                die2.setStrokeWidth(1);
                                 dieSelected[1] = 0;
+                            } else if (rollCount == 3 && selectedAtRoll2[0]) {
+                                if (dieSelected[1] == 0) {
+                                    die2.setStroke(Color.RED);
+                                    die2.setStrokeWidth(2);
+                                    dieSelected[1] = 1;
+                                } else if (dieSelected[1] == 1) {
+                                    die2.setStroke(Color.BLACK);
+                                    die2.setStrokeWidth(1);
+                                    dieSelected[1] = 0;
+                                }
                             }
                         }
                     };
@@ -396,12 +432,24 @@ public class Game extends Application {
                     new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent mouseEvent) {
-                            if (dieSelected[2] == 0 && rollCount > 1) {
-                                die1.setStroke(Color.RED);
+                            if (dieSelected[2] == 0 && rollCount == 2) {
+                                die3.setStroke(Color.RED);
+                                die3.setStrokeWidth(2);
                                 dieSelected[2] = 1;
-                            } else if (dieSelected[1] == 1 && rollCount > 1) {
-                                die1.setStroke(Color.BLACK);
+                            } else if (dieSelected[2] == 1 && rollCount == 2) {
+                                die3.setStroke(Color.BLACK);
+                                die3.setStrokeWidth(1);
                                 dieSelected[2] = 0;
+                            } else if (rollCount == 3 && selectedAtRoll3[0]) {
+                                if (dieSelected[2] == 0) {
+                                    die3.setStroke(Color.RED);
+                                    die3.setStrokeWidth(2);
+                                    dieSelected[2] = 1;
+                                } else if (dieSelected[2] == 1) {
+                                    die3.setStroke(Color.BLACK);
+                                    die3.setStrokeWidth(1);
+                                    dieSelected[2] = 0;
+                                }
                             }
                         }
                     };
@@ -412,28 +460,52 @@ public class Game extends Application {
                     new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent mouseEvent) {
-                            if (dieSelected[3] == 0 && rollCount > 1) {
-                                die1.setStroke(Color.RED);
+                            if (dieSelected[3] == 0 && rollCount == 2) {
+                                die4.setStroke(Color.RED);
+                                die4.setStrokeWidth(2);
                                 dieSelected[3] = 1;
-                            } else if (dieSelected[1] == 1 && rollCount > 1) {
-                                die1.setStroke(Color.BLACK);
+                            } else if (dieSelected[3] == 1 && rollCount == 2) {
+                                die4.setStroke(Color.BLACK);
+                                die4.setStrokeWidth(1);
                                 dieSelected[3] = 0;
+                            } else if (rollCount == 3 && selectedAtRoll4[0]) {
+                                if (dieSelected[3] == 0) {
+                                    die4.setStroke(Color.RED);
+                                    die4.setStrokeWidth(2);
+                                    dieSelected[3] = 1;
+                                } else if (dieSelected[3] == 1) {
+                                    die4.setStroke(Color.BLACK);
+                                    die4.setStrokeWidth(1);
+                                    dieSelected[3] = 0;
+                                }
                             }
                         }
                     };
 
-            die4.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie3);
+            die4.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie4);
 
             EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie5 =
                     new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent mouseEvent) {
-                            if (dieSelected[4] == 0 && rollCount > 1) {
-                                die1.setStroke(Color.RED);
+                            if (dieSelected[4] == 0 && rollCount == 2) {
+                                die5.setStroke(Color.RED);
+                                die5.setStrokeWidth(2);
                                 dieSelected[4] = 1;
-                            } else if (dieSelected[1] == 1 && rollCount > 1) {
-                                die1.setStroke(Color.BLACK);
+                            } else if (dieSelected[4] == 1 && rollCount == 2) {
+                                die5.setStroke(Color.BLACK);
+                                die5.setStrokeWidth(1);
                                 dieSelected[4] = 0;
+                            } else if (rollCount == 3 && selectedAtRoll5[0]) {
+                                if (dieSelected[4] == 0) {
+                                    die5.setStroke(Color.RED);
+                                    die5.setStrokeWidth(2);
+                                    dieSelected[4] = 1;
+                                } else if (dieSelected[4] == 1) {
+                                    die5.setStroke(Color.BLACK);
+                                    die5.setStrokeWidth(1);
+                                    dieSelected[4] = 0;
+                                }
                             }
                         }
                     };
@@ -444,12 +516,24 @@ public class Game extends Application {
                     new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent mouseEvent) {
-                            if (dieSelected[5] == 0 && rollCount > 1) {
-                                die1.setStroke(Color.RED);
+                            if (dieSelected[5] == 0 && rollCount == 2) {
+                                die6.setStroke(Color.RED);
+                                die6.setStrokeWidth(2);
                                 dieSelected[5] = 1;
-                            } else if (dieSelected[1] == 1 && rollCount > 1) {
-                                die1.setStroke(Color.BLACK);
+                            } else if (dieSelected[5] == 1 && rollCount == 2) {
+                                die6.setStroke(Color.BLACK);
+                                die6.setStrokeWidth(1);
                                 dieSelected[5] = 0;
+                            } else if (rollCount == 3 && selectedAtRoll6[0]) {
+                                if (dieSelected[5] == 0) {
+                                    die6.setStroke(Color.RED);
+                                    die6.setStrokeWidth(2);
+                                    dieSelected[5] = 1;
+                                } else if (dieSelected[5] == 1) {
+                                    die6.setStroke(Color.BLACK);
+                                    die6.setStrokeWidth(1);
+                                    dieSelected[5] = 0;
+                                }
                             }
                         }
                     };
@@ -505,60 +589,27 @@ public class Game extends Application {
             rollDice.setOnAction(new EventHandler<ActionEvent>() {
                  @Override
                  public void handle(ActionEvent actionEvent) {
-                     if (rollCount < 4) {
-                         if (rollCount == 1) {
-                             int[] rolledDice = new int[]{0, 0, 0, 0, 0, 0};
-                             MoveControls.rollDice(6, rolledDice);
-                             Text rollCountText = textBox(String.valueOf(rollCount));
-                             Font font = new Font("Verdana", 20);
-                             rollCountText.setFont(font);
-                             rollCountText.setX(500);
-                             rollCountText.setY(287.5);
-                             rollCounter.getChildren().add(rollCountText);
-                             currentDie = rolledDice;
-                             rollCount += 1;
-                             try {
-                                 displayDice(rolledDice);
-                             } catch (FileNotFoundException e) {
-                                 throw new RuntimeException(e);
-                             }
-                         } else if (rollCount == 2) {
-                             rollCounter.getChildren().clear();
-                             int numberOfDieToRoll = 6-countZeros(dieSelected);
-                             int[] rolledDice = new int[numberOfDieToRoll];
-                             MoveControls.rollDice(numberOfDieToRoll, rolledDice);
-                             Text rollCountText = textBox(String.valueOf(rollCount));
-                             Font font = new Font("Verdana", 20);
-                             rollCountText.setFont(font);
-                             rollCountText.setX(500);
-                             rollCountText.setY(287.5);
-                             rollCounter.getChildren().add(rollCountText);
-                             rollCount += 1;
-
-                             int[] finalList = new int[6];
-                             int dieChangedIndex = 0;
-
-                             for (int i = 0; i < 6; i++) {
-                                 if (dieSelected[i] == 0) {
-                                     finalList[i] = rolledDice[dieChangedIndex];
-                                     dieChangedIndex +=1;
-                                 } else if (dieSelected[i] == 1) {
-                                     finalList[i] = currentDie[i];
-                                 }
-                             }
-                             currentDie = finalList;
-                             try {
-                                 displayDice(finalList);
-                             } catch (FileNotFoundException e) {
-                                 throw new RuntimeException(e);
-                             }
-
+                     if (rollCount == 1) {
+                         int[] rolledDice = new int[]{0, 0, 0, 0, 0, 0};
+                         MoveControls.rollDice(6, rolledDice);
+                         Text rollCountText = textBox(String.valueOf(rollCount));
+                         Font font = new Font("Verdana", 20);
+                         rollCountText.setFont(font);
+                         rollCountText.setX(500);
+                         rollCountText.setY(287.5);
+                         rollCounter.getChildren().add(rollCountText);
+                         currentDie = rolledDice;
+                         rollCount += 1;
+                         try {
+                             displayDice(rolledDice);
+                         } catch (FileNotFoundException e) {
+                             throw new RuntimeException(e);
                          }
-
-                     } else if (rollCount == 3) {
+                     } else if (rollCount == 2) {
                          rollCounter.getChildren().clear();
-                         int[] rolledDice = new int[6-countZeros(dieSelected)];
-                         MoveControls.rollDice(6-countZeros(dieSelected), rolledDice);
+                         int numberOfDieToRoll = countZeros(dieSelected);
+                         int[] rolledDice = new int[numberOfDieToRoll];
+                         int[] rolledDiceFin = rollDiceFinite(rolledDice);
                          Text rollCountText = textBox(String.valueOf(rollCount));
                          Font font = new Font("Verdana", 20);
                          rollCountText.setFont(font);
@@ -572,8 +623,57 @@ public class Game extends Application {
 
                          for (int i = 0; i < 6; i++) {
                              if (dieSelected[i] == 0) {
-                                 finalList[i] = rolledDice[dieChangedIndex];
-                                 dieChangedIndex +=1;
+                                 finalList[i] = rolledDiceFin[dieChangedIndex];
+                                 dieChangedIndex += 1;
+                             } else if (dieSelected[i] == 1) {
+                                 finalList[i] = currentDie[i];
+                             }
+                         }
+                         int dieCount = 0;
+
+                         for (int i = 0; i < 6; i++) {
+                             if (dieSelected[i] == 1 && dieCount == 0) {
+                                 selectedAtRoll1[0] = true;
+                             } else if (dieSelected[i] == 1 && dieCount == 1) {
+                                 selectedAtRoll2[0] = true;
+                             } else if (dieSelected[i] == 1 && dieCount == 2) {
+                                 selectedAtRoll3[0] = true;
+                             } else if (dieSelected[i] == 1 && dieCount == 3) {
+                                 selectedAtRoll4[0] = true;
+                             } else if (dieSelected[i] == 1 && dieCount == 4) {
+                                 selectedAtRoll5[0] = true;
+                             } else if (dieSelected[i] == 1 && dieCount == 5) {
+                                 selectedAtRoll6[0] = true;
+                             }
+                             dieCount +=1;
+                         }
+
+                         currentDie = finalList;
+                         try {
+                             displayDice(finalList);
+                         } catch (FileNotFoundException e) {
+                             throw new RuntimeException(e);
+                         }
+                     } else if (rollCount == 3) {
+                         rollCounter.getChildren().clear();
+                         int numberOfDieToRoll = countZeros(dieSelected);
+                         int[] rolledDice = new int[numberOfDieToRoll];
+                         int[] rolledDiceFin = rollDiceFinite(rolledDice);
+                         Text rollCountText = textBox(String.valueOf(rollCount));
+                         Font font = new Font("Verdana", 20);
+                         rollCountText.setFont(font);
+                         rollCountText.setX(500);
+                         rollCountText.setY(287.5);
+                         rollCounter.getChildren().add(rollCountText);
+                         rollCount += 1;
+
+                         int[] finalList = new int[6];
+                         int dieChangedIndex = 0;;
+
+                         for (int i = 0; i < 6; i++) {
+                             if (dieSelected[i] == 0) {
+                                 finalList[i] = rolledDiceFin[dieChangedIndex];
+                                 dieChangedIndex += 1;
                              } else if (dieSelected[i] == 1) {
                                  finalList[i] = currentDie[i];
                              }
@@ -581,6 +681,15 @@ public class Game extends Application {
                          currentDie = finalList;
                          try {
                              displayDice(finalList);
+                             die1.setStroke(Color.BLACK);
+                             die2.setStroke(Color.BLACK);
+                             die3.setStroke(Color.BLACK);
+                             die4.setStroke(Color.BLACK);
+                             die5.setStroke(Color.BLACK);
+                             die6.setStroke(Color.BLACK);
+
+                             currentPlayersResourceState.changeResourceState(finalList);
+
                          } catch (FileNotFoundException e) {
                              throw new RuntimeException(e);
                          }
