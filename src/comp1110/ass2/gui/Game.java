@@ -45,6 +45,7 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Game extends Application {
 
@@ -506,27 +507,26 @@ public class Game extends Application {
                  public void handle(ActionEvent actionEvent) {
                      if (rollCount < 4) {
                          if (rollCount == 1) {
-                             int[] list = new int[]{0, 0, 0, 0, 0, 0};
-                             MoveControls.rollDice(6, list);
+                             int[] rolledDice = new int[]{0, 0, 0, 0, 0, 0};
+                             MoveControls.rollDice(6, rolledDice);
                              Text rollCountText = textBox(String.valueOf(rollCount));
                              Font font = new Font("Verdana", 20);
                              rollCountText.setFont(font);
                              rollCountText.setX(500);
                              rollCountText.setY(287.5);
                              rollCounter.getChildren().add(rollCountText);
-                             currentDie = list;
+                             currentDie = rolledDice;
                              rollCount += 1;
                              try {
-                                 displayDice(list);
+                                 displayDice(rolledDice);
                              } catch (FileNotFoundException e) {
                                  throw new RuntimeException(e);
                              }
                          } else if (rollCount == 2) {
-                             int[] list = new int[6-countZeros(dieSelected)];
-                             MoveControls.rollDice(6-countZeros(dieSelected), list);
-
-
-
+                             rollCounter.getChildren().clear();
+                             int numberOfDieToRoll = 6-countZeros(dieSelected);
+                             int[] rolledDice = new int[numberOfDieToRoll];
+                             MoveControls.rollDice(numberOfDieToRoll, rolledDice);
                              Text rollCountText = textBox(String.valueOf(rollCount));
                              Font font = new Font("Verdana", 20);
                              rollCountText.setFont(font);
@@ -534,18 +534,20 @@ public class Game extends Application {
                              rollCountText.setY(287.5);
                              rollCounter.getChildren().add(rollCountText);
                              rollCount += 1;
-                             try {
-                                 int count = 0;
-                                 int[] finalList = new int[6];
-                                 for (int i = 0; i < 6 ; i++) {
-                                     if (dieToKeep.get(i) == 1) {
-                                         finalList[i] = currentDie[i];
-                                     } else {
-                                         finalList[i] = list[count];
-                                         count +=1;
-                                     }
+
+                             int[] finalList = new int[6];
+                             int dieChangedIndex = 0;
+
+                             for (int i = 0; i < 6; i++) {
+                                 if (dieSelected[i] == 0) {
+                                     finalList[i] = rolledDice[dieChangedIndex];
+                                     dieChangedIndex +=1;
+                                 } else if (dieSelected[i] == 1) {
+                                     finalList[i] = currentDie[i];
                                  }
-                                 currentDie = finalList;
+                             }
+                             currentDie = finalList;
+                             try {
                                  displayDice(finalList);
                              } catch (FileNotFoundException e) {
                                  throw new RuntimeException(e);
@@ -553,11 +555,10 @@ public class Game extends Application {
 
                          }
 
-
-                     } else {
+                     } else if (rollCount == 3) {
                          rollCounter.getChildren().clear();
-                         int[] list = new int[]{0, 0, 0, 0, 0, 0};
-                         MoveControls.rollDice(6, list);
+                         int[] rolledDice = new int[6-countZeros(dieSelected)];
+                         MoveControls.rollDice(6-countZeros(dieSelected), rolledDice);
                          Text rollCountText = textBox(String.valueOf(rollCount));
                          Font font = new Font("Verdana", 20);
                          rollCountText.setFont(font);
@@ -565,14 +566,21 @@ public class Game extends Application {
                          rollCountText.setY(287.5);
                          rollCounter.getChildren().add(rollCountText);
                          rollCount += 1;
-                         if (rollCount == 3) {
-                             currentDie = list;
-                             ResourceState holdResources = new ResourceState();
-                             holdResources.changeResourceState(list);
-                             currentPlayer.setResources(holdResources);
+
+                         int[] finalList = new int[6];
+                         int dieChangedIndex = 0;
+
+                         for (int i = 0; i < 6; i++) {
+                             if (dieSelected[i] == 0) {
+                                 finalList[i] = rolledDice[dieChangedIndex];
+                                 dieChangedIndex +=1;
+                             } else if (dieSelected[i] == 1) {
+                                 finalList[i] = currentDie[i];
+                             }
                          }
+                         currentDie = finalList;
                          try {
-                             displayDice(list);
+                             displayDice(finalList);
                          } catch (FileNotFoundException e) {
                              throw new RuntimeException(e);
                          }
@@ -1986,9 +1994,7 @@ public class Game extends Application {
      * @throws FileNotFoundException
      */
 
-    public void displayDice(int[] dice, int[] diceToChange) throws FileNotFoundException {
-
-        dieRoll.getChildren().clear();
+    public void displayDice(int[] dice) throws FileNotFoundException {
 
         Image oreDice = new Image(new FileInputStream("assets/Ore_dice.png"));
         Image grainDice = new Image(new FileInputStream("assets/Wheat_dice.png"));
@@ -1997,16 +2003,9 @@ public class Game extends Application {
         Image brickDice = new Image(new FileInputStream("assets/Brick_dice.png"));
         Image goldDice = new Image(new FileInputStream("assets/Gold_dice.png"));
 
-        ArrayList<Rectangle> diceShapes = new ArrayList<>();
-
         int position = 0;
 
         for (int die : dice) {
-            for (int i = 0; i < diceToChange.length; i++) {
-
-            }
-
-
             if (position == 0) {
                 position += 1;
                 if (die == 0) {
@@ -2229,6 +2228,15 @@ public class Game extends Application {
             }
         }
         return count;
+    }
+
+    public int[] rollDiceFinite(int[] dice) {
+        int[] rolledDice = new int[dice.length];
+        for (int i = 0; i < dice.length; i++) {
+            int rolledDie = ThreadLocalRandom.current().nextInt(0, 6);
+            rolledDice[i] = rolledDie;
+        }
+        return rolledDice;
     }
 
 
