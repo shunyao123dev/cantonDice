@@ -78,6 +78,7 @@ public class Structure {
 
     public void setPosition(String position) {this.position = position;}
 
+    public void setKnightUsed() {this.used = true;}
 
 
     // Returns whether the structure is the start
@@ -132,9 +133,8 @@ public class Structure {
         } else {
             return false;
         }
-    }
 
 
 
 
-}
+}}

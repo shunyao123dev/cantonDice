@@ -1,6 +1,7 @@
 package comp1110.ass2.gui;
 
 import comp1110.ass2.*;
+import static comp1110.ass2.Board.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -112,6 +113,12 @@ public class Game extends Application {
     private Player currentPlayer = new Player("current");
 
     private ArrayList<Integer> testScores = new ArrayList<>(Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15));
+    private ArrayList<Integer> testScores2 = new ArrayList<>(Arrays.asList(10,10,10,10,10,10,10,10,10,10,10,10,10,10,10));
+    private ArrayList<Integer> testScores3 = new ArrayList<>(Arrays.asList(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+    private ArrayList<Integer> testScores4 = new ArrayList<>(Arrays.asList(10,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+    private ArrayList<Integer> testScores5 = new ArrayList<>(Arrays.asList(5,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+
+
 
     /**
      * Creates the launch menu
@@ -124,10 +131,6 @@ public class Game extends Application {
         currentPlayersBoardDisplay.getChildren().clear();
         currentPlayersScoreDisplay.getChildren().clear();
         currentPlayersBoardDisplay.setVisible(false);
-
-        currentPlayer.setScores(testScores);
-
-        displayScore(currentPlayer);
 
         //Creates the start menu
 
@@ -400,12 +403,13 @@ public class Game extends Application {
 
             //Current player set to player 1. Display current state and score.
 
-            displayStateCurrent(boardToString(currentPlayer.getCurrentBoard()));
-
-
-
+            displayStateCurrent(currentPlayer);
+            displayScore(currentPlayer);
 
             //Prompt player to roll
+
+
+
 
 
 
@@ -455,7 +459,8 @@ public class Game extends Application {
             //recursively call launchControls
 
 
-            controls.getChildren().addAll(controlMenu, controlHeader, header, hb, actionBarText, hb2, rollCounterRect, resetGameBox);
+            controls.getChildren().addAll(controlMenu, controlHeader, header,
+                    hb, actionBarText, hb2, rollCounterRect, resetGameBox);
             currentPlayersBoardDisplay.getChildren().clear();
 
 
@@ -521,7 +526,7 @@ public class Game extends Application {
                 currentPlayersBoardDisplay.getChildren().clear();
                 controlsForPlayerTurn.getChildren().clear();
 
-                displayStateCurrent(boardToString(currentPlayersBoard)); //displays the board of the current player
+                displayStateCurrent(currentPlayer); //displays the board of the current player
 
                 Text playerOnePlaying = textBox("Player 1's turn. Please roll");
                 playerOnePlaying.setFont(Font.font("Verdana", 12));
@@ -585,7 +590,7 @@ public class Game extends Application {
                 currentPlayersBoardDisplay.getChildren().clear();
                 controlsForPlayerTurn.getChildren().clear();
 
-                displayStateCurrent(boardToString(currentPlayersBoard)); //displays the board of the current player
+                displayStateCurrent(currentPlayer); //displays the board of the current player
 
 
 
@@ -745,27 +750,6 @@ public class Game extends Application {
     //
 
 
-    /**
-     * Converts object orientated board into string.
-     * @param board
-     * @return
-     */
-    public String boardToString(Board board)  {
-        String boardString = "";
-        Structure[] currentStructures = board.getBoard();
-        int count = 0;
-        for (var structure : currentStructures) {
-            if (count == 0  && structure.isBuilt()) {
-                boardString = boardString + structure.getPosition();
-                count += 1;
-            } else if (structure.isBuilt()) {
-                boardString = boardString + " " + structure.getPosition();
-            }
-        }
-
-        return boardString;
-    }
-
     //Need to get number of players and create player profiles for each of these
     //Player 1 to go first and display Player 1 board.
 
@@ -883,7 +867,11 @@ public class Game extends Application {
 
     }
 
-    void displayStateCurrent(String board_state) {
+    void displayStateCurrent(Player player) {
+
+        Board board = player.getCurrentBoard();
+        String board_state = boardToString(board);
+
         String[] boardArr = board_state.split(",");
 
         for (var str : boardArr) {
@@ -973,7 +961,13 @@ public class Game extends Application {
         ArrayList<Integer> scores = player.getScores();
 
         for (int i = 0; i < scores.size(); i ++) {
-            Text score = textBox(String.valueOf(scores.get(i)));
+            String holder = "";
+            if (scores.get(i) == 0) {
+                holder = holder + "X";
+            } else {
+                holder = holder + String.valueOf(scores.get(i));
+            }
+            Text score = textBox(holder);
             int lengthScore = 1;
             if (scores.get(i) > 9) {
                 lengthScore = 2;
@@ -986,7 +980,7 @@ public class Game extends Application {
                     score.setX(372.5);
                     score.setY(458);
                 } else {
-                    score.setX(367);
+                    score.setX(366.5);
                     score.setY(458);
                 }
                 currentPlayersScoreDisplay.getChildren().add(score);
@@ -996,27 +990,27 @@ public class Game extends Application {
                     score.setX(415.5);
                     score.setY(458);
                 } else {
-                    score.setX(410);
+                    score.setX(409.25);
                     score.setY(458);
                 }
                 currentPlayersScoreDisplay.getChildren().add(score);
 
             } else if (i == 2) {
                 if (lengthScore == 1) {
-                    score.setX(458.5);
+                    score.setX(457.75);
                     score.setY(458);
                 } else {
-                    score.setX(458.5);
+                    score.setX(451.5);
                     score.setY(458);
                 }
                 currentPlayersScoreDisplay.getChildren().add(score);
 
             } else if (i == 3) {
                 if (lengthScore == 1) {
-                    score.setX(501.5);
+                    score.setX(500.5);
                     score.setY(458);
                 } else {
-                    score.setX(501.5);
+                    score.setX(494.25);
                     score.setY(458);
                 }
                 currentPlayersScoreDisplay.getChildren().add(score);
@@ -1026,7 +1020,7 @@ public class Game extends Application {
                     score.setX(542.5);
                     score.setY(458);
                 } else {
-                    score.setX(542.5);
+                    score.setX(536.5);
                     score.setY(458);
                 }
                 currentPlayersScoreDisplay.getChildren().add(score);
@@ -1036,7 +1030,7 @@ public class Game extends Application {
                     score.setX(542.5);
                     score.setY(501);
                 } else {
-                    score.setX(542.5);
+                    score.setX(536.5);
                     score.setY(501);
                 }
                 currentPlayersScoreDisplay.getChildren().add(score);
@@ -1046,7 +1040,7 @@ public class Game extends Application {
                     score.setX(542.5);
                     score.setY(544);
                 } else {
-                    score.setX(542.5);
+                    score.setX(536.5);
                     score.setY(544);
                 }
                 currentPlayersScoreDisplay.getChildren().add(score);
@@ -1056,7 +1050,7 @@ public class Game extends Application {
                     score.setX(501.5);
                     score.setY(544);
                 } else {
-                    score.setX(501.5);
+                    score.setX(494.25);
                     score.setY(544);
                 }
                 currentPlayersScoreDisplay.getChildren().add(score);
@@ -1066,7 +1060,7 @@ public class Game extends Application {
                     score.setX(458.5);
                     score.setY(544);
                 } else {
-                    score.setX(458.5);
+                    score.setX(451.5);
                     score.setY(544);
                 }
                 currentPlayersScoreDisplay.getChildren().add(score);
@@ -1074,93 +1068,92 @@ public class Game extends Application {
             } else if (i == 9) {
                 if (lengthScore == 1) {
                     score.setX(415.5);
-                    score.setY(458);
+                    score.setY(544);
                 } else {
-                    score.setX(410);
-                    score.setY(458);
+                    score.setX(409.25);
+                    score.setY(544);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
-
-                score.setX(415.5);
-                score.setY(544);
                 currentPlayersScoreDisplay.getChildren().add(score);
 
             } else if (i == 10) {
                 if (lengthScore == 1) {
-                    score.setX(415.5);
-                    score.setY(458);
+                    score.setX(372.5);
+                    score.setY(544);
                 } else {
-                    score.setX(410);
-                    score.setY(458);
+                    score.setX(365.5);
+                    score.setY(544);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
-
-                score.setX(372.5);
-                score.setY(544);
                 currentPlayersScoreDisplay.getChildren().add(score);
 
             } else if (i == 11) {
                 if (lengthScore == 1) {
-                    score.setX(415.5);
-                    score.setY(458);
+                    score.setX(372.5);
+                    score.setY(587);
                 } else {
-                    score.setX(410);
-                    score.setY(458);
+                    score.setX(365.5);
+                    score.setY(587);
                 }
                 currentPlayersScoreDisplay.getChildren().add(score);
 
-                score.setX(372.5);
-                score.setY(587);
-                currentPlayersScoreDisplay.getChildren().add(score);
 
             } else if (i == 12) {
                 if (lengthScore == 1) {
-                    score.setX(415.5);
-                    score.setY(458);
+                    score.setX(372.5);
+                    score.setY(629);
                 } else {
-                    score.setX(410);
-                    score.setY(458);
+                    score.setX(365.5);
+                    score.setY(629);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
-
-                score.setX(372.5);
-                score.setY(587);
                 currentPlayersScoreDisplay.getChildren().add(score);
 
             } else if (i == 13) {
                 if (lengthScore == 1) {
                     score.setX(415.5);
-                    score.setY(458);
+                    score.setY(629);
                 } else {
-                    score.setX(410);
-                    score.setY(458);
+                    score.setX(409);
+                    score.setY(629);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
-
-                score.setX(372.5);
-                score.setY(287.5);
                 currentPlayersScoreDisplay.getChildren().add(score);
 
             } else {
                 if (lengthScore == 1) {
-                    score.setX(415.5);
-                    score.setY(458);
+                    score.setX(458.5);
+                    score.setY(629);
                 } else {
-                    score.setX(410);
-                    score.setY(458);
+                    score.setX(452);
+                    score.setY(629);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
-
-                score.setX(500);
-                score.setY(287.5);
                 currentPlayersScoreDisplay.getChildren().add(score);
 
             }
         }
+
+        //display sum
+
+        Text sumScore = textBox(String.valueOf(currentPlayer.sumScores()));
+        Font font = new Font("Verdana", 20);
+        sumScore.setFont(font);
+
+        if (currentPlayer.sumScores() < -9) {
+            sumScore.setX(522.5);
+            sumScore.setY(629);
+        } else if (currentPlayer.sumScores() < 0) {
+            sumScore.setX(528.5);
+            sumScore.setY(629);
+        } else if (currentPlayer.sumScores() < 10) {
+            sumScore.setX(534.5);
+            sumScore.setY(629);
+        } else if (currentPlayer.sumScores() < 100) {
+            sumScore.setX(528.5);
+            sumScore.setY(629);
+        } else {
+            sumScore.setX(522.5);
+            sumScore.setY(629);
+        }
+
+        currentPlayersScoreDisplay.getChildren().add(sumScore);
         currentPlayersScoreDisplay.toFront();
-
-
-
 
     }
 
@@ -1887,35 +1880,6 @@ public class Game extends Application {
     }
 
     /**
-     * Assumes move is valid
-     * @param string
-     * @param board
-     * @param
-     * @return
-     */
-
-    public Board stringMoveToBoard(String string, Board board) {
-        Character firstLetter = string.charAt(0);
-        String pos = string.substring(Math.max(string.length() - 2, 0));
-        if (firstLetter.equals('b')) { //check if enough resources, check if prerequisites
-            for (var structure : board.structures) {
-                if (structure.getPosition().equals(pos) && !structure.isBuilt()){
-                    structure.setBuilt();
-                }
-            }
-        } else if (firstLetter.equals('t')) {
-
-
-        } else {
-
-        }
-
-        return board;
-
-    }
-
-
-    /**
      * Generates a text box given a string
      * @param string
      * @return
@@ -1933,6 +1897,60 @@ public class Game extends Application {
         text.setX(15);
         text.setY(75);
         return text;
+    }
+
+    /**---------------------------------------------------------------------HELPER FUNCTIONS----------------------------------------------------------------------------------------*/
+    /**
+     * Given the string board state, returns the equivalent Board
+     * @return board: OO Board
+     */
+    public Board stringToBoard(String boardState) {
+        ArrayList<String> structureStrings = new ArrayList<>(List.of(boardState.split(",")));
+        Board currentBoard = new Board();
+        Structure[] playersStructures = currentBoard.structures;
+
+        for (String builtString : structureStrings) {
+            for (Structure unBuiltStructure : playersStructures) {
+                if (builtString.equals(unBuiltStructure.getPosition()) && isUsedKnight(builtString)) {
+                    unBuiltStructure.setBuilt();
+                    unBuiltStructure.setKnightUsed();
+                } else if (builtString.equals(unBuiltStructure.getPosition())) {
+                    unBuiltStructure.setBuilt();
+                }
+            }
+        }
+        currentBoard.setStructures(playersStructures);
+        return currentBoard;
+    }
+
+    /**
+     * Converts object orientated board into string.
+     * @param board
+     * @return
+     */
+    public String boardToString(Board board)  {
+        String boardString = "";
+        Structure[] currentStructures = board.structures;
+        int count = 0;
+        for (Structure structure : currentStructures) {
+            if (structure.isBuilt() && count != 32) {
+                boardString = boardString + structure.getPosition() + ",";
+                count += 1;
+            } else if (structure.isBuilt() && count == 32) {
+                boardString = boardString + structure.getPosition();
+            }
+        }
+        return boardString;
+    }
+
+    public boolean isUsedKnight(String knight) {
+        if (knight.equals("K1") || knight.equals("K2") ||
+                knight.equals("K3") || knight.equals("K4") ||
+                knight.equals("K5") || knight.equals("K6")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

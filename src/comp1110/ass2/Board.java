@@ -3,6 +3,7 @@ package comp1110.ass2;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static comp1110.ass2.ResourceType.*;
 import static comp1110.ass2.StructureType.*;
@@ -31,13 +32,14 @@ public class Board {
 
     public Board() {
         structures = new Structure[33];
+
         //The prerequisite structures for each to be built
 
         //Roads
 
         ArrayList<String> preReqStart = new ArrayList<>();
         ArrayList<String> preReqR0 = new ArrayList<>();
-        ArrayList<String> preReqR1 =  new ArrayList<>(Arrays.asList("R0"));
+        ArrayList<String> preReqR1 = new ArrayList<>(Arrays.asList("R0"));
         ArrayList<String> preReqR2 = new ArrayList<>(Arrays.asList("R0"));
         ArrayList<String> preReqR3 = new ArrayList<>(Arrays.asList("R0", "R2"));
         ArrayList<String> preReqR4 = new ArrayList<>(Arrays.asList("R0", "R2", "R3"));
@@ -170,16 +172,24 @@ public class Board {
             }
 
 
-
         }
 
     }
 
-    /**
-     * Returns the board
-     * @return
-     */
-    public Structure[] getBoard() {
-        return structures;
+    public void buildStructure(String structure) {
+        for (Structure pos : this.structures) {
+            if (pos.getPosition().equals(structure)) {
+                pos.setBuilt();
+            }
+        }
+
+    }
+
+    public void setKnightUsed() {
+
+    }
+
+    public void setStructures(Structure[] structures) {
+        this.structures = structures;
     }
 }

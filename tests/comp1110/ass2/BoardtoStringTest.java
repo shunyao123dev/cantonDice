@@ -2,9 +2,15 @@ package comp1110.ass2;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import comp1110.ass2.Player;
 
-class CanDoSwapTestCanDoSwapTest {
+class BoardtoStringTest {
+    Player testPlayer  = new Player("Player 1");
+
+
+
     @Test
     void testSet1() {
         int[] a1 = {1,0,1,0,0,2};

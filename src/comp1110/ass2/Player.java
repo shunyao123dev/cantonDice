@@ -1,6 +1,7 @@
 package comp1110.ass2;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Player {
     /**
@@ -42,23 +43,24 @@ public class Player {
 
     /**
      * constructor of initialising the field
+     *
      * @param name
      */
 
-    public Player (String name){
+    public Player(String name) {
         this.name = name;
         this.board = new Board();
-        this.scores = scores;
+        this.scores = scores; //Zero inserted no builds made
         this.turnCount = turnCount;
         this.resources = new ResourceState();
     }
 
     /**
      * This method update the player's score in each turn
-     * @param score
-     * no return
+     *
+     * @param score no return
      */
-    public void update_score (int score) {
+    public void update_score(int score) {
 
     }
 
@@ -68,6 +70,10 @@ public class Player {
 
     public Board getCurrentBoard() {
         return this.board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     public int getTurnCount() {
@@ -82,7 +88,27 @@ public class Player {
         this.resources = resources;
     }
 
-    public void setScores(ArrayList<Integer> score) {this.scores = score;}
+    public void setScores(ArrayList<Integer> score) {
+        this.scores = score;
+    }
 
+    public int sumScores() {
+        ArrayList<Integer> scores = this.scores;
+        int sum = 0;
+        int zeroCount = 0;
+        for (Integer score : scores) {
+            if (score == 0) {
+                zeroCount += 1;
+            }
+            sum += score;
+        }
 
+        sum = sum - (2 * zeroCount);
+
+        return sum;
+    }
 }
+
+
+
+
