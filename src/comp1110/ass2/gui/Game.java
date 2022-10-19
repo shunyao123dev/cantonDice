@@ -110,6 +110,8 @@ public class Game extends Application {
 
     private int playerNumber = 0;
 
+    private int playerTurn = 0;
+
     private boolean gameStarted = false;
 
     private boolean gameOver = false;
@@ -200,6 +202,7 @@ public class Game extends Application {
                 }
                 gameStarted = true;
                 playerNumber = 1;
+                playerTurn = 1;
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -215,6 +218,7 @@ public class Game extends Application {
                 }
                 gameStarted = true;
                 playerNumber = 2;
+                playerTurn = 1;
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -230,6 +234,7 @@ public class Game extends Application {
                 }
                 gameStarted = true;
                 playerNumber = 3;
+                playerTurn = 1;
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -245,6 +250,7 @@ public class Game extends Application {
                 }
                 gameStarted = true;
                 playerNumber = 4;
+                playerTurn = 1;
                 menu.setVisible(false);
                 text.setVisible(false);
             }
@@ -265,6 +271,41 @@ public class Game extends Application {
      */
 
     public void launchControls() throws FileNotFoundException {
+
+        //Sets the current player to whoever's turn it is
+
+        if (playerTurn == 1) {
+            currentPlayer = player1;
+        } else if (playerTurn == 2) {
+            currentPlayer = player2;
+        } else if (playerTurn == 3) {
+            currentPlayer = player3;
+        } else if (playerTurn == 4) {
+            currentPlayer = player4;
+        }
+
+        //Checks if the game is over. i.e. All players have had 15 turns
+
+        if (playerNumber == 1) {
+            if (player1.getScores().size() == 15 && playerAI.getScores().size() == 15) {
+                gameOver = true;
+            }
+        } else if (playerNumber == 2) {
+            if (player1.getScores().size() == 15 && player2.getScores().size() == 15) {
+                gameOver = true;
+            }
+        } else if (playerNumber == 3) {
+            if (player1.getScores().size() == 15 && player2.getScores().size() == 15 &&
+            player3.getScores().size() == 15) {
+                gameOver = true;
+            }
+        } else if (playerNumber == 4) {
+            if (player1.getScores().size() == 15 && player2.getScores().size() == 15 &&
+                    player3.getScores().size() == 15 && player4.getScores().size() == 15) {
+                gameOver = true;
+            }
+        }
+
         if (!gameOver) {
 
             //Reset game button
@@ -549,39 +590,11 @@ public class Game extends Application {
                     String pos = input.substring(Math.max(input.length() - 2, 0));
                     String boardString = boardToString(currentPlayersBoard);
                     currentStructures = currentPlayersBoard.structures;
-                    Boolean moveComplete = false;
 
-                    while (!moveComplete) {
-
-                        if (CatanDice.isActionWellFormed(input)) {
-                            if (CatanDice.checkResources(pos, currentDie)) {
-                                if (CatanDice.checkBuildConstraints(pos, boardString)) {
-                                    for (var structure : currentStructures) {
-                                        if (input.equals(structure.getPosition())) {
-                                            structure.setBuilt();
-                                            moveComplete = true;
-                                        }
-                                    }
-
-                                } else {
-                                    instructions.getChildren().clear();
-                                    instructions.getChildren().add(textBox("Insufficient prerequisites"));
-
-                                }
-
-                            } else {
-                                instructions.getChildren().clear();
-                                instructions.getChildren().add(textBox("Insufficient resources. Please select different move"));
-                            }
-
-
-                        } else {
-                            instructions.getChildren().clear();
-                            instructions.getChildren().add(textBox("Invalid input. Please type correctly"));
-                        }
-
-
+                    if (!CatanDice.isActionWellFormed(input)) {
+                        displayInstructions("Invalid action. Please type again");
                     }
+
                 }
             });
 
@@ -687,8 +700,8 @@ public class Game extends Application {
                              die4.setStroke(Color.BLACK);
                              die5.setStroke(Color.BLACK);
                              die6.setStroke(Color.BLACK);
-
                              currentPlayersResourceState.changeResourceState(finalList);
+                             displayInstructions("Well done! Please now type a move into the action bar");
 
                          } catch (FileNotFoundException e) {
                              throw new RuntimeException(e);
@@ -757,6 +770,16 @@ public class Game extends Application {
             controls.getChildren().addAll(controlMenu, controlHeader, header,
                     hb, actionBarText, hb2, rollCounterRect, resetGameBox);
             currentPlayersBoardDisplay.getChildren().clear();
+
+            if (playerTurn == 1) {
+                playerTurn = 2;
+            } else if (playerTurn == 2) {
+                playerTurn = 3;
+            } else if (playerTurn == 3) {
+                playerTurn = 4;
+            } else if (playerTurn == 4) {
+                playerTurn = 1;
+            }
 
 
         } else { //the game is over
