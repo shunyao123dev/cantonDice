@@ -56,6 +56,12 @@ public class TestCanDoAction {
 		  TestBuildPlan.trivial_target,
 		  TestBuildPlan.trivial_plans);
     }
+	@Test
+	public void testX() {
+		assertTrue(CatanDice.canDoAction("build R0", "", new int[]{1,1,1,1,1,1}));
+		assertTrue(CatanDice.canDoAction("build R1", "", new int[]{1,1,1,1,1,1}));
+	}
+
 
     @Test
     public void testSet2() {

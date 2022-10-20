@@ -1,6 +1,7 @@
 package comp1110.ass2.gui;
 
 import comp1110.ass2.*;
+import comp1110.ass2.AI;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Application;
@@ -581,6 +582,7 @@ public class Game extends Application {
             button.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
+                    dieSelected = new int[]{0, 0, 0, 0, 0, 0};
                     String input = boardTextField.getText();
                     String[] act = input.split(" ");
                     String boardString = boardToString(currentPlayersBoard);
@@ -590,10 +592,13 @@ public class Game extends Application {
                     if (!CatanDice.isActionWellFormed(input)) { //not valid input
                         displayInstructions("Invalid action input. Please type again");
 
+//                    } else if (AI.anyMovePossible(currentPlayer)) {
+//                        displayInstructions("There are no possible moves left.");
+
                     } else if (act[0].equals("build") && (currentPlayersBoard.getStructure(act[1], currentPlayersBoard.getStructures())).isBuilt()) {
                         displayInstructions(act[1] + " is already built!");
 
-                    } else if (!CatanDice.canDoAction(input, boardString,stringResourceState)) {
+                    } else if (!CatanDice.canDoAction(input, boardString, stringResourceState)) {
                         String returnString = "";
                         if (act[0].equals("build")) {
                             if (act.length != 2) {
@@ -630,6 +635,7 @@ public class Game extends Application {
                                     CatanDice.state_after_building(pos, stringResourceState, arrayBoard);
                                     boardString = arrayListToString(arrayBoard);
                                     updateScore(structure, currentPlayersScore);
+                                    updateResources(stringResourceState);
 
 
                                 }
@@ -642,12 +648,12 @@ public class Game extends Application {
                                 throw new RuntimeException(ex);
                             }
                             displayInstructions("Successfully built " + pos);
-                            
+
                         } else if (act[0].equals("trade")) {
                             CatanDice.state_after_trade(input, stringResourceState);
                             currentPlayersResourceState.changeResourceState(stringResourceState);
                             currentPlayer.setResources(currentPlayersResourceState);
-                            displayInstructions("Successfully traded for " + input.substring(input.length()-1));
+                            displayInstructions("Successfully traded two gold for " + input.substring(input.length() - 1));
                             try {
                                 displayStateCurrent(currentPlayer);
                             } catch (FileNotFoundException ex) {
@@ -662,17 +668,9 @@ public class Game extends Application {
                             currentPlayersResourceState.changeResourceState(stringResourceState);
                             currentPlayer.setResources(currentPlayersResourceState);
                             currentPlayer.setBoard(stringToBoard(boardString));
-                            String resource = input.substring(input.length()-1);
-                            String wordResource = "";
-                            switch (resource) {
-                                case "0" -> wordResource = "ore";
-                                case "1" -> wordResource = "grain";
-                                case "2" -> wordResource = "wool";
-                                case "3" -> wordResource = "timber";
-                                case "4" -> wordResource = "brick";
-                                case "5" -> wordResource = "gold";
-                            }
-                            displayInstructions("Successfully swapped for 2 gold for " + wordResource);
+                            String received = resourceReturner(input.substring(input.length() - 1));
+                            String traded = resourceReturner(Character.toString(input.charAt(5)));
+                            displayInstructions("Successfully swapped one " + traded + "for one " + received);
                             try {
                                 displayStateCurrent(currentPlayer);
                             } catch (FileNotFoundException ex) {
@@ -684,6 +682,7 @@ public class Game extends Application {
 
                     }
                 }
+
 
 
             });
@@ -805,6 +804,7 @@ public class Game extends Application {
 
                              int[] newState = resourceStateFromDice(currentDie);
                              currentPlayersResourceState.changeResourceState(newState);
+                             currentPlayer.setResources(currentPlayersResourceState);
                              displayInstructions("Well done! Please now type a move into the action bar");
 
                          } catch (FileNotFoundException e) {
@@ -1420,205 +1420,6 @@ public class Game extends Application {
             makeDieTransparent(die6,6);
         }
         currentPlayerDisplay.toFront();
-
-    }
-
-    private void displayScore(Player player) {
-        ArrayList<Integer> scores = player.getScores();
-
-        for (int i = 0; i < scores.size(); i ++) {
-            String holder = "";
-            if (scores.get(i) == 0) {
-                holder = holder + "X";
-            } else {
-                holder = holder + String.valueOf(scores.get(i));
-            }
-            Text score = textBox(holder);
-            int lengthScore = 1;
-            if (scores.get(i) > 9) {
-                lengthScore = 2;
-            }
-            Font font = new Font("Verdana", 20);
-            score.setFont(font);
-
-            if (i == 0) {
-                if (lengthScore == 1) {
-                    score.setX(372.5);
-                    score.setY(458);
-                } else {
-                    score.setX(366.5);
-                    score.setY(458);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            } else if (i == 1) {
-                if (lengthScore == 1) {
-                    score.setX(415.5);
-                    score.setY(458);
-                } else {
-                    score.setX(409.25);
-                    score.setY(458);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            } else if (i == 2) {
-                if (lengthScore == 1) {
-                    score.setX(457.75);
-                    score.setY(458);
-                } else {
-                    score.setX(451.5);
-                    score.setY(458);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            } else if (i == 3) {
-                if (lengthScore == 1) {
-                    score.setX(500.5);
-                    score.setY(458);
-                } else {
-                    score.setX(494.25);
-                    score.setY(458);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            } else if (i == 4) {
-                if (lengthScore == 1) {
-                    score.setX(542.5);
-                    score.setY(458);
-                } else {
-                    score.setX(536.5);
-                    score.setY(458);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            } else if (i == 5) {
-                if (lengthScore == 1) {
-                    score.setX(542.5);
-                    score.setY(501);
-                } else {
-                    score.setX(536.5);
-                    score.setY(501);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            } else if (i == 6) {
-                if (lengthScore == 1) {
-                    score.setX(542.5);
-                    score.setY(544);
-                } else {
-                    score.setX(536.5);
-                    score.setY(544);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            } else if (i == 7) {
-                if (lengthScore == 1) {
-                    score.setX(501.5);
-                    score.setY(544);
-                } else {
-                    score.setX(494.25);
-                    score.setY(544);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            } else if (i == 8) {
-                if (lengthScore == 1) {
-                    score.setX(458.5);
-                    score.setY(544);
-                } else {
-                    score.setX(451.5);
-                    score.setY(544);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            } else if (i == 9) {
-                if (lengthScore == 1) {
-                    score.setX(415.5);
-                    score.setY(544);
-                } else {
-                    score.setX(409.25);
-                    score.setY(544);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            } else if (i == 10) {
-                if (lengthScore == 1) {
-                    score.setX(372.5);
-                    score.setY(544);
-                } else {
-                    score.setX(365.5);
-                    score.setY(544);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            } else if (i == 11) {
-                if (lengthScore == 1) {
-                    score.setX(372.5);
-                    score.setY(587);
-                } else {
-                    score.setX(365.5);
-                    score.setY(587);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-
-            } else if (i == 12) {
-                if (lengthScore == 1) {
-                    score.setX(372.5);
-                    score.setY(629);
-                } else {
-                    score.setX(365.5);
-                    score.setY(629);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            } else if (i == 13) {
-                if (lengthScore == 1) {
-                    score.setX(415.5);
-                    score.setY(629);
-                } else {
-                    score.setX(409);
-                    score.setY(629);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            } else {
-                if (lengthScore == 1) {
-                    score.setX(458.5);
-                    score.setY(629);
-                } else {
-                    score.setX(452);
-                    score.setY(629);
-                }
-                currentPlayerDisplay.getChildren().add(score);
-
-            }
-        }
-
-        //display sum
-
-        Text sumScore = textBox(String.valueOf(currentPlayer.sumScores()));
-        Font font = new Font("Verdana", 20);
-        sumScore.setFont(font);
-
-        if (currentPlayer.sumScores() < -9) {
-            sumScore.setX(522.5);
-            sumScore.setY(629);
-        } else if (currentPlayer.sumScores() < 0) {
-            sumScore.setX(528.5);
-            sumScore.setY(629);
-        } else if (currentPlayer.sumScores() < 10) {
-            sumScore.setX(534.5);
-            sumScore.setY(629);
-        } else if (currentPlayer.sumScores() < 100) {
-            sumScore.setX(528.5);
-            sumScore.setY(629);
-        } else {
-            sumScore.setX(522.5);
-            sumScore.setY(629);
-        }
-
-        currentPlayerDisplay.getChildren().add(sumScore);
 
     }
 
@@ -2240,146 +2041,6 @@ public class Game extends Application {
         currentPlayerDisplay.getChildren().add(circle);
     }
 
-    public void displayResourceState(int[] resourceState) throws FileNotFoundException {
-
-        Image oreDice = new Image(new FileInputStream("assets/Ore_dice.png"));
-        Image grainDice = new Image(new FileInputStream("assets/Wheat_dice.png"));
-        Image woolDice = new Image(new FileInputStream("assets/Wool_dice.png"));
-        Image timberDice = new Image(new FileInputStream("assets/Timber_dice.png"));
-        Image brickDice = new Image(new FileInputStream("assets/Brick_dice.png"));
-        Image goldDice = new Image(new FileInputStream("assets/Gold_dice.png"));
-
-        Map<String, Integer> resources = new HashMap<String, Integer>();
-
-        for (int i = 0; i < resourceState.length; i++) {
-            if (i == 0) {
-                resources.put("ore", resourceState[i]);
-            } else if (i == 1) {
-                resources.put("grain", resourceState[i]);
-            } else if (i == 2) {
-                resources.put("wool", resourceState[i]);
-            } else if (i == 3) {
-                resources.put("timber", resourceState[i]);
-            } else if (i == 4) {
-                resources.put("brick", resourceState[i]);
-            } else if (i == 5) {
-                resources.put("gold", resourceState[i]);
-            }
-        }
-
-        ArrayList<String> listResources = new ArrayList<>();
-
-        ArrayList<String> oreList = new ArrayList<String>(Collections.nCopies(resources.get("ore"), "ore"));
-        ArrayList<String> grainList = new ArrayList<String>(Collections.nCopies(resources.get("grain"), "grain"));
-        ArrayList<String> woolList = new ArrayList<String>(Collections.nCopies(resources.get("wool"), "wool"));
-        ArrayList<String> timberList = new ArrayList<String>(Collections.nCopies(resources.get("timber"), "timber"));
-        ArrayList<String> brickList = new ArrayList<String>(Collections.nCopies(resources.get("brick"), "brick"));
-        ArrayList<String> goldList = new ArrayList<String>(Collections.nCopies(resources.get("gold"), "gold"));
-
-        listResources.addAll(oreList);
-        listResources.addAll(grainList);
-        listResources.addAll(woolList);
-        listResources.addAll(timberList);
-        listResources.addAll(brickList);
-        listResources.addAll(goldList);
-
-        for (int i = 0; i < listResources.size(); i++) {
-            if (i == 0) {
-                switch(listResources.get(i)) {
-                    case "ore" -> die1.setFill(new ImagePattern(oreDice));
-                    case "grain" -> die1.setFill(new ImagePattern(grainDice));
-                    case "wool" -> die1.setFill(new ImagePattern(woolDice));
-                    case "timber" -> die1.setFill(new ImagePattern(timberDice));
-                    case "brick" -> die1.setFill(new ImagePattern(brickDice));
-                    case "gold" -> die1.setFill(new ImagePattern(goldDice));
-                }
-            } else if (i == 1) {
-                switch(listResources.get(i)) {
-                    case "ore" -> die2.setFill(new ImagePattern(oreDice));
-                    case "grain" -> die2.setFill(new ImagePattern(grainDice));
-                    case "wool" -> die2.setFill(new ImagePattern(woolDice));
-                    case "timber" -> die2.setFill(new ImagePattern(timberDice));
-                    case "brick" -> die2.setFill(new ImagePattern(brickDice));
-                    case "gold" -> die2.setFill(new ImagePattern(goldDice));
-
-                }
-            } else if (i == 2) {
-                    switch(listResources.get(i)) {
-                        case "ore" -> die3.setFill(new ImagePattern(oreDice));
-                        case "grain" -> die3.setFill(new ImagePattern(grainDice));
-                        case "wool" -> die3.setFill(new ImagePattern(woolDice));
-                        case "timber" -> die3.setFill(new ImagePattern(timberDice));
-                        case "brick" -> die3.setFill(new ImagePattern(brickDice));
-                        case "gold" -> die3.setFill(new ImagePattern(goldDice));
-                }
-
-            } else if (i == 3) {
-                    switch(listResources.get(i)) {
-                        case "ore" -> die4.setFill(new ImagePattern(oreDice));
-                        case "grain" -> die4.setFill(new ImagePattern(grainDice));
-                        case "wool" -> die4.setFill(new ImagePattern(woolDice));
-                        case "timber" -> die4.setFill(new ImagePattern(timberDice));
-                        case "brick" -> die4.setFill(new ImagePattern(brickDice));
-                        case "gold" -> die4.setFill(new ImagePattern(goldDice));
-                }
-
-            } else if (i == 4) {
-                    switch(listResources.get(i)) {
-                        case "ore" -> die5.setFill(new ImagePattern(oreDice));
-                        case "grain" -> die5.setFill(new ImagePattern(grainDice));
-                        case "wool" -> die5.setFill(new ImagePattern(woolDice));
-                        case "timber" -> die5.setFill(new ImagePattern(timberDice));
-                        case "brick" -> die5.setFill(new ImagePattern(brickDice));
-                        case "gold" -> die5.setFill(new ImagePattern(goldDice));
-                }
-
-            } else if (i == 5) {
-                    switch(listResources.get(i)) {
-                        case "ore" -> die6.setFill(new ImagePattern(oreDice));
-                        case "grain" -> die6.setFill(new ImagePattern(grainDice));
-                        case "wool" -> die6.setFill(new ImagePattern(woolDice));
-                        case "timber" -> die6.setFill(new ImagePattern(timberDice));
-                        case "brick" -> die6.setFill(new ImagePattern(brickDice));
-                        case "gold" -> die6.setFill(new ImagePattern(goldDice));
-                }
-
-            }
-
-        }
-
-        if (listResources.size() == 5) {
-            makeDieTransparent(die6,6);
-        } else if (listResources.size() == 4) {
-            makeDieTransparent(die5,5);
-            makeDieTransparent(die6,6);
-        }
-    }
-
-
-    public String resourceReturner(int i) throws FileNotFoundException {
-
-        switch (i) {
-            case 0 -> {
-                return "ore";
-            }
-            case 1 -> {
-                return "grain";
-            }
-            case 2 -> {
-                return "wool";
-            }
-            case 3 -> {
-                return "timber";
-            }
-            case 4 -> {
-                return "brick";
-            }
-            case 5 -> {
-                return "gold";
-            }
-        }
-        return "";
-    }
 
 
     /**
@@ -2548,8 +2209,6 @@ public class Game extends Application {
     }
 
 
-
-
     public void displayInstructions(String string) {
         instructions.getChildren().clear();
         Text text = new Text(string);
@@ -2557,6 +2216,20 @@ public class Game extends Application {
         text.setX(15);
         text.setY(75);
         instructions.getChildren().add(text);
+    }
+
+    public String resourceReturner(String string) {
+        String wordResource = "";
+        switch (string) {
+            case "0" -> wordResource = "ore";
+            case "1" -> wordResource = "grain";
+            case "2" -> wordResource = "wool";
+            case "3" -> wordResource = "timber";
+            case "4" -> wordResource = "brick";
+            case "5" -> wordResource = "gold";
+
+        }
+        return wordResource;
     }
 
 
