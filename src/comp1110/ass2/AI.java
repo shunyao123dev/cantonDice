@@ -15,7 +15,7 @@ public class AI {
             "build S4", "build S5", "build S7", "build S9", "build S11",
             "build C7", "build C12", "build C20", "build C30", "build J1",
             "build J2", "build J3", "build J4", "build J5", "build J6",
-            "trade 0", "trade 0", "trade 0", "trade 0", "trade 0", "trade 0",
+            "trade 0", "trade 1", "trade 2", "trade 3", "trade 4", "trade 5",
             "swap 0 1","swap 0 2","swap 0 3","swap 0 4","swap 0 5",
             "swap 1 0","swap 1 2","swap 1 3","swap 1 4","swap 1 5",
             "swap 2 0","swap 2 1","swap 2 3","swap 2 4","swap 2 5",
@@ -27,9 +27,9 @@ public class AI {
         String board = boardToString(player.getCurrentBoard());
         int[] resources = player.getCurrentResources().getResourceState();
 
-        for (String move : allMoves) {
-            if (CatanDice.canDoAction(move, board, resources)) {
-                possibleMoves.add(move);
+        for (int i = 0; i < allMoves.length; i++) {
+            if (CatanDice.canDoAction(allMoves[i], board, resources)) {
+                possibleMoves.add(allMoves[i]);
             }
         }
         return possibleMoves;

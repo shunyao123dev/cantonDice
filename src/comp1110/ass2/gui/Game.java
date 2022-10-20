@@ -521,8 +521,8 @@ public class Game extends Application {
                     if (!CatanDice.isActionWellFormed(input)) { //not valid input
                         displayInstructions("Invalid action input. Please type again");
 
-//                        } else if (AI.anyMovePossible(currentPlayer)) {
-//                            displayInstructions("There are no possible moves left."); waiting on Shunyao. Was to be incorporated.
+                    } else if (!AI.anyMovePossible(currentPlayer)) {
+                            displayInstructions("There are no possible moves left.");
 
                     } else if (act[0].equals("build") && (currentPlayersBoard.getStructure(act[1], currentPlayersBoard.getStructures())).isBuilt()) {
                         displayInstructions(act[1] + " is already built!");
