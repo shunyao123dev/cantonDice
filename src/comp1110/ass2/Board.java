@@ -9,7 +9,10 @@ import static comp1110.ass2.ResourceType.*;
 import static comp1110.ass2.StructureType.*;
 import static comp1110.ass2.ResourceState.*;
 
-// This class authored by Hugo Heanly u7119555
+/**
+ * Author of class: Hugo Heanly u7119555
+ */
+
 public class Board {
 
     //The structures on the game board
@@ -33,8 +36,8 @@ public class Board {
 
         //Roads
         ArrayList<String> preReqR0 = new ArrayList<>();
-        ArrayList<String> preReqR1 = new ArrayList<>(Arrays.asList("R0"));
-        ArrayList<String> preReqR2 = new ArrayList<>(Arrays.asList("R0"));
+        ArrayList<String> preReqR1 = new ArrayList<>(List.of("R0"));
+        ArrayList<String> preReqR2 = new ArrayList<>(List.of("R0"));
         ArrayList<String> preReqR3 = new ArrayList<>(Arrays.asList("R0", "R2"));
         ArrayList<String> preReqR4 = new ArrayList<>(Arrays.asList("R0", "R2", "R3"));
         ArrayList<String> preReqR5 = new ArrayList<>(Arrays.asList("R0", "R2", "R3"));
@@ -68,7 +71,7 @@ public class Board {
         //Knights
 
         ArrayList<String> preReqK1 = new ArrayList<>();
-        ArrayList<String> preReqK2 = new ArrayList<>(Arrays.asList("K1"));
+        ArrayList<String> preReqK2 = new ArrayList<>(List.of("K1"));
         ArrayList<String> preReqK3 = new ArrayList<>(Arrays.asList("K1", "K2"));
         ArrayList<String> preReqK4 = new ArrayList<>(Arrays.asList("K1", "K2", "K3"));
         ArrayList<String> preReqK5 = new ArrayList<>(Arrays.asList("K1", "K2", "K3", "K4"));
@@ -158,7 +161,7 @@ public class Board {
                     structures[i] = new Structure("R13", ROAD, 1, false, false, NIL, preReqR13);
                 } else if (i == 22) {
                     structures[i] = new Structure("R14", ROAD, 1, false, false, NIL, preReqR14);
-                } else if (i == 24) {
+                } else {
                     structures[i] = new Structure("R15", ROAD, 1, false, false, NIL, preReqR15);
                 }
             }
@@ -209,11 +212,11 @@ public class Board {
 
     /**
      * Converts object orientated board into string.
-     * @param board
-     * @return
+     * @param board: Returns the board into a string
+     * @return: Returns the board as a string.
      */
     public String boardToString(Board board)  {
-        String boardString = "";
+        StringBuilder boardString = new StringBuilder();
         Structure[] currentStructures = board.structures;
         int count = 0;
         int builtCount = 0;
@@ -226,25 +229,21 @@ public class Board {
 
         for (Structure structure : currentStructures) {
             if (structure.isBuilt() && (count != builtCount - 1)) {
-                boardString = boardString + structure.getPosition() + ",";
+                boardString.append(structure.getPosition()).append(",");
                 count += 1;
             } else if (structure.isBuilt() && count == builtCount - 1) {
-                boardString = boardString + structure.getPosition();
+                boardString.append(structure.getPosition());
             }
         }
         int lengthString = boardString.length();
-        boardString = boardString.substring(3,lengthString);
-        return boardString;
+        boardString = new StringBuilder(boardString.substring(3, lengthString));
+        return boardString.toString();
     }
 
     public boolean isUsedKnight(String knight) {
-        if (knight.equals("K1") || knight.equals("K2") ||
+        return knight.equals("K1") || knight.equals("K2") ||
                 knight.equals("K3") || knight.equals("K4") ||
-                knight.equals("K5") || knight.equals("K6")) {
-            return true;
-        } else {
-            return false;
-        }
+                knight.equals("K5") || knight.equals("K6");
     }
 
     public Structure[] getStructures(){

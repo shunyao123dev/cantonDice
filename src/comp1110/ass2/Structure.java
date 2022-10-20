@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import static comp1110.ass2.StructureType.*;
 import static comp1110.ass2.ResourceType.*;
 
-// This class authored by Hugo Heanly u7119555
+/**
+ * Author of class: Hugo Heanly u7119555
+ */
 public class Structure {
 
     // the position on the board

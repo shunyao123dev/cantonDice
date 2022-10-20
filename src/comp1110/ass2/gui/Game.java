@@ -85,6 +85,11 @@ public class Game extends Application {
      * Author of class: Hugo Heanly u7119555
      */
 
+
+    /**
+     * Creates the start menu for Catan
+     * Author: Hugo Heanly u7119555
+     */
     void launchStartMenu () {
 
         startMenu.getChildren().clear();
@@ -93,7 +98,6 @@ public class Game extends Application {
         //Creates the start menu
 
         MenuBar start = new MenuBar();
-
         Menu startBut = new Menu("Start");
         MenuItem onePlayer = new MenuItem("One player with AI");
         MenuItem twoPlayer = new MenuItem("Two players");
@@ -110,7 +114,7 @@ public class Game extends Application {
         VBox menu = new VBox();
         menu.getChildren().add(start);
         menu.setLayoutX(10);
-        menu.setLayoutY(100);
+        menu.setLayoutY(150);
 
         Rectangle textBox = new Rectangle();
         textBox.setHeight(40);
@@ -124,14 +128,29 @@ public class Game extends Application {
         text.setX(15);
         text.setY(75);
 
-        startMenu.getChildren().addAll(menu, textBox, text);
+        Rectangle intro = new Rectangle();
+        intro.setHeight(40);
+        intro.setWidth(400);
+        intro.setX(10);
+        intro.setY(100);
+        intro.setFill(Color.WHITE);
+        intro.setStroke(Color.BLACK);
+        Text introText = new Text("Note: For action bar, enter actions as per the read me");
+        introText.setFont(Font.font("Verdana", 12));
+        introText.setX(15);
+        introText.setY(125);
+
+        startMenu.getChildren().addAll(menu, textBox, text, intro, introText);
 
         //When the player selects an options the menu will disappear and start the game
+
         onePlayer.setOnAction(actionEvent -> {
             playerNumber = 1;
             playerTurn = 1;
             menu.setVisible(false);
             text.setVisible(false);
+            introText.setVisible(false);
+            intro.setVisible(false);
             try {
                 launchControls();
             } catch (FileNotFoundException e) {
@@ -144,6 +163,8 @@ public class Game extends Application {
             playerTurn = 1;
             menu.setVisible(false);
             text.setVisible(false);
+            introText.setVisible(false);
+            intro.setVisible(false);
             try {
                 launchControls();
             } catch (FileNotFoundException e) {
@@ -156,6 +177,8 @@ public class Game extends Application {
             playerTurn = 1;
             menu.setVisible(false);
             text.setVisible(false);
+            introText.setVisible(false);
+            intro.setVisible(false);
             try {
                 launchControls();
             } catch (FileNotFoundException e) {
@@ -168,6 +191,8 @@ public class Game extends Application {
             playerTurn = 1;
             menu.setVisible(false);
             text.setVisible(false);
+            introText.setVisible(false);
+            intro.setVisible(false);
             try {
                 launchControls();
             } catch (FileNotFoundException e) {
@@ -182,6 +207,7 @@ public class Game extends Application {
 
     /**
      * Launches the control menu after the player has selected a game mode.
+     * Author: Hugo Heanly u7119555
      */
 
     public void launchControls() throws FileNotFoundException {
@@ -193,6 +219,7 @@ public class Game extends Application {
         instructions.getChildren().clear();
         rollCounter.getChildren().clear();
 
+        //If the game is not over, continue to play
 
         if (!gameOver) {
 
@@ -246,7 +273,7 @@ public class Game extends Application {
                 launchStartMenu();
             });
 
-            //Launches the control menu
+            //Creates the control menu
 
             Rectangle controlMenu = new Rectangle();
             controlMenu.setHeight(260);
@@ -304,7 +331,8 @@ public class Game extends Application {
             hb3.setLayoutY(100);
             hb3.toFront();
 
-            //Dice empty
+            //Set die as empty to start
+
             makeDie(die1, 1);
             makeDieTransparent(die1);
             final boolean[] selectedAtRoll1 = {false};
@@ -323,6 +351,8 @@ public class Game extends Application {
             makeDie(die6, 6);
             makeDieTransparent(die6);
             final boolean[] selectedAtRoll6 = {false};
+
+            //Event handlers for each die to create selection
 
             EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie1 =
                     mouseEvent -> {
@@ -475,7 +505,7 @@ public class Game extends Application {
 
             dieRoll.getChildren().addAll(die1, die2, die3, die4, die5, die6);
 
-            //Action bar
+            //Action bar handler
 
             button.setOnAction(e -> {
                 if (rollCount == 4) {
@@ -491,7 +521,7 @@ public class Game extends Application {
                         displayInstructions("Invalid action input. Please type again");
 
 //                        } else if (AI.anyMovePossible(currentPlayer)) {
-//                            displayInstructions("There are no possible moves left."); waiting on Shunyao.
+//                            displayInstructions("There are no possible moves left."); waiting on Shunyao. Was to be incorporated.
 
                     } else if (act[0].equals("build") && (currentPlayersBoard.getStructure(act[1], currentPlayersBoard.getStructures())).isBuilt()) {
                         displayInstructions(act[1] + " is already built!");
@@ -593,7 +623,8 @@ public class Game extends Application {
                 }
             });
 
-            //Roll dice action
+            //Roll dice handler
+
             rollDice.setOnAction(actionEvent -> {
                 if (rollCount == 1) {
                     die1.setVisible(true);
@@ -603,7 +634,7 @@ public class Game extends Application {
                     die5.setVisible(true);
                     die6.setVisible(true);
                     int[] rolledDice = new int[]{0, 0, 0, 0, 0, 0};
-                    MoveControls.rollDice(6, rolledDice);
+                    CatanDice.rollDice(6, rolledDice);
                     Text rollCountText = textBox(String.valueOf(rollCount));
                     Font font = new Font("Verdana", 20);
                     rollCountText.setFont(font);
@@ -749,7 +780,8 @@ public class Game extends Application {
 
                 currentPlayer.incrementTurnCount();
 
-                //checks if the player built. If not add zero
+                //checks if the player built. If not add zero to score.
+
                 if (!somethingBuilt) {
                     ArrayList<Integer> newScore = currentPlayer.getScores();
                     newScore.add(0);
@@ -822,6 +854,8 @@ public class Game extends Application {
                     }
                 }
 
+                //recursively call launch controls to start for next player
+
                 try {
                     launchControls();
                 } catch (FileNotFoundException e) {
@@ -829,6 +863,8 @@ public class Game extends Application {
                 }
 
             });
+
+            //display the current state of the player and instructions
 
             displayStateCurrent(currentPlayer);
             displayInstructions(currentPlayer.getName() + " is playing. Please roll!");
@@ -945,8 +981,14 @@ public class Game extends Application {
 
     }
 
-    /**-----------------------------------------------VIEWER----------------------------------------------------------*/
+    //-----------------------------------------------VIEWER-----------------------------------------------------------*/
 
+    /**
+     * Displays the current board, score and resource state of the player on the screen.
+     * @param player
+     * @throws FileNotFoundException when files are not able to be accessed from /assets.
+     * Author: Hugo Heanly u7119555
+     */
     public void displayStateCurrent(Player player) throws FileNotFoundException {
 
         currentPlayerDisplay.getChildren().clear();
@@ -1339,6 +1381,7 @@ public class Game extends Application {
     /**
      * Creates the base board for Catan Island 1
      * @throws FileNotFoundException when files are not able to be accessed from /assets.
+     * Author: Hugo Heanly u7119555
      */
 
     private void makeBaseBoard() throws FileNotFoundException {
@@ -1492,11 +1535,12 @@ public class Game extends Application {
     }
 
     /**
-     * Creates hexagons. Has adapted the hexagon code from Assignment 1.
+     * Creates hexagons. Has been adapted the hexagon code from Assignment 1.
      * @param length: The length of each side
      * @param xCoord: The x-coordinate of the hexagon
      * @param yCoord: The y-coordinate of the hexagon
      * @return: Returns a hexagon of type Polyline
+     * Author: Hugo Heanly u7119555
      */
     public Polyline makeHexagon(int length, double xCoord, double yCoord) {
         double sideLength = length * 3 / 5;
@@ -1528,6 +1572,7 @@ public class Game extends Application {
      * @param radius: The radius of the circle
      * @param xCoord: The x-coordinate of the circle
      * @param yCoord: The y-coordinate of the circle
+     * Author: Hugo Heanly u7119555
      */
     public void makeCircle(String text, int radius, double xCoord, double yCoord) {
         Circle circle = new Circle(radius);
@@ -1551,8 +1596,8 @@ public class Game extends Application {
      * @param xCoord: The x-coordinate of the road
      * @param yCoord: The y-coordinate of the road
      * @param rotation: The rotation of the road in degrees
+     * Author: Hugo Heanly u7119555
      */
-
     public void makeRoad(String text, int height, int width, double xCoord, double yCoord, int rotation) {
         Rectangle rect = new Rectangle();
         rect.setHeight(height);
@@ -1576,6 +1621,7 @@ public class Game extends Application {
      * @param xCoord: The x-coordinate of the road
      * @param yCoord: The y-coordinate of the road
      * @param rotation: The rotation of the road in degrees
+     * Author: Hugo Heanly u7119555
      */
     public void makeStartRoad(String text, int height, int width, double xCoord, double yCoord, int rotation) {
         Rectangle rect = new Rectangle();
@@ -1599,8 +1645,8 @@ public class Game extends Application {
      * @param text: The number to be displayed on the knight
      * @param xCoord: The x-coordinate of the knight
      * @param yCoord: The y-coordinate of the knight
+     * Author: Hugo Heanly u7119555
      */
-
     public void makeKnight(String text, double xCoord, double yCoord) {
         Ellipse ellp = new Ellipse();
         ellp.setCenterX(0);
@@ -1633,8 +1679,8 @@ public class Game extends Application {
      * @param text: The number to be displayed on the town
      * @param xCoord: The x-coordinate of the town
      * @param yCoord: The y-coordinate of the town
+     * Author: Hugo Heanly u7119555
      */
-
     public void makeSettlement(String text, double xCoord, double yCoord) {
         Rectangle rect = new Rectangle();
         rect.setX(0);
@@ -1667,8 +1713,8 @@ public class Game extends Application {
      * @param xCoord: The x-coordinate of the settlement
      * @param yCoord: The y-coordinate of the settlement
      * @param textShift: The text shift for the number
+     * Author: Hugo Heanly u7119555
      */
-
     public void makeTown(String text, double xCoord, double yCoord, int textShift) {
         Polygon base = new Polygon(0, 10, 20, 10,20, 0, 40, 0, 40, 30, 0, 30);
         base.setFill(Color.WHITE);
@@ -1694,6 +1740,13 @@ public class Game extends Application {
         structures.getChildren().add(tri);
     }
 
+    /**
+     * Builds roads for the current player display
+     * @param xCoord: x-coordinate of the road
+     * @param yCoord: y-coordinate of the road
+     * @param rotation: rotation of the road
+     * Author: Hugo Heanly u7119555
+     */
     public void buildRoadCurrent(double xCoord, double yCoord, int rotation) {
         Rectangle rect = new Rectangle();
         rect.setHeight(45);
@@ -1709,7 +1762,12 @@ public class Game extends Application {
         currentPlayerDisplay.getChildren().add(stack);
     }
 
-
+    /**
+     * Builds the settlements for the current players display
+     * @param xCoord: x-coordinate of the settlement
+     * @param yCoord: y-coordinate of the settlement
+     * Author: Hugo Heanly u7119555
+     */
     public void buildSettlementCurrent(double xCoord, double yCoord) {
         Rectangle rect = new Rectangle();
         rect.setX(0);
@@ -1736,6 +1794,12 @@ public class Game extends Application {
         currentPlayerDisplay.getChildren().add(tri);
     }
 
+    /**
+     * Builds the towns for the current players display
+     * @param xCoord: x-coordinate of the town
+     * @param yCoord: y-coordinate of the town
+     * Author: Hugo Heanly u7119555
+     */
     public void buildTownCurrent(double xCoord, double yCoord) {
         Polygon base = new Polygon(0, 10, 20, 10, 20, 0, 40, 0, 40, 30, 0, 30);
         base.setFill(Color.BLACK);
@@ -1758,6 +1822,12 @@ public class Game extends Application {
         currentPlayerDisplay.getChildren().add(tri);
     }
 
+    /**
+     * Builds the knights for the current players display
+     * @param xCoord: x-coordinate for the knight
+     * @param yCoord: y-coordinate for the knight
+     * Author: Hugo Heanly u7119555
+     */
     public void buildKnightCurrent (double xCoord, double yCoord) {
         Ellipse ellp = new Ellipse();
         ellp.setCenterX(0);
@@ -1784,6 +1854,12 @@ public class Game extends Application {
         currentPlayerDisplay.getChildren().add(circle);
     }
 
+    /**
+     * Builds the used knights for the current players display
+     * @param xCoord: x-coordinate for the used knight
+     * @param yCoord: y-coordinate for the used knight
+     * Author: Hugo Heanly u7119555
+     */
     public void useKnightCurrent (double xCoord, double yCoord) {
         Ellipse ellp = new Ellipse();
         ellp.setCenterX(0);
@@ -1808,14 +1884,12 @@ public class Game extends Application {
         currentPlayerDisplay.getChildren().add(circle);
     }
 
-
-
     /**
      * Generates the dice images and displays them
      * @param dice is the die to be displayed
      * @throws FileNotFoundException when files are not able to be accessed from /assets.
+     * Author: Hugo Heanly u7119555
      */
-
     public void displayDice(int[] dice) throws FileNotFoundException {
 
         Image oreDice = new Image(new FileInputStream("assets/Ore_dice.png"));
@@ -1923,9 +1997,10 @@ public class Game extends Application {
     }
 
     /**
-     *
+     * Makes the die and sets their coordinates
      * @param shape the die to be created
      * @param die the die number (1-6)
+     * Author: Hugo Heanly u7119555
      */
     public void makeDie(Rectangle shape, int die) {
         shape.setHeight(100);
@@ -1953,15 +2028,31 @@ public class Game extends Application {
         }
     }
 
+    /**
+     * Makes the die transparent
+     * @param shape: The die to be made transparent
+     * @throws FileNotFoundException if the file can not be found in /assets.
+     * Author: Hugo Heanly u7119555
+     */
     public void makeDieTransparent(Rectangle shape) throws FileNotFoundException {
         shape.setVisible(false);
     }
 
+    /**
+     * Makes the die visible
+     * @param shape: The die to be made visible
+     * @throws FileNotFoundException if the file can not be found in /assets.
+     * Author: Hugo Heanly u7119555
+     */
     public void makeDieVisible(Rectangle shape) throws FileNotFoundException {
         shape.setVisible(true);
     }
 
-
+    /**
+     * Updates the resource state for the current player
+     * @param resourceState: The resource state
+     * Author: Hugo Heanly u7119555
+     */
     public void updateResources(int[] resourceState) {
 
         currentPlayersResourceState.changeResourceState(resourceState);
@@ -1969,7 +2060,11 @@ public class Game extends Application {
 
     }
 
-
+    /**
+     * Displays the instructions based on the string
+     * @param string: The instruction to be displayed
+     * Author: Hugo Heanly u7119555
+     */
     public void displayInstructions(String string) {
         instructions.getChildren().clear();
         Text text = new Text(string);
@@ -1979,6 +2074,12 @@ public class Game extends Application {
         instructions.getChildren().add(text);
     }
 
+    /**
+     * Given a string of a digit, returns the corresponding resource
+     * @param string: The digit
+     * @return: The corresponding resource as a string
+     * Author: Hugo Heanly u7119555
+     */
     public String resourceReturner(String string) {
         String wordResource = "";
         switch (string) {
@@ -1998,6 +2099,7 @@ public class Game extends Application {
      * Generates a text box given a string
      * @param string the text to be depicted as text on the screen
      * @return returns the JavaFX node text
+     * Author: Hugo Heanly u7119555
      */
     public Text textBox(String string) {
         Rectangle textBox = new Rectangle();
@@ -2020,6 +2122,7 @@ public class Game extends Application {
     /**
      * Given the string board state, returns the equivalent Board
      * @return board: OO Board
+     * Author: Hugo Heanly u7119555
      */
     public Board stringToBoard(String boardState) {
         ArrayList<String> structureStrings = new ArrayList<>(List.of(boardState.split(",")));
@@ -2061,12 +2164,23 @@ public class Game extends Application {
         return boardString.toString();
     }
 
+    /**
+     * Determines if the knight is used
+     * @param knight: The knight in string form
+     * @return true if the knight is used, otherwise false.
+     */
     public boolean isUsedKnight(String knight) {
         return knight.equals("K1") || knight.equals("K2") ||
                 knight.equals("K3") || knight.equals("K4") ||
                 knight.equals("K5") || knight.equals("K6");
     }
 
+    /**
+     * Counts the amount of zeroes in an array of ints
+     * @param ints: The array of ints
+     * @return: The number of zeroes
+     * Author: Hugo Heanly u7119555
+     */
     public int countZeros(int[] ints) {
         int count = 0;
         for (int anInt : ints) {
@@ -2077,6 +2191,12 @@ public class Game extends Application {
         return count;
     }
 
+    /**
+     * Rolls a finite amount of dice
+     * @param dice: A list of the dice to be rolled
+     * @return: Returns a list of the same dice now rolled
+     * Author: Hugo Heanly u7119555
+     */
     public int[] rollDiceFinite(int[] dice) {
         int[] rolledDice = new int[dice.length];
         for (int i = 0; i < dice.length; i++) {
@@ -2086,6 +2206,12 @@ public class Game extends Application {
         return rolledDice;
     }
 
+    /**
+     * Returns the resource state from a given dice roll
+     * @param dice: The rolled dice
+     * @return: The corresponding resource state
+     * Author: Hugo Heanly u7119555
+     */
     public int[] resourceStateFromDice(int[] dice) {
         int oreCount = 0;
         int grainCount = 0;
@@ -2114,6 +2240,12 @@ public class Game extends Application {
 
     }
 
+    /**
+     * Changes the board state from ArrayList to String
+     * @param boardList: The board state as an ArrayList
+     * @return: The board state as a string
+     * Author: Hugo Heanly u7119555
+     */
     public String arrayListToString(ArrayList<String> boardList) {
         StringBuilder board = new StringBuilder();
 
@@ -2124,6 +2256,12 @@ public class Game extends Application {
         return board.substring(0, board.length()-1);
     }
 
+    /**
+     * Changes the board state from String to ArrayList
+     * @param boardState: The board state as a String
+     * @return: The board state as an ArrayList
+     * Author: Hugo Heanly u7119555
+     */
     public ArrayList<String> stringToArrayList(String boardState) {
 
         if (boardState.equals("")) {
@@ -2134,9 +2272,12 @@ public class Game extends Application {
 
     }
 
-
-
-
+    /**
+     * Starts the stage
+     * @param stage: Stage for the JavaFx
+     * @throws Exception
+     * Author: Hugo Heanly u7119555
+     */
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Board State Viewer");

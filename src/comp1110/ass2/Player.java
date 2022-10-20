@@ -3,49 +3,17 @@ package comp1110.ass2;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Author of class: Hugo Heanly u7119555
+ */
+
 public class Player {
-    /**
-     * This class add a player into the Catan Dice game and offer methods for player updating their
-     * score in each turn
-     */
-
-
-    /**
-     * Board for player
-     */
 
     private Board board;
-
-    /**
-     * Resource state
-     */
-
     private ResourceState resources;
-
-    /**
-     * Array of score
-     */
-
     private ArrayList<Integer> scores = new ArrayList<>();
-
-    /**
-     * Count of turn
-     */
-
     private int turnCount = 0;
-
-
-    /**
-     * The name of the player
-     */
     private String name;
-
-
-    /**
-     * constructor of initialising the field
-     *
-     * @param name
-     */
 
     public Player(String name) {
         this.name = name;
@@ -54,7 +22,6 @@ public class Player {
         this.turnCount = turnCount;
         this.resources = new ResourceState();
     }
-
     public String getName() {return this.name;}
 
     public ArrayList<Integer> getScores() {
