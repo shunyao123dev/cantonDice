@@ -262,17 +262,18 @@ public class Game extends Application {
         instructions.getChildren().clear();
         rollCounter.getChildren().clear();
 
-        if (playerTurn == 1) {
-            currentPlayer.copyFrom(player1);
-        } else if (playerTurn == 2) {
-            currentPlayer.copyFrom(player2);
-        } else if (playerTurn == 3) {
-            currentPlayer.copyFrom(player1);
-        } else if (playerTurn == 4) {
-            currentPlayer.copyFrom(player1);
-        }
 
         if (!gameOver) {
+
+            if (playerTurn == 1) {
+                currentPlayer.copyFrom(player1);
+            } else if (playerTurn == 2) {
+                currentPlayer.copyFrom(player2);
+            } else if (playerTurn == 3) {
+                currentPlayer.copyFrom(player3);
+            } else if (playerTurn == 4) {
+                currentPlayer.copyFrom(player4);
+            }
 
             //Reset game button
 
@@ -578,8 +579,8 @@ public class Game extends Application {
                         if (!CatanDice.isActionWellFormed(input)) { //not valid input
                             displayInstructions("Invalid action input. Please type again");
 
-//                    } else if (AI.anyMovePossible(currentPlayer)) {
-//                        displayInstructions("There are no possible moves left.");
+//                        } else if (AI.anyMovePossible(currentPlayer)) {
+//                            displayInstructions("There are no possible moves left."); waiting on Shunyao.
 
                         } else if (act[0].equals("build") && (currentPlayersBoard.getStructure(act[1], currentPlayersBoard.getStructures())).isBuilt()) {
                             displayInstructions(act[1] + " is already built!");
@@ -851,17 +852,7 @@ public class Game extends Application {
 
                     somethingBuilt = false;
 
-                    dieSelected = new int[]{0,0,0,0,0,0};
-
-                    if (playerTurn == 1) {
-                        player1.copyPlayer(currentPlayer);
-                    } else if (playerTurn == 2) {
-                        playerTurn = 3;
-                    } else if (playerTurn == 3) {
-                        playerTurn = 4;
-                    } else if (playerTurn == 4) {
-                        playerTurn = 1;
-                    }
+                    dieSelected = new int[]{0, 0, 0, 0, 0, 0};
 
                     //set die back to transparent
 
@@ -878,26 +869,52 @@ public class Game extends Application {
 
                     //Changes the player turn count and copies changes made.
 
-                    dieSelected = new int[]{0,0,0,0,0,0};
+                    dieSelected = new int[]{0, 0, 0, 0, 0, 0};
                     currentPlayerRunningScore = 0;
                     rollCount = 1;
 
-                    if (playerTurn == 1) {
-                        player1.copyPlayer(currentPlayer);
-                        currentPlayer.copyPlayer(player2);
-                        playerTurn = 2;
-                    } else if (playerTurn == 2) {
-                        player2.copyPlayer(currentPlayer);
-                        currentPlayer.copyPlayer(player3);
-                        playerTurn = 3;
-                    } else if (playerTurn == 3) {
-                        player3.copyPlayer(currentPlayer);
-                        currentPlayer.copyPlayer(player4);
-                        playerTurn = 4;
-                    } else if (playerTurn == 4) {
-                        player4.copyPlayer(currentPlayer);
-                        currentPlayer.copyPlayer(player1);
-                        playerTurn = 1;
+                    if (playerNumber == 2) {
+                        if (playerTurn == 1) {
+                            player1.copyPlayer(currentPlayer);
+                            currentPlayer.copyPlayer(player2);
+                            playerTurn = 2;
+                        } else if (playerTurn == 2) {
+                            player2.copyPlayer(currentPlayer);
+                            currentPlayer.copyPlayer(player1);
+                            playerTurn = 1;
+                        }
+                    } else if (playerNumber == 3) {
+                        if (playerTurn == 1) {
+                            player1.copyPlayer(currentPlayer);
+                            currentPlayer.copyPlayer(player2);
+                            playerTurn = 2;
+                        } else if (playerTurn == 2) {
+                            player2.copyPlayer(currentPlayer);
+                            currentPlayer.copyPlayer(player3);
+                            playerTurn = 3;
+                        } else if (playerTurn == 3) {
+                            player3.copyPlayer(currentPlayer);
+                            currentPlayer.copyPlayer(player1);
+                            playerTurn = 1;
+                        }
+                    } else if (playerNumber == 4) {
+                        if (playerTurn == 1) {
+                            player1.copyPlayer(currentPlayer);
+                            currentPlayer.copyPlayer(player2);
+                            playerTurn = 2;
+                        } else if (playerTurn == 2) {
+                            player2.copyPlayer(currentPlayer);
+                            currentPlayer.copyPlayer(player3);
+                            playerTurn = 3;
+                        } else if (playerTurn == 3) {
+                            player3.copyPlayer(currentPlayer);
+                            currentPlayer.copyPlayer(player4);
+                            playerTurn = 4;
+                        } else if (playerTurn == 4) {
+                            player4.copyPlayer(currentPlayer);
+                            currentPlayer.copyPlayer(player1);
+                            playerTurn = 1;
+                        }
                     }
 
                     try {
