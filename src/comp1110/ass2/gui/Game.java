@@ -145,17 +145,18 @@ public class Game extends Application {
         //When the player selects an options the menu will disappear and start the game
 
         onePlayer.setOnAction(actionEvent -> {
-            playerNumber = 1;
-            playerTurn = 1;
-            menu.setVisible(false);
-            text.setVisible(false);
-            introText.setVisible(false);
-            intro.setVisible(false);
-            try {
-                launchControls();
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            // AI not ready yet.
+
+//            playerNumber = 1;
+//            playerTurn = 1;
+//            menu.setVisible(false);
+//            text.setVisible(false);
+//            introText.setVisible(false);
+//            intro.setVisible(false);
+//            try {
+//                launchControls();
+//            } catch (FileNotFoundException e) {
+//                throw new RuntimeException(e);
         });
 
         twoPlayer.setOnAction(actionEvent -> {
@@ -2288,7 +2289,6 @@ public class Game extends Application {
 
         stage.setScene(scene);
         stage.show();
-        //Task 10 here
     }
 
 
