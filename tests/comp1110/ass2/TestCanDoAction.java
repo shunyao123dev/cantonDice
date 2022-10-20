@@ -4,8 +4,7 @@ import java.util.*;
 import org.junit.jupiter.api.Test;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 // @org.junit.jupiter.api.Timeout(value = 1000, unit = MILLISECONDS)
 
@@ -59,7 +58,7 @@ public class TestCanDoAction {
 	@Test
 	public void testX() {
 		assertTrue(CatanDice.canDoAction("build R0", "", new int[]{1,1,1,1,1,1}));
-		assertTrue(CatanDice.canDoAction("build R1", "", new int[]{1,1,1,1,1,1}));
+		assertFalse(CatanDice.canDoAction("build R1", "", new int[]{1,1,1,1,1,1}));
 	}
 
 
