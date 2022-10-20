@@ -103,6 +103,7 @@ public class Game extends Application {
     private boolean firstTurn = true;
 
     private boolean somethingBuilt = false;
+    private boolean gameJustStarted = true;
 
     //Die
 
@@ -392,8 +393,6 @@ public class Game extends Application {
             makeDieTransparent(die6);
             final boolean[] selectedAtRoll6 = {false};
 
-            dieRoll.getChildren().addAll(die1, die2, die3, die4, die5, die6);
-
             EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie1 =
                     new EventHandler<MouseEvent>() {
                         @Override
@@ -419,8 +418,6 @@ public class Game extends Application {
                             }
                         }
                     };
-
-            die1.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie1);
 
             EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie2 =
                     new EventHandler<MouseEvent>() {
@@ -448,8 +445,6 @@ public class Game extends Application {
                         }
                     };
 
-            die2.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie2);
-
             EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie3 =
                     new EventHandler<MouseEvent>() {
                         @Override
@@ -475,8 +470,6 @@ public class Game extends Application {
                             }
                         }
                     };
-
-            die3.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie3);
 
             EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie4 =
                     new EventHandler<MouseEvent>() {
@@ -504,8 +497,6 @@ public class Game extends Application {
                         }
                     };
 
-            die4.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie4);
-
             EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie5 =
                     new EventHandler<MouseEvent>() {
                         @Override
@@ -531,8 +522,6 @@ public class Game extends Application {
                             }
                         }
                     };
-
-            die5.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie5);
 
             EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie6 =
                     new EventHandler<MouseEvent>() {
@@ -560,7 +549,18 @@ public class Game extends Application {
                         }
                     };
 
-            die6.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie6);
+            if (gameJustStarted) {
+                die1.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie1);
+                die2.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie2);
+                die3.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie3);
+                die4.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie4);
+                die5.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie5);
+                die6.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie6);
+                gameJustStarted = false;
+            }
+
+
+            dieRoll.getChildren().addAll(die1, die2, die3, die4, die5, die6);
 
             //Action bar
             button.setOnAction(new EventHandler<ActionEvent>() {
@@ -572,6 +572,7 @@ public class Game extends Application {
                         String[] act = input.split(" ");
                         String boardString = boardToString(currentPlayer.getCurrentBoard());
                         currentStructures = currentPlayer.getCurrentBoard().getStructures();
+                        currentPlayersScore = currentPlayer.getScores();
                         int[] stringResourceState = currentPlayer.getCurrentResources().getResourceState();
 
                         if (!CatanDice.isActionWellFormed(input)) { //not valid input
@@ -616,16 +617,25 @@ public class Game extends Application {
                                 for (Structure structure : currentStructures) {
                                     if (structure.getPosition().equals(pos)) {
                                         structure.setBuilt();
-                                        somethingBuilt = true;
                                         ArrayList<String> arrayBoard = stringToArrayList(boardString);
                                         CatanDice.state_after_building(pos, stringResourceState, arrayBoard);
                                         boardString = arrayListToString(arrayBoard);
-                                        updateScore(structure, currentPlayer.getScores());
                                         updateResources(stringResourceState);
+
+                                        if (somethingBuilt) {
+                                            int currentScore = currentPlayersScore.get(currentPlayersScore.size() - 1);
+                                            int newScore = currentScore + structure.getValue();
+                                            currentPlayersScore.set(currentPlayersScore.size() - 1, newScore);
+                                        } else {
+                                            currentPlayersScore.add(structure.getValue());
+                                        }
+
+                                        currentPlayer.setScores(currentPlayersScore);
 
 
                                     }
                                 }
+                                somethingBuilt = true;
                                 currentPlayer.setBoard(stringToBoard(boardString));
 
                                 try {
@@ -656,7 +666,7 @@ public class Game extends Application {
                                 currentPlayer.setBoard(stringToBoard(boardString));
                                 String received = resourceReturner(input.substring(input.length() - 1));
                                 String traded = resourceReturner(Character.toString(input.charAt(5)));
-                                displayInstructions("Successfully swapped one " + traded + "for one " + received);
+                                displayInstructions("Successfully swapped one " + traded + " for one " + received);
                                 try {
                                     displayStateCurrent(currentPlayer);
                                 } catch (FileNotFoundException ex) {
@@ -898,7 +908,6 @@ public class Game extends Application {
 
                 }
 
-
             });
 
             displayStateCurrent(currentPlayer);
@@ -908,9 +917,99 @@ public class Game extends Application {
 
 
         } else { //the game is over
+            controls.getChildren().clear();
+            currentPlayerDisplay.getChildren().clear();
+            redDie.getChildren().clear();
+            startMenu.getChildren().clear();
+            objects.getChildren().clear();
+            hexagons.getChildren().clear();
+            structures.getChildren().clear();
+            dieRoll.getChildren().clear();
+            rollCounter.getChildren().clear();
+            instructions.getChildren().clear();
+
+            Rectangle winnerBackground = new Rectangle();
+            winnerBackground.setWidth(500);
+            winnerBackground.setHeight(400);
+            winnerBackground.setX(340);
+            winnerBackground.setY(230);
+            winnerBackground.setStroke(Color.BLACK);
+            winnerBackground.setFill(Color.WHITE);
+
+            Rectangle winnerTitle = new Rectangle();
+            winnerTitle.setWidth(600);
+            winnerTitle.setHeight(100);
+            winnerTitle.setX(290);
+            winnerTitle.setY(60);
+            winnerTitle.setStroke(Color.BLACK);
+            winnerTitle.setFill(Color.WHITE);
+
+            String winnerName = "";
+            int winnerScore = 0;
+
+            if (playerNumber == 2) {
+                int p1Score = player1.sumScores();
+                int p2Score = player2.sumScores();
+
+                if (p1Score > p2Score) {
+                    winnerName = "Player 1";
+                    winnerScore = p1Score;
+                } else if (p2Score > p1Score) {
+                    winnerName = "Player 2";
+                    winnerScore = p2Score;
+                }
+
+            } else if (playerNumber == 3) {
+                int p1Score = player1.sumScores();
+                int p2Score = player2.sumScores();
+                int p3Score = player3.sumScores();
+
+                if (p1Score > p2Score && p2Score > p3Score) {
+                    winnerName = "Player 1";
+                    winnerScore = p1Score;
+                } else if (p2Score > p1Score && p1Score > p3Score) {
+                    winnerName = "Player 2";
+                    winnerScore = p2Score;
+                } else if (p3Score > p1Score && p1Score > p2Score) {
+                    winnerName = "Player 3";
+                    winnerScore = p3Score;
+                }
+
+            } else if (playerNumber == 4) {
+                int p1Score = player1.sumScores();
+                int p2Score = player2.sumScores();
+                int p3Score = player3.sumScores();
+                int p4Score = player4.sumScores();
+
+                if (p1Score > p2Score && p2Score > p3Score && p1Score > p4Score) {
+                    winnerName = "Player 1";
+                    winnerScore = p1Score;
+                } else if (p2Score > p1Score && p1Score > p3Score && p2Score > p4Score) {
+                    winnerName = "Player 2";
+                    winnerScore = p2Score;
+                } else if (p3Score > p1Score && p1Score > p2Score && p3Score > p4Score) {
+                    winnerName = "Player 3";
+                    winnerScore = p3Score;
+                } else if (p4Score > p1Score && p4Score > p2Score && p4Score > p3Score) {
+                    winnerName = "Player 4";
+                    winnerScore = p4Score;
+                }
 
 
-            //display final scores and winner
+            }
+
+            String winnerText = "The winner is " + winnerName + " with a score of " + String.valueOf(winnerScore);
+
+            Text winner = new Text();
+            Text text = new Text(winnerText);
+            text.setFont(Font.font("Verdana", 20));
+            text.setX(375);
+            text.setY(115);
+            text.toFront();
+
+
+            structures.getChildren().addAll(winnerBackground, winnerTitle, text);
+
         }
 
 
