@@ -219,7 +219,10 @@ public class CatanDice {
         } else if (structure.equals("R0") || structure.equals("S3") || structure.equals("J1")) {
             return true;
         }
-        String[] b_state = board_state.split(",");
+        String[] b_state={};
+        if (board_state.length()!=0){
+            b_state = board_state.split(",");
+        }
         ArrayList<String> B_state = new ArrayList<>(Arrays.asList(b_state));
         B_state.add(structure);
         int[] s_point = {3, 4, 5, 7, 9, 11};
@@ -228,12 +231,9 @@ public class CatanDice {
         int[] R_point1 = {7, 12, 13, 14, 15};
         int[] R_point2 = {7, 8, 9, 10, 11};
         int[] K_point = {1, 2, 3, 4, 5, 6};
-        if (!(Building_Valid_Settlement_City(B_state))) {
-            return false;
-        }
         Map<String, ArrayList<String>> h1 = new HashMap<>();
         h1 = Builtstructure(B_state);
-        if (!checkAscendingPoints(h1, c_point, s_point, K_point, R_point, R_point1, R_point2)) {
+        if (!checkAscendingPoints(h1, c_point, s_point, K_point, R_point, R_point1, R_point2) || !(Building_Valid_Settlement_City(B_state))) {
             return false;
         }
         return true;
@@ -691,7 +691,7 @@ public class CatanDice {
                                       int[] resource_state) {
         String[] act = action.split(" ");
         if (act[0].equals("build")) {
-            if (act.length != 2 || !(checkBuildConstraints(act[1], board_state)) || !(checkResources(act[1], resource_state))) {
+            if (act.length != 2 || !(checkResources(act[1], resource_state)) || !(checkBuildConstraints(act[1], board_state))) {
                 return false;
             }
         } else if (act[0].equals("trade")) {
