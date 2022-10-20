@@ -601,7 +601,7 @@ public class CatanDice {
         for(Integer res: missing_res.keySet()) {
             while(missing_res.get(res)>0 && num_trade>0) {
                 String act = "trade "+res;
-                state_after_trade(re_state,act);
+                state_after_trade(act, re_state);
                 num_trade--;
                 missing_res.put(res,missing_res.get(res)-1);
             }
@@ -818,7 +818,7 @@ public class CatanDice {
                     String[] s = act.split(" ");
                     state_after_building(s[1],re_state,b_state);
                 } else if (act.charAt(0)=='t') {
-                    state_after_trade(re_state,act);
+                    state_after_trade(act, re_state);
                 } else{
                     state_after_swap(re_state,act,b_state);
                 }
@@ -1001,7 +1001,7 @@ public class CatanDice {
                     action = action_to_get_enough_resource(r_state,b_state,miss_resource,s);
                     for (String act:action) {
                         if (act.charAt(0)=='t') {
-                            state_after_trade(r_state,act);
+                            state_after_trade(act, r_state);
                         } else{
                             state_after_swap(r_state,act,b_state);
                         }
@@ -1086,12 +1086,12 @@ public class CatanDice {
 
     /**
      * Make changes to the resource_state after each time of trading
-     * @param r_state the available resources
      * @param action the string representation of the trade action
      *               <p> It doesn't return anything, but update the resource_state
      *               correspondingly based on the provided action
+     * @param r_state the available resources
      */
-    public static void state_after_trade (int[] r_state, String action) {
+    public static void state_after_trade (String action, int[] r_state) {
         String[] act = action.split(" ");
         int trade_idx = Integer.parseInt(act[1]);
         r_state[5]-=2;

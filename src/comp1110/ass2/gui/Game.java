@@ -1,12 +1,12 @@
 package comp1110.ass2.gui;
 
 import comp1110.ass2.*;
-import static comp1110.ass2.Board.*;
+import java.util.List;
+import java.util.Map;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
@@ -15,13 +15,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -30,19 +26,13 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.*;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
-import org.w3c.dom.css.Rect;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -81,20 +71,22 @@ public class Game extends Application {
     private TextField playerTextField;
     private TextField boardTextField;
 
-    private Group currentPlayersBoardDisplay = new Group();
+    private Group currentPlayerDisplay = new Group();
 
     private Group currentPlayersScoreDisplay = new Group();
 
     private Board currentPlayersBoard = new Board();
+
+    private int currentPlayerRunningScore = 0;
 
     private ArrayList<Integer> currentPlayersScore = new ArrayList<>();
 
     private Board boardAfterMove = new Board();
     private ResourceState currentPlayersResourceState = new ResourceState();
 
-    private Structure[] builtStructures = new Structure[33];
+    private Structure[] builtStructures = new Structure[32];
 
-    private Structure[] currentStructures = new Structure[33];
+    private Structure[] currentStructures = new Structure[32];
 
     private int rollCount = 1;
 
@@ -118,7 +110,7 @@ public class Game extends Application {
 
     private boolean gameOver = false;
 
-    private boolean turnStarted = false;
+    private boolean firstTurn = true;
 
     //Die
 
@@ -151,9 +143,6 @@ public class Game extends Application {
 
         startMenu.getChildren().clear();
         controls.getChildren().clear();
-        currentPlayersBoardDisplay.getChildren().clear();
-        currentPlayersScoreDisplay.getChildren().clear();
-        currentPlayersBoardDisplay.setVisible(false);
         currentPlayer = player1;
 
         //Creates the start menu
@@ -326,7 +315,7 @@ public class Game extends Application {
                 dieRoll.getChildren().clear();
                 redDie.getChildren().clear();
                 instructions.getChildren().clear();
-                currentPlayersBoardDisplay.getChildren().clear();
+                currentPlayerDisplay.getChildren().clear();
                 currentPlayersResourceState = new ResourceState();
                 currentDie = new int[6];
                 builtStructures = new Structure[33];
@@ -416,6 +405,9 @@ public class Game extends Application {
             final boolean[] selectedAtRoll6 = {false};
 
             dieRoll.getChildren().addAll(die1, die2, die3, die4, die5, die6);
+
+            displayStateCurrent(currentPlayer);
+            displayInstructions(currentPlayer.getName() + " is playing. Please roll!");
 
             EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie1 =
                     new EventHandler<MouseEvent>() {
@@ -585,8 +577,7 @@ public class Game extends Application {
 
             die6.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandlerDie6);
 
-            //Action bar action
-
+            //Action bar
             button.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
@@ -594,11 +585,13 @@ public class Game extends Application {
                     String[] act = input.split(" ");
                     String boardString = boardToString(currentPlayersBoard);
                     currentStructures = currentPlayersBoard.structures;
-
                     int[] stringResourceState = currentPlayersResourceState.getResourceState();
 
                     if (!CatanDice.isActionWellFormed(input)) { //not valid input
                         displayInstructions("Invalid action input. Please type again");
+
+                    } else if (act[0].equals("build") && (currentPlayersBoard.getStructure(act[1], currentPlayersBoard.getStructures())).isBuilt()) {
+                        displayInstructions(act[1] + " is already built!");
 
                     } else if (!CatanDice.canDoAction(input, boardString,stringResourceState)) {
                         String returnString = "";
@@ -633,187 +626,59 @@ public class Game extends Application {
                             for (Structure structure : currentStructures) {
                                 if (structure.getPosition().equals(pos)) {
                                     structure.setBuilt();
-                                    if (structure.isRoad()) {
-                                        int currentTimber = stringResourceState[3];
-                                        currentTimber -= 1;
-                                        stringResourceState[3] = currentTimber;
-                                        int currentBrick = stringResourceState[4];
-                                        currentBrick -= 1;
-                                        stringResourceState[4] = currentBrick;
-                                        
-                                    } else if (structure.isSettlement()) {
-                                        int currentGrain = stringResourceState[1];
-                                        currentGrain -= 1;
-                                        stringResourceState[1] = currentGrain;
-                                        int currentWool= stringResourceState[2];
-                                        currentWool -= 1;
-                                        stringResourceState[2] = currentWool;
-                                        int currentTimber = stringResourceState[3];
-                                        currentTimber -= 1;
-                                        stringResourceState[3] = currentTimber;
-                                        int currentBrick = stringResourceState[4];
-                                        currentBrick -= 1;
-                                        stringResourceState[4] = currentBrick;
-                                        
-                                    } else if (structure.isCity()) {
-                                        int currentOre = stringResourceState[0];
-                                        currentOre -= 3;
-                                        stringResourceState[0] = currentOre;
-                                        int currentGrain = stringResourceState[1];
-                                        currentGrain -= 2;
-                                        stringResourceState[1] = currentGrain;
-
-                                    } else if (structure.isKnight()) {
-                                        int currentGrain = stringResourceState[1];
-                                        currentGrain -= 1;
-                                        stringResourceState[1] = currentGrain;
-                                        int currentWool= stringResourceState[2];
-                                        currentWool -= 1;
-                                        stringResourceState[2] = currentWool;
-                                        int currentOre = stringResourceState[0];
-                                        currentOre -= 1;
-                                        stringResourceState[0] = currentOre;
-                                    }
+                                    ArrayList<String> arrayBoard = stringToArrayList(boardString);
+                                    CatanDice.state_after_building(pos, stringResourceState, arrayBoard);
+                                    boardString = arrayListToString(arrayBoard);
+                                    updateScore(structure, currentPlayersScore);
 
 
-                                    if (currentPlayersScore.isEmpty()) {
-                                        currentPlayersScore.add(structure.getValue());
-                                    } else {
-                                        int currentTurnScore = currentPlayersScore.get(currentPlayer.getTurnCount());
-                                        currentTurnScore += structure.getValue();
-                                        currentPlayersScore.add(currentPlayer.getTurnCount(), currentTurnScore);
-                                    }
                                 }
                             }
+                            currentPlayer.setBoard(stringToBoard(boardString));
 
+                            try {
+                                displayStateCurrent(currentPlayer);
+                            } catch (FileNotFoundException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            displayInstructions("Successfully built " + pos);
+                            
+                        } else if (act[0].equals("trade")) {
+                            CatanDice.state_after_trade(input, stringResourceState);
                             currentPlayersResourceState.changeResourceState(stringResourceState);
                             currentPlayer.setResources(currentPlayersResourceState);
-                            currentPlayersBoard.setStructures(currentStructures);
-                            currentPlayer.setBoard(currentPlayersBoard);
+                            displayInstructions("Successfully traded for " + input.substring(input.length()-1));
                             try {
-                                displayResourceState(stringResourceState);
                                 displayStateCurrent(currentPlayer);
                             } catch (FileNotFoundException ex) {
                                 throw new RuntimeException(ex);
                             }
 
 
-
-                            
-                        } else if (act[0].equals("trade")) {
-                            String pos = input.substring(Math.max(input.length() - 1, 0));
-                            if (pos.equals("0")) {
-                                int currentOre = stringResourceState[0];
-                                currentOre +=1;
-                                stringResourceState[0] = currentOre;
-                                int currentGold = stringResourceState[5];
-                                currentGold -= 2;
-                                stringResourceState[5] = currentGold;
-
-                            } else if (pos.equals("1")) {
-                                int currentGrain = stringResourceState[1];
-                                currentGrain +=1;
-                                stringResourceState[1] = currentGrain;
-                                int currentGold = stringResourceState[5];
-                                currentGold -= 2;
-                                stringResourceState[5] = currentGold;
-                                
-                            } else if (pos.equals("2")) {
-                                int currentWool = stringResourceState[2];
-                                currentWool +=1;
-                                stringResourceState[2] = currentWool;
-                                int currentGold = stringResourceState[5];
-                                currentGold -= 2;
-                                stringResourceState[5] = currentGold;
-
-                            } else if (pos.equals("3")) {
-                                int currentTimber = stringResourceState[3];
-                                currentTimber +=1;
-                                stringResourceState[3] = currentTimber;
-                                int currentGold = stringResourceState[5];
-                                currentGold -= 2;
-                                stringResourceState[5] = currentGold;
-
-                            } else if (pos.equals("4")) {
-                                int currentBricks = stringResourceState[4];
-                                currentBricks +=1;
-                                stringResourceState[4] = currentBricks;
-                                int currentGold = stringResourceState[5];
-                                currentGold -= 2;
-                                stringResourceState[5] = currentGold;
+                        } else if (act[0].equals("swap")) {
+                            ArrayList<String> arrayBoard = stringToArrayList(boardString);
+                            CatanDice.state_after_swap(stringResourceState, input, arrayBoard);
+                            boardString = arrayListToString(arrayBoard);
+                            currentPlayersResourceState.changeResourceState(stringResourceState);
+                            currentPlayer.setResources(currentPlayersResourceState);
+                            currentPlayer.setBoard(stringToBoard(boardString));
+                            String resource = input.substring(input.length()-1);
+                            String wordResource = "";
+                            switch (resource) {
+                                case "0" -> wordResource = "ore";
+                                case "1" -> wordResource = "grain";
+                                case "2" -> wordResource = "wool";
+                                case "3" -> wordResource = "timber";
+                                case "4" -> wordResource = "brick";
+                                case "5" -> wordResource = "gold";
                             }
-
+                            displayInstructions("Successfully swapped for 2 gold for " + wordResource);
                             try {
-                                dieRoll.getChildren().clear();
-
-                                displayResourceState(stringResourceState);
-
+                                displayStateCurrent(currentPlayer);
                             } catch (FileNotFoundException ex) {
                                 throw new RuntimeException(ex);
                             }
 
-                            currentPlayersResourceState.changeResourceState(stringResourceState);
-                            currentPlayer.setResources(currentPlayersResourceState);
-
-
-                        } else if (act[0].equals("swap")) {
-                            int idx1 = Integer.parseInt(act[1]);
-                            int idx2 = Integer.parseInt(act[2]);
-
-                            if (idx1 == 0) {
-                               int currentLevel = stringResourceState[0];
-                               currentLevel +=1;
-                               stringResourceState[0] = currentLevel;
-                            } else if (idx1 == 1) {
-                                int currentLevel = stringResourceState[1];
-                                currentLevel +=1;
-                                stringResourceState[1] = currentLevel;
-                            } else if (idx1 == 2) {
-                                int currentLevel = stringResourceState[2];
-                                currentLevel +=1;
-                                stringResourceState[2] = currentLevel;
-                            } else if (idx1 == 3) {
-                                int currentLevel = stringResourceState[3];
-                                currentLevel +=1;
-                                stringResourceState[3] = currentLevel;
-                            } else if (idx1 == 4) {
-                                int currentLevel = stringResourceState[4];
-                                currentLevel +=1;
-                                stringResourceState[4] = currentLevel;
-                            } else if (idx1 == 5) {
-                                int currentLevel = stringResourceState[5];
-                                currentLevel +=1;
-                                stringResourceState[5] = currentLevel;
-                            }
-
-                            if (idx2 == 0) {
-                                int currentLevel = stringResourceState[0];
-                                currentLevel -=1;
-                                stringResourceState[0] = currentLevel;
-                            } else if (idx2 == 1) {
-                                int currentLevel = stringResourceState[1];
-                                currentLevel -=1;
-                                stringResourceState[1] = currentLevel;
-                            } else if (idx2 == 2) {
-                                int currentLevel = stringResourceState[2];
-                                currentLevel -=1;
-                                stringResourceState[2] = currentLevel;
-                            } else if (idx2 == 3) {
-                                int currentLevel = stringResourceState[3];
-                                currentLevel -=1;
-                                stringResourceState[3] = currentLevel;
-                            } else if (idx2 == 4) {
-                                int currentLevel = stringResourceState[4];
-                                currentLevel -=1;
-                                stringResourceState[4] = currentLevel;
-                            } else if (idx2 == 5) {
-                                int currentLevel = stringResourceState[5];
-                                currentLevel -=1;
-                                stringResourceState[5] = currentLevel;
-                            }
-
-                            currentPlayersResourceState.changeResourceState(stringResourceState);
-                            currentPlayer.setResources(currentPlayersResourceState);
                         }
 
 
@@ -951,14 +816,11 @@ public class Game extends Application {
 
              });
 
+            //End turn button
+
             //Current player set to player 1. Display current state and score.
 
-            displayStateCurrent(currentPlayer);
-            displayScore(currentPlayer);
-
             //Prompt player to roll
-
-            displayInstructions(currentPlayer.getName() + " is playing. Please roll!");
 
 
 
@@ -1010,7 +872,6 @@ public class Game extends Application {
 
             controls.getChildren().addAll(controlMenu, controlHeader, header,
                     hb, actionBarText, hb2, rollCounterRect, resetGameBox);
-            currentPlayersBoardDisplay.getChildren().clear();
 
             if (playerTurn == 1) {
                 playerTurn = 2;
@@ -1136,13 +997,13 @@ public class Game extends Application {
 
     }
 
-    void displayStateCurrent(Player player) {
+    public void displayStateCurrent(Player player) throws FileNotFoundException {
 
-        currentPlayersScoreDisplay.getChildren().clear();
-        currentPlayersBoardDisplay.getChildren().clear();
+        currentPlayerDisplay.getChildren().clear();
 
         Board board = player.getCurrentBoard();
         String board_state = boardToString(board);
+        int[] resourceState = currentPlayer.getCurrentResources().getResourceState();
 
         String[] boardArr = board_state.split(",");
 
@@ -1221,11 +1082,344 @@ public class Game extends Application {
                 useKnightCurrent(1003,395);
             } else if (str.equals("K5")) {
                 useKnightCurrent(1003,240);
-            } else { //K6
+            } else if (str.equals("K6")){
                 useKnightCurrent(866,160);
             }
 
         }
+
+        //display score
+
+        ArrayList<Integer> scores = player.getScores();
+
+        for (int i = 0; i < scores.size(); i ++) {
+            String holder = "";
+            if (scores.get(i) == 0) {
+                holder = holder + "X";
+            } else {
+                holder = holder + String.valueOf(scores.get(i));
+            }
+            Text score = textBox(holder);
+            int lengthScore = 1;
+            if (scores.get(i) > 9) {
+                lengthScore = 2;
+            }
+            Font font = new Font("Verdana", 20);
+            score.setFont(font);
+
+            if (i == 0) {
+                if (lengthScore == 1) {
+                    score.setX(372.5);
+                    score.setY(458);
+                } else {
+                    score.setX(366.5);
+                    score.setY(458);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            } else if (i == 1) {
+                if (lengthScore == 1) {
+                    score.setX(415.5);
+                    score.setY(458);
+                } else {
+                    score.setX(409.25);
+                    score.setY(458);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            } else if (i == 2) {
+                if (lengthScore == 1) {
+                    score.setX(457.75);
+                    score.setY(458);
+                } else {
+                    score.setX(451.5);
+                    score.setY(458);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            } else if (i == 3) {
+                if (lengthScore == 1) {
+                    score.setX(500.5);
+                    score.setY(458);
+                } else {
+                    score.setX(494.25);
+                    score.setY(458);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            } else if (i == 4) {
+                if (lengthScore == 1) {
+                    score.setX(542.5);
+                    score.setY(458);
+                } else {
+                    score.setX(536.5);
+                    score.setY(458);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            } else if (i == 5) {
+                if (lengthScore == 1) {
+                    score.setX(542.5);
+                    score.setY(501);
+                } else {
+                    score.setX(536.5);
+                    score.setY(501);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            } else if (i == 6) {
+                if (lengthScore == 1) {
+                    score.setX(542.5);
+                    score.setY(544);
+                } else {
+                    score.setX(536.5);
+                    score.setY(544);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            } else if (i == 7) {
+                if (lengthScore == 1) {
+                    score.setX(501.5);
+                    score.setY(544);
+                } else {
+                    score.setX(494.25);
+                    score.setY(544);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            } else if (i == 8) {
+                if (lengthScore == 1) {
+                    score.setX(458.5);
+                    score.setY(544);
+                } else {
+                    score.setX(451.5);
+                    score.setY(544);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            } else if (i == 9) {
+                if (lengthScore == 1) {
+                    score.setX(415.5);
+                    score.setY(544);
+                } else {
+                    score.setX(409.25);
+                    score.setY(544);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            } else if (i == 10) {
+                if (lengthScore == 1) {
+                    score.setX(372.5);
+                    score.setY(544);
+                } else {
+                    score.setX(365.5);
+                    score.setY(544);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            } else if (i == 11) {
+                if (lengthScore == 1) {
+                    score.setX(372.5);
+                    score.setY(587);
+                } else {
+                    score.setX(365.5);
+                    score.setY(587);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+
+            } else if (i == 12) {
+                if (lengthScore == 1) {
+                    score.setX(372.5);
+                    score.setY(629);
+                } else {
+                    score.setX(365.5);
+                    score.setY(629);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            } else if (i == 13) {
+                if (lengthScore == 1) {
+                    score.setX(415.5);
+                    score.setY(629);
+                } else {
+                    score.setX(409);
+                    score.setY(629);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            } else {
+                if (lengthScore == 1) {
+                    score.setX(458.5);
+                    score.setY(629);
+                } else {
+                    score.setX(452);
+                    score.setY(629);
+                }
+                currentPlayerDisplay.getChildren().add(score);
+
+            }
+        }
+
+        Text sumScore = textBox(String.valueOf(currentPlayer.sumScores()));
+        Font font = new Font("Verdana", 20);
+        sumScore.setFont(font);
+
+        if (currentPlayer.sumScores() < -9) {
+            sumScore.setX(522.5);
+            sumScore.setY(629);
+        } else if (currentPlayer.sumScores() < 0) {
+            sumScore.setX(528.5);
+            sumScore.setY(629);
+        } else if (currentPlayer.sumScores() < 10) {
+            sumScore.setX(534.5);
+            sumScore.setY(629);
+        } else if (currentPlayer.sumScores() < 100) {
+            sumScore.setX(528.5);
+            sumScore.setY(629);
+        } else {
+            sumScore.setX(522.5);
+            sumScore.setY(629);
+        }
+
+        currentPlayerDisplay.getChildren().add(sumScore);
+
+        //display resource state
+
+        Image oreDice = new Image(new FileInputStream("assets/Ore_dice.png"));
+        Image grainDice = new Image(new FileInputStream("assets/Wheat_dice.png"));
+        Image woolDice = new Image(new FileInputStream("assets/Wool_dice.png"));
+        Image timberDice = new Image(new FileInputStream("assets/Timber_dice.png"));
+        Image brickDice = new Image(new FileInputStream("assets/Brick_dice.png"));
+        Image goldDice = new Image(new FileInputStream("assets/Gold_dice.png"));
+
+        Map<String, Integer> resources = new HashMap<String, Integer>();
+
+        for (int i = 0; i < resourceState.length; i++) {
+            if (i == 0) {
+                resources.put("ore", resourceState[i]);
+            } else if (i == 1) {
+                resources.put("grain", resourceState[i]);
+            } else if (i == 2) {
+                resources.put("wool", resourceState[i]);
+            } else if (i == 3) {
+                resources.put("timber", resourceState[i]);
+            } else if (i == 4) {
+                resources.put("brick", resourceState[i]);
+            } else if (i == 5) {
+                resources.put("gold", resourceState[i]);
+            }
+        }
+
+        ArrayList<String> listResources = new ArrayList<>();
+
+        ArrayList<String> oreList = new ArrayList<String>(Collections.nCopies(resources.get("ore"), "ore"));
+        ArrayList<String> grainList = new ArrayList<String>(Collections.nCopies(resources.get("grain"), "grain"));
+        ArrayList<String> woolList = new ArrayList<String>(Collections.nCopies(resources.get("wool"), "wool"));
+        ArrayList<String> timberList = new ArrayList<String>(Collections.nCopies(resources.get("timber"), "timber"));
+        ArrayList<String> brickList = new ArrayList<String>(Collections.nCopies(resources.get("brick"), "brick"));
+        ArrayList<String> goldList = new ArrayList<String>(Collections.nCopies(resources.get("gold"), "gold"));
+
+        listResources.addAll(oreList);
+        listResources.addAll(grainList);
+        listResources.addAll(woolList);
+        listResources.addAll(timberList);
+        listResources.addAll(brickList);
+        listResources.addAll(goldList);
+
+        for (int i = 0; i < listResources.size(); i++) {
+            if (i == 0) {
+                switch(listResources.get(i)) {
+                    case "ore" -> die1.setFill(new ImagePattern(oreDice));
+                    case "grain" -> die1.setFill(new ImagePattern(grainDice));
+                    case "wool" -> die1.setFill(new ImagePattern(woolDice));
+                    case "timber" -> die1.setFill(new ImagePattern(timberDice));
+                    case "brick" -> die1.setFill(new ImagePattern(brickDice));
+                    case "gold" -> die1.setFill(new ImagePattern(goldDice));
+                }
+            } else if (i == 1) {
+                switch(listResources.get(i)) {
+                    case "ore" -> die2.setFill(new ImagePattern(oreDice));
+                    case "grain" -> die2.setFill(new ImagePattern(grainDice));
+                    case "wool" -> die2.setFill(new ImagePattern(woolDice));
+                    case "timber" -> die2.setFill(new ImagePattern(timberDice));
+                    case "brick" -> die2.setFill(new ImagePattern(brickDice));
+                    case "gold" -> die2.setFill(new ImagePattern(goldDice));
+
+                }
+            } else if (i == 2) {
+                switch(listResources.get(i)) {
+                    case "ore" -> die3.setFill(new ImagePattern(oreDice));
+                    case "grain" -> die3.setFill(new ImagePattern(grainDice));
+                    case "wool" -> die3.setFill(new ImagePattern(woolDice));
+                    case "timber" -> die3.setFill(new ImagePattern(timberDice));
+                    case "brick" -> die3.setFill(new ImagePattern(brickDice));
+                    case "gold" -> die3.setFill(new ImagePattern(goldDice));
+                }
+
+            } else if (i == 3) {
+                switch(listResources.get(i)) {
+                    case "ore" -> die4.setFill(new ImagePattern(oreDice));
+                    case "grain" -> die4.setFill(new ImagePattern(grainDice));
+                    case "wool" -> die4.setFill(new ImagePattern(woolDice));
+                    case "timber" -> die4.setFill(new ImagePattern(timberDice));
+                    case "brick" -> die4.setFill(new ImagePattern(brickDice));
+                    case "gold" -> die4.setFill(new ImagePattern(goldDice));
+                }
+
+            } else if (i == 4) {
+                switch(listResources.get(i)) {
+                    case "ore" -> die5.setFill(new ImagePattern(oreDice));
+                    case "grain" -> die5.setFill(new ImagePattern(grainDice));
+                    case "wool" -> die5.setFill(new ImagePattern(woolDice));
+                    case "timber" -> die5.setFill(new ImagePattern(timberDice));
+                    case "brick" -> die5.setFill(new ImagePattern(brickDice));
+                    case "gold" -> die5.setFill(new ImagePattern(goldDice));
+                }
+
+            } else if (i == 5) {
+                switch(listResources.get(i)) {
+                    case "ore" -> die6.setFill(new ImagePattern(oreDice));
+                    case "grain" -> die6.setFill(new ImagePattern(grainDice));
+                    case "wool" -> die6.setFill(new ImagePattern(woolDice));
+                    case "timber" -> die6.setFill(new ImagePattern(timberDice));
+                    case "brick" -> die6.setFill(new ImagePattern(brickDice));
+                    case "gold" -> die6.setFill(new ImagePattern(goldDice));
+                }
+
+            }
+
+        }
+
+        if (listResources.size() == 5) {
+            makeDieTransparent(die6,6);
+        } else if (listResources.size() == 4) {
+            makeDieTransparent(die5,5);
+            makeDieTransparent(die6,6);
+        } else if (listResources.size() == 3) {
+            makeDieTransparent(die4,4);
+            makeDieTransparent(die5,5);
+            makeDieTransparent(die6,6);
+        } else if (listResources.size() == 2) {
+            makeDieTransparent(die3,3);
+            makeDieTransparent(die4,4);
+            makeDieTransparent(die5,5);
+            makeDieTransparent(die6,6);
+        } else if (listResources.size() == 1) {
+            makeDieTransparent(die2,2);
+            makeDieTransparent(die3,3);
+            makeDieTransparent(die4,4);
+            makeDieTransparent(die5,5);
+            makeDieTransparent(die6,6);
+        } else if (listResources.size() == 0) {
+            makeDieTransparent(die1,1);
+            makeDieTransparent(die2,2);
+            makeDieTransparent(die3,3);
+            makeDieTransparent(die4,4);
+            makeDieTransparent(die5,5);
+            makeDieTransparent(die6,6);
+        }
+        currentPlayerDisplay.toFront();
 
     }
 
@@ -1255,7 +1449,7 @@ public class Game extends Application {
                     score.setX(366.5);
                     score.setY(458);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             } else if (i == 1) {
                 if (lengthScore == 1) {
@@ -1265,7 +1459,7 @@ public class Game extends Application {
                     score.setX(409.25);
                     score.setY(458);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             } else if (i == 2) {
                 if (lengthScore == 1) {
@@ -1275,7 +1469,7 @@ public class Game extends Application {
                     score.setX(451.5);
                     score.setY(458);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             } else if (i == 3) {
                 if (lengthScore == 1) {
@@ -1285,7 +1479,7 @@ public class Game extends Application {
                     score.setX(494.25);
                     score.setY(458);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             } else if (i == 4) {
                 if (lengthScore == 1) {
@@ -1295,7 +1489,7 @@ public class Game extends Application {
                     score.setX(536.5);
                     score.setY(458);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             } else if (i == 5) {
                 if (lengthScore == 1) {
@@ -1305,7 +1499,7 @@ public class Game extends Application {
                     score.setX(536.5);
                     score.setY(501);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             } else if (i == 6) {
                 if (lengthScore == 1) {
@@ -1315,7 +1509,7 @@ public class Game extends Application {
                     score.setX(536.5);
                     score.setY(544);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             } else if (i == 7) {
                 if (lengthScore == 1) {
@@ -1325,7 +1519,7 @@ public class Game extends Application {
                     score.setX(494.25);
                     score.setY(544);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             } else if (i == 8) {
                 if (lengthScore == 1) {
@@ -1335,7 +1529,7 @@ public class Game extends Application {
                     score.setX(451.5);
                     score.setY(544);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             } else if (i == 9) {
                 if (lengthScore == 1) {
@@ -1345,7 +1539,7 @@ public class Game extends Application {
                     score.setX(409.25);
                     score.setY(544);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             } else if (i == 10) {
                 if (lengthScore == 1) {
@@ -1355,7 +1549,7 @@ public class Game extends Application {
                     score.setX(365.5);
                     score.setY(544);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             } else if (i == 11) {
                 if (lengthScore == 1) {
@@ -1365,7 +1559,7 @@ public class Game extends Application {
                     score.setX(365.5);
                     score.setY(587);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
 
             } else if (i == 12) {
@@ -1376,7 +1570,7 @@ public class Game extends Application {
                     score.setX(365.5);
                     score.setY(629);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             } else if (i == 13) {
                 if (lengthScore == 1) {
@@ -1386,7 +1580,7 @@ public class Game extends Application {
                     score.setX(409);
                     score.setY(629);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             } else {
                 if (lengthScore == 1) {
@@ -1396,7 +1590,7 @@ public class Game extends Application {
                     score.setX(452);
                     score.setY(629);
                 }
-                currentPlayersScoreDisplay.getChildren().add(score);
+                currentPlayerDisplay.getChildren().add(score);
 
             }
         }
@@ -1424,34 +1618,7 @@ public class Game extends Application {
             sumScore.setY(629);
         }
 
-        currentPlayersScoreDisplay.getChildren().add(sumScore);
-        currentPlayersScoreDisplay.toFront();
-
-    }
-
-
-
-    /**
-     * Create a basic text field for input and a refresh button.
-     */
-    private void makeControls() {
-        Label boardLabel = new Label("Board State:");
-        boardTextField = new TextField();
-        boardTextField.setPrefWidth(500);
-        Button button = new Button("Show");
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                displayState(boardTextField.getText());
-            }
-        });
-        HBox hb = new HBox();
-        hb.getChildren().addAll(boardLabel, boardTextField, button);
-        hb.setSpacing(10);
-        hb.setLayoutX(5);
-        hb.setLayoutY(10);
-        controls.getChildren().add(hb);
-
+        currentPlayerDisplay.getChildren().add(sumScore);
 
     }
 
@@ -1598,8 +1765,8 @@ public class Game extends Application {
         //Nodes
 
         root.getChildren().add(controls); //adds control bar
-        root.getChildren().add(currentPlayersBoardDisplay); //adds current players board
-        root.getChildren().add(currentPlayersScoreDisplay); //adds current players scores
+        root.getChildren().add(currentPlayerDisplay); //adds current players board and scores
+        root.getChildren().add(currentPlayersScoreDisplay);
         root.getChildren().add(redDie); //Shows selected die
         root.getChildren().add(startMenu); // adds start menu
         root.getChildren().add(objects); //adds resource key, scoreboard, title and ocean
@@ -1849,7 +2016,7 @@ public class Game extends Application {
         stack.setLayoutX(xCoord);
         stack.setLayoutY(yCoord);
         stack.getTransforms().add(new Rotate(rotation));
-        currentPlayersBoardDisplay.getChildren().add(stack);
+        currentPlayerDisplay.getChildren().add(stack);
     }
 
 
@@ -1907,8 +2074,8 @@ public class Game extends Application {
         tri.setLayoutX(xCoord - 4);
         tri.setLayoutY(yCoord - 13);
 
-        currentPlayersBoardDisplay.getChildren().add(stack);
-        currentPlayersBoardDisplay.getChildren().add(tri);
+        currentPlayerDisplay.getChildren().add(stack);
+        currentPlayerDisplay.getChildren().add(tri);
     }
 
     /**
@@ -1957,8 +2124,8 @@ public class Game extends Application {
         tri.setLayoutX(xCoord + 16);
         tri.setLayoutY(yCoord - 14);
 
-        currentPlayersBoardDisplay.getChildren().add(stack);
-        currentPlayersBoardDisplay.getChildren().add(tri);
+        currentPlayerDisplay.getChildren().add(stack);
+        currentPlayerDisplay.getChildren().add(tri);
     }
 
     /**
@@ -2015,8 +2182,8 @@ public class Game extends Application {
         circle.setCenterX(xCoord + 10);
         circle.setCenterY(yCoord - 5);
 
-        currentPlayersBoardDisplay.getChildren().add(stack);
-        currentPlayersBoardDisplay.getChildren().add(circle);
+        currentPlayerDisplay.getChildren().add(stack);
+        currentPlayerDisplay.getChildren().add(circle);
     }
 
     /**
@@ -2069,11 +2236,12 @@ public class Game extends Application {
         circle.setCenterX(xCoord + 10);
         circle.setCenterY(yCoord - 5);
 
-        currentPlayersBoardDisplay.getChildren().add(stack);
-        currentPlayersBoardDisplay.getChildren().add(circle);
+        currentPlayerDisplay.getChildren().add(stack);
+        currentPlayerDisplay.getChildren().add(circle);
     }
 
     public void displayResourceState(int[] resourceState) throws FileNotFoundException {
+
         Image oreDice = new Image(new FileInputStream("assets/Ore_dice.png"));
         Image grainDice = new Image(new FileInputStream("assets/Wheat_dice.png"));
         Image woolDice = new Image(new FileInputStream("assets/Wool_dice.png"));
@@ -2081,114 +2249,112 @@ public class Game extends Application {
         Image brickDice = new Image(new FileInputStream("assets/Brick_dice.png"));
         Image goldDice = new Image(new FileInputStream("assets/Gold_dice.png"));
 
-        int currentResource = 0;
-        ArrayList<String> resources = new ArrayList<>();
+        Map<String, Integer> resources = new HashMap<String, Integer>();
 
         for (int i = 0; i < resourceState.length; i++) {
-            if (resourceState[i] == 6) {
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                currentResource += 1;
-
-            } else if (resourceState[i] == 5) {
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                currentResource += 1;
-
-            } else if (resourceState[i] == 4) {
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                currentResource += 1;
-
-            } else if (resourceState[i] == 3) {
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                currentResource += 1;
-
-            } else if (resourceState[i] == 2) {
-                resources.add(resourceReturner(currentResource));
-                resources.add(resourceReturner(currentResource));
-                currentResource += 1;
-
-            } else if (resourceState[i] == 1) {
-                resources.add(resourceReturner(currentResource));
-                currentResource += 1;
-
-            } else if (resourceState[i] == 0) {
-
+            if (i == 0) {
+                resources.put("ore", resourceState[i]);
+            } else if (i == 1) {
+                resources.put("grain", resourceState[i]);
+            } else if (i == 2) {
+                resources.put("wool", resourceState[i]);
+            } else if (i == 3) {
+                resources.put("timber", resourceState[i]);
+            } else if (i == 4) {
+                resources.put("brick", resourceState[i]);
+            } else if (i == 5) {
+                resources.put("gold", resourceState[i]);
             }
         }
 
-        for (int i = 0; i < resources.size(); i++) {
+        ArrayList<String> listResources = new ArrayList<>();
+
+        ArrayList<String> oreList = new ArrayList<String>(Collections.nCopies(resources.get("ore"), "ore"));
+        ArrayList<String> grainList = new ArrayList<String>(Collections.nCopies(resources.get("grain"), "grain"));
+        ArrayList<String> woolList = new ArrayList<String>(Collections.nCopies(resources.get("wool"), "wool"));
+        ArrayList<String> timberList = new ArrayList<String>(Collections.nCopies(resources.get("timber"), "timber"));
+        ArrayList<String> brickList = new ArrayList<String>(Collections.nCopies(resources.get("brick"), "brick"));
+        ArrayList<String> goldList = new ArrayList<String>(Collections.nCopies(resources.get("gold"), "gold"));
+
+        listResources.addAll(oreList);
+        listResources.addAll(grainList);
+        listResources.addAll(woolList);
+        listResources.addAll(timberList);
+        listResources.addAll(brickList);
+        listResources.addAll(goldList);
+
+        for (int i = 0; i < listResources.size(); i++) {
             if (i == 0) {
-                switch (resources.get(i)) {
+                switch(listResources.get(i)) {
                     case "ore" -> die1.setFill(new ImagePattern(oreDice));
                     case "grain" -> die1.setFill(new ImagePattern(grainDice));
                     case "wool" -> die1.setFill(new ImagePattern(woolDice));
                     case "timber" -> die1.setFill(new ImagePattern(timberDice));
-                    case "bricks" -> die1.setFill(new ImagePattern(brickDice));
+                    case "brick" -> die1.setFill(new ImagePattern(brickDice));
                     case "gold" -> die1.setFill(new ImagePattern(goldDice));
                 }
             } else if (i == 1) {
-                switch (resources.get(i)) {
+                switch(listResources.get(i)) {
                     case "ore" -> die2.setFill(new ImagePattern(oreDice));
                     case "grain" -> die2.setFill(new ImagePattern(grainDice));
                     case "wool" -> die2.setFill(new ImagePattern(woolDice));
                     case "timber" -> die2.setFill(new ImagePattern(timberDice));
-                    case "bricks" -> die2.setFill(new ImagePattern(brickDice));
+                    case "brick" -> die2.setFill(new ImagePattern(brickDice));
                     case "gold" -> die2.setFill(new ImagePattern(goldDice));
+
                 }
             } else if (i == 2) {
-                switch (resources.get(i)) {
-                    case "ore" -> die3.setFill(new ImagePattern(oreDice));
-                    case "grain" -> die3.setFill(new ImagePattern(grainDice));
-                    case "wool" -> die3.setFill(new ImagePattern(woolDice));
-                    case "timber" -> die3.setFill(new ImagePattern(timberDice));
-                    case "bricks" -> die3.setFill(new ImagePattern(brickDice));
-                    case "gold" -> die3.setFill(new ImagePattern(goldDice));
+                    switch(listResources.get(i)) {
+                        case "ore" -> die3.setFill(new ImagePattern(oreDice));
+                        case "grain" -> die3.setFill(new ImagePattern(grainDice));
+                        case "wool" -> die3.setFill(new ImagePattern(woolDice));
+                        case "timber" -> die3.setFill(new ImagePattern(timberDice));
+                        case "brick" -> die3.setFill(new ImagePattern(brickDice));
+                        case "gold" -> die3.setFill(new ImagePattern(goldDice));
                 }
+
             } else if (i == 3) {
-                switch (resources.get(i)) {
-                    case "ore" -> die4.setFill(new ImagePattern(oreDice));
-                    case "grain" -> die4.setFill(new ImagePattern(grainDice));
-                    case "wool" -> die4.setFill(new ImagePattern(woolDice));
-                    case "timber" -> die4.setFill(new ImagePattern(timberDice));
-                    case "bricks" -> die4.setFill(new ImagePattern(brickDice));
-                    case "gold" -> die4.setFill(new ImagePattern(goldDice));
+                    switch(listResources.get(i)) {
+                        case "ore" -> die4.setFill(new ImagePattern(oreDice));
+                        case "grain" -> die4.setFill(new ImagePattern(grainDice));
+                        case "wool" -> die4.setFill(new ImagePattern(woolDice));
+                        case "timber" -> die4.setFill(new ImagePattern(timberDice));
+                        case "brick" -> die4.setFill(new ImagePattern(brickDice));
+                        case "gold" -> die4.setFill(new ImagePattern(goldDice));
                 }
+
             } else if (i == 4) {
-                switch (resources.get(i)) {
-                    case "ore" -> die5.setFill(new ImagePattern(oreDice));
-                    case "grain" -> die5.setFill(new ImagePattern(grainDice));
-                    case "wool" -> die5.setFill(new ImagePattern(woolDice));
-                    case "timber" -> die5.setFill(new ImagePattern(timberDice));
-                    case "bricks" -> die5.setFill(new ImagePattern(brickDice));
-                    case "gold" -> die5.setFill(new ImagePattern(goldDice));
+                    switch(listResources.get(i)) {
+                        case "ore" -> die5.setFill(new ImagePattern(oreDice));
+                        case "grain" -> die5.setFill(new ImagePattern(grainDice));
+                        case "wool" -> die5.setFill(new ImagePattern(woolDice));
+                        case "timber" -> die5.setFill(new ImagePattern(timberDice));
+                        case "brick" -> die5.setFill(new ImagePattern(brickDice));
+                        case "gold" -> die5.setFill(new ImagePattern(goldDice));
                 }
+
             } else if (i == 5) {
-                switch (resources.get(i)) {
-                    case "ore" -> die6.setFill(new ImagePattern(oreDice));
-                    case "grain" -> die6.setFill(new ImagePattern(grainDice));
-                    case "wool" -> die6.setFill(new ImagePattern(woolDice));
-                    case "timber" -> die6.setFill(new ImagePattern(timberDice));
-                    case "bricks" -> die6.setFill(new ImagePattern(brickDice));
-                    case "gold" -> die6.setFill(new ImagePattern(goldDice));
+                    switch(listResources.get(i)) {
+                        case "ore" -> die6.setFill(new ImagePattern(oreDice));
+                        case "grain" -> die6.setFill(new ImagePattern(grainDice));
+                        case "wool" -> die6.setFill(new ImagePattern(woolDice));
+                        case "timber" -> die6.setFill(new ImagePattern(timberDice));
+                        case "brick" -> die6.setFill(new ImagePattern(brickDice));
+                        case "gold" -> die6.setFill(new ImagePattern(goldDice));
                 }
+
             }
 
+        }
 
+        if (listResources.size() == 5) {
+            makeDieTransparent(die6,6);
+        } else if (listResources.size() == 4) {
+            makeDieTransparent(die5,5);
+            makeDieTransparent(die6,6);
         }
     }
+
 
     public String resourceReturner(int i) throws FileNotFoundException {
 
@@ -2362,6 +2528,26 @@ public class Game extends Application {
     }
 
 
+    public void updateScore (Structure structure, ArrayList<Integer> currentScores) {
+        currentPlayerRunningScore += structure.value;
+
+        if (currentScores.isEmpty()) {
+            currentScores.add(currentPlayerRunningScore);
+        } else {
+            currentScores.set(currentPlayer.getTurnCount(), currentPlayerRunningScore);
+        }
+
+        currentPlayer.setScores(currentScores);
+    }
+
+    public void updateResources(int[] resourceState) {
+
+        currentPlayersResourceState.changeResourceState(resourceState);
+        currentPlayer.setResources(currentPlayersResourceState);
+
+    }
+
+
 
 
     public void displayInstructions(String string) {
@@ -2425,14 +2611,13 @@ public class Game extends Application {
      */
     public String boardToString(Board board)  {
         String boardString = "";
-        Structure[] currentStructures = board.structures;
+
+        Structure[] currentStructures = board.getStructures();
         for (Structure structure : currentStructures) {
             if (structure.isBuilt()) {
                 boardString = boardString + structure.getPosition() + ",";
-
             }
         }
-
         if (boardString.equals("")) {
             return boardString;
         }
@@ -2498,6 +2683,31 @@ public class Game extends Application {
         return resourceState;
 
     }
+
+    public String arrayListToString(ArrayList<String> boardList) {
+        String board = "";
+
+        for (String pos : boardList) {
+            board = board + pos + ",";
+        }
+
+        String result = board.substring(0, board.length()-1);
+
+        return result;
+    }
+
+    public ArrayList<String> stringToArrayList(String boardState) {
+
+        if (boardState.equals("")) {
+            return new ArrayList<String>();
+        }
+        String[] inter = boardState.split(",");
+        ArrayList<String> returnList = new ArrayList<>(Arrays.asList(inter));
+        return returnList;
+
+    }
+
+
 
 
     @Override

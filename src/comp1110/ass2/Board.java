@@ -113,17 +113,17 @@ public class Board {
 
             else if ((i == 26) | (i == 27) | (i == 28) | (i == 29) | (i == 30) | (i == 31)) {
                 if (i == 26) {
-                    structures[i] = new Structure("J1", KNIGHT, 7, false, false, ORE, preReqK1);
+                    structures[i] = new Structure("J1", KNIGHT, 1, false, false, ORE, preReqK1);
                 } else if (i == 27) {
-                    structures[i] = new Structure("J2", KNIGHT, 12, false, false, GRAIN, preReqK2);
+                    structures[i] = new Structure("J2", KNIGHT, 2, false, false, GRAIN, preReqK2);
                 } else if (i == 28) {
-                    structures[i] = new Structure("J3", KNIGHT, 20, false, false, WOOL, preReqK3);
+                    structures[i] = new Structure("J3", KNIGHT, 3, false, false, WOOL, preReqK3);
                 } else if (i == 29) {
-                    structures[i] = new Structure("J4", KNIGHT, 20, false, false, TIMBER, preReqK4);
+                    structures[i] = new Structure("J4", KNIGHT, 4, false, false, TIMBER, preReqK4);
                 } else if (i == 30) {
-                    structures[i] = new Structure("J5", KNIGHT, 20, false, false, BRICK, preReqK5);
+                    structures[i] = new Structure("J5", KNIGHT, 5, false, false, BRICK, preReqK5);
                 } else {
-                    structures[i] = new Structure("J6", KNIGHT, 30, false, false, MYSTERY, preReqK6);
+                    structures[i] = new Structure("J6", KNIGHT, 6, false, false, MYSTERY, preReqK6);
                 }
             }
 
@@ -246,4 +246,18 @@ public class Board {
             return false;
         }
     }
+
+    public Structure[] getStructures(){
+        return this.structures;
+    }
+
+    public Structure getStructure(String pos, Structure[] structures) {
+        for (Structure structure : structures) {
+            if (structure.getPosition().equals(pos)) {
+                return structure;
+            }
+        }
+        return null;
+    }
+
 }
