@@ -934,7 +934,18 @@ public class Game extends Application {
             winnerBackground.setX(340);
             winnerBackground.setY(230);
             winnerBackground.setStroke(Color.BLACK);
-            winnerBackground.setFill(Color.WHITE);
+            Image trophy = new Image(new FileInputStream("assets/trophy.png"));
+            winnerBackground.setFill(new ImagePattern(trophy));
+            winnerBackground.toFront();
+
+            Rectangle winnerBackground2 = new Rectangle();
+            winnerBackground2.setWidth(500);
+            winnerBackground2.setHeight(400);
+            winnerBackground2.setX(340);
+            winnerBackground2.setY(230);
+            winnerBackground2.setStroke(Color.BLACK);
+            winnerBackground2.setFill(Color.WHITE);
+
 
             Rectangle winnerTitle = new Rectangle();
             winnerTitle.setWidth(600);
@@ -1008,13 +1019,9 @@ public class Game extends Application {
             text.toFront();
 
 
-            structures.getChildren().addAll(winnerBackground, winnerTitle, text);
+            structures.getChildren().addAll(winnerBackground2, winnerBackground, winnerTitle, text);
 
         }
-
-
-
-
 
 
     }
