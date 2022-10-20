@@ -73,6 +73,10 @@ public class Player {
         return this.turnCount;
     }
 
+    public void setTurnCount(int turnCount) {
+        this.turnCount = turnCount;
+    }
+
     public ResourceState getCurrentResources() {
         return this.resources;
     }
@@ -99,6 +103,37 @@ public class Player {
         sum = sum - (2 * zeroCount);
 
         return sum;
+    }
+
+    public Player copyPlayer(Player player) {
+        Player copy = new Player(player.getName());
+        copy.setBoard(player.getCurrentBoard());
+        copy.setResources(player.getCurrentResources());
+        copy.setScores(player.getScores());
+        copy.setTurnCount(player.getTurnCount());
+
+        return copy;
+
+    }
+
+    public void copyFrom(Player player) {
+        this.name = player.getName();
+        this.board = player.getCurrentBoard();
+        this.resources = player.getCurrentResources();
+        this.scores = player.getScores();
+        this.turnCount = player.getTurnCount();
+    }
+
+    public void incrementTurnCount() {
+        this.turnCount = this.turnCount+1;
+    }
+
+    public void resetPlayer(String string) {
+        this.name = string;
+        this.board = new Board();
+        this.resources = new ResourceState();
+        this.scores = new ArrayList<>();
+        this.turnCount = 0;
     }
 
 }

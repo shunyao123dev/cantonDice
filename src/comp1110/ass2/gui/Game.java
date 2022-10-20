@@ -55,8 +55,6 @@ public class Game extends Application {
     private final Group objects = new Group();
     private final Group controls = new Group();
 
-    private final Group menu = new Group();
-
     private final Group dieRoll = new Group();
 
     private final Group hexagons = new Group();
@@ -68,13 +66,9 @@ public class Game extends Application {
 
     private final Group instructions = new Group();
 
-
-    private TextField playerTextField;
     private TextField boardTextField;
 
     private Group currentPlayerDisplay = new Group();
-
-    private Group currentPlayersScoreDisplay = new Group();
 
     private Board currentPlayersBoard = new Board();
 
@@ -82,10 +76,7 @@ public class Game extends Application {
 
     private ArrayList<Integer> currentPlayersScore = new ArrayList<>();
 
-    private Board boardAfterMove = new Board();
     private ResourceState currentPlayersResourceState = new ResourceState();
-
-    private Structure[] builtStructures = new Structure[32];
 
     private Structure[] currentStructures = new Structure[32];
 
@@ -101,8 +92,6 @@ public class Game extends Application {
 
     private ArrayList<Integer> dieToKeep = new ArrayList<>(Arrays.asList(0,0,0,0,0,0));
 
-    private final Group controlsForPlayerTurn = new Group();
-
     private int playerNumber = 0;
 
     private int playerTurn = 0;
@@ -112,6 +101,8 @@ public class Game extends Application {
     private boolean gameOver = false;
 
     private boolean firstTurn = true;
+
+    private boolean somethingBuilt = false;
 
     //Die
 
@@ -144,7 +135,6 @@ public class Game extends Application {
 
         startMenu.getChildren().clear();
         controls.getChildren().clear();
-        currentPlayer = player1;
 
         //Creates the start menu
 
@@ -264,38 +254,21 @@ public class Game extends Application {
 
     public void launchControls() throws FileNotFoundException {
 
-        //Sets the current player to whoever's turn it is
+        controls.getChildren().clear();
+        currentPlayerDisplay.getChildren().clear();
+        redDie.getChildren().clear();
+        dieRoll.getChildren().clear();
+        instructions.getChildren().clear();
+        rollCounter.getChildren().clear();
 
         if (playerTurn == 1) {
-            currentPlayer = player1;
+            currentPlayer.copyFrom(player1);
         } else if (playerTurn == 2) {
-            currentPlayer = player2;
+            currentPlayer.copyFrom(player2);
         } else if (playerTurn == 3) {
-            currentPlayer = player3;
+            currentPlayer.copyFrom(player1);
         } else if (playerTurn == 4) {
-            currentPlayer = player4;
-        }
-
-        //Checks if the game is over. i.e. All players have had 15 turns
-
-        if (playerNumber == 1) {
-            if (player1.getScores().size() == 15 && playerAI.getScores().size() == 15) {
-                gameOver = true;
-            }
-        } else if (playerNumber == 2) {
-            if (player1.getScores().size() == 15 && player2.getScores().size() == 15) {
-                gameOver = true;
-            }
-        } else if (playerNumber == 3) {
-            if (player1.getScores().size() == 15 && player2.getScores().size() == 15 &&
-            player3.getScores().size() == 15) {
-                gameOver = true;
-            }
-        } else if (playerNumber == 4) {
-            if (player1.getScores().size() == 15 && player2.getScores().size() == 15 &&
-                    player3.getScores().size() == 15 && player4.getScores().size() == 15) {
-                gameOver = true;
-            }
+            currentPlayer.copyFrom(player1);
         }
 
         if (!gameOver) {
@@ -319,23 +292,22 @@ public class Game extends Application {
                 currentPlayerDisplay.getChildren().clear();
                 currentPlayersResourceState = new ResourceState();
                 currentDie = new int[6];
-                builtStructures = new Structure[33];
                 currentStructures = new Structure[33];
                 playerNumber = 0;
                 gameStarted = false;
-                player1 = new Player("Player 1");
-                player2 = new Player("Player 2");
-                player3 = new Player("Player 3");
-                player4 = new Player("Player 4");
-                playerAI = new Player("AI");
-                currentPlayer = new Player("current");
+                player1.resetPlayer("Player 1");
+                player2.resetPlayer("Player 2");
+                player3.resetPlayer("Player 3");
+                player4.resetPlayer("Player 4");
+                playerAI.resetPlayer("Player AI");
+                currentPlayer.resetPlayer("current");
                 try {
-                    makeDieTransparent(die1, 1);
-                    makeDieTransparent(die2, 2);
-                    makeDieTransparent(die3, 3);
-                    makeDieTransparent(die4, 4);
-                    makeDieTransparent(die5, 5);
-                    makeDieTransparent(die6, 6);
+                    makeDieVisible(die1);
+                    makeDieVisible(die2);
+                    makeDieVisible(die3);
+                    makeDieVisible(die4);
+                    makeDieVisible(die5);
+                    makeDieVisible(die6);
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
                 }
@@ -391,24 +363,36 @@ public class Game extends Application {
             hb2.setLayoutX(485);
             hb2.setLayoutY(200);
 
+            //End turn button
+
+            Button endTurn = new Button("End turn");
+            HBox hb3 = new HBox();
+            hb3.getChildren().addAll(endTurn);
+            hb3.setLayoutX(475);
+            hb3.setLayoutY(100);
+            hb3.toFront();
+
             //Dice empty
-            makeDieTransparent(die1, 1);
+            makeDie(die1, 1);
+            makeDieTransparent(die1);
             final boolean[] selectedAtRoll1 = {false};
-            makeDieTransparent(die2, 2);
+            makeDie(die2, 2);
+            makeDieTransparent(die2);
             final boolean[] selectedAtRoll2 = {false};
-            makeDieTransparent(die3, 3);
+            makeDie(die3, 3);
+            makeDieTransparent(die3);
             final boolean[] selectedAtRoll3 = {false};
-            makeDieTransparent(die4, 4);
+            makeDie(die4, 4);
+            makeDieTransparent(die4);
             final boolean[] selectedAtRoll4 = {false};
-            makeDieTransparent(die5, 5);
+            makeDie(die5, 5);
+            makeDieTransparent(die5);
             final boolean[] selectedAtRoll5 = {false};
-            makeDieTransparent(die6, 6);
+            makeDie(die6, 6);
+            makeDieTransparent(die6);
             final boolean[] selectedAtRoll6 = {false};
 
             dieRoll.getChildren().addAll(die1, die2, die3, die4, die5, die6);
-
-            displayStateCurrent(currentPlayer);
-            displayInstructions(currentPlayer.getName() + " is playing. Please roll!");
 
             EventHandler<javafx.scene.input.MouseEvent> eventHandlerDie1 =
                     new EventHandler<MouseEvent>() {
@@ -582,109 +566,106 @@ public class Game extends Application {
             button.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
-                    dieSelected = new int[]{0, 0, 0, 0, 0, 0};
-                    String input = boardTextField.getText();
-                    String[] act = input.split(" ");
-                    String boardString = boardToString(currentPlayersBoard);
-                    currentStructures = currentPlayersBoard.structures;
-                    int[] stringResourceState = currentPlayersResourceState.getResourceState();
+                    if (rollCount == 4) {
+                        dieSelected = new int[]{0, 0, 0, 0, 0, 0};
+                        String input = boardTextField.getText();
+                        String[] act = input.split(" ");
+                        String boardString = boardToString(currentPlayer.getCurrentBoard());
+                        currentStructures = currentPlayer.getCurrentBoard().getStructures();
+                        int[] stringResourceState = currentPlayer.getCurrentResources().getResourceState();
 
-                    if (!CatanDice.isActionWellFormed(input)) { //not valid input
-                        displayInstructions("Invalid action input. Please type again");
+                        if (!CatanDice.isActionWellFormed(input)) { //not valid input
+                            displayInstructions("Invalid action input. Please type again");
 
 //                    } else if (AI.anyMovePossible(currentPlayer)) {
 //                        displayInstructions("There are no possible moves left.");
 
-                    } else if (act[0].equals("build") && (currentPlayersBoard.getStructure(act[1], currentPlayersBoard.getStructures())).isBuilt()) {
-                        displayInstructions(act[1] + " is already built!");
+                        } else if (act[0].equals("build") && (currentPlayersBoard.getStructure(act[1], currentPlayersBoard.getStructures())).isBuilt()) {
+                            displayInstructions(act[1] + " is already built!");
 
-                    } else if (!CatanDice.canDoAction(input, boardString, stringResourceState)) {
-                        String returnString = "";
-                        if (act[0].equals("build")) {
-                            if (act.length != 2) {
-                                returnString = "Invalid build command entered";
-                            } else if (!(CatanDice.checkBuildConstraints(act[1], boardString))) {
-                                returnString = "Insufficient building prerequisites to build " + act[1];
-                            } else if (!(CatanDice.checkResources(act[1], stringResourceState))) {
-                                returnString = "Insufficient resources to build " + act[1];
-                            }
-                        } else if (act[0].equals("trade")) {
-                            if (act.length != 2) {
-                                returnString = "Invalid trade command entered";
-                            } else if (stringResourceState[5] < 2) {
-                                returnString = "Insufficient gold to execute trade";
-                            }
-                        } else if (act[0].equals("swap")) {
-                            int idx1 = Integer.parseInt(act[1]);
-                            int idx2 = Integer.parseInt(act[2]);
-                            if (act.length != 3) {
-                                returnString = "Invalid swap command entered";
-                            } else if (!(CatanDice.canDoSwap(idx1, idx2, boardString, stringResourceState))) {
-                                returnString = "Insufficient resources to execute swap";
-                            }
-                        }
-                        displayInstructions(returnString);
-
-                    } else {
-                        if (act[0].equals("build")) {
-                            String pos = input.substring(Math.max(input.length() - 2, 0));
-                            for (Structure structure : currentStructures) {
-                                if (structure.getPosition().equals(pos)) {
-                                    structure.setBuilt();
-                                    ArrayList<String> arrayBoard = stringToArrayList(boardString);
-                                    CatanDice.state_after_building(pos, stringResourceState, arrayBoard);
-                                    boardString = arrayListToString(arrayBoard);
-                                    updateScore(structure, currentPlayersScore);
-                                    updateResources(stringResourceState);
-
-
+                        } else if (!CatanDice.canDoAction(input, boardString, stringResourceState)) {
+                            String returnString = "";
+                            if (act[0].equals("build")) {
+                                if (act.length != 2) {
+                                    returnString = "Invalid build command entered";
+                                } else if (!(CatanDice.checkBuildConstraints(act[1], boardString))) {
+                                    returnString = "Insufficient building prerequisites to build " + act[1];
+                                } else if (!(CatanDice.checkResources(act[1], stringResourceState))) {
+                                    returnString = "Insufficient resources to build " + act[1];
+                                }
+                            } else if (act[0].equals("trade")) {
+                                if (act.length != 2) {
+                                    returnString = "Invalid trade command entered";
+                                } else if (stringResourceState[5] < 2) {
+                                    returnString = "Insufficient gold to execute trade";
+                                }
+                            } else if (act[0].equals("swap")) {
+                                int idx1 = Integer.parseInt(act[1]);
+                                int idx2 = Integer.parseInt(act[2]);
+                                if (act.length != 3) {
+                                    returnString = "Invalid swap command entered";
+                                } else if (!(CatanDice.canDoSwap(idx1, idx2, boardString, stringResourceState))) {
+                                    returnString = "Insufficient resources to execute swap";
                                 }
                             }
-                            currentPlayer.setBoard(stringToBoard(boardString));
+                            displayInstructions(returnString);
 
-                            try {
-                                displayStateCurrent(currentPlayer);
-                            } catch (FileNotFoundException ex) {
-                                throw new RuntimeException(ex);
+                        } else {
+                            if (act[0].equals("build")) {
+                                String pos = input.substring(Math.max(input.length() - 2, 0));
+                                for (Structure structure : currentStructures) {
+                                    if (structure.getPosition().equals(pos)) {
+                                        structure.setBuilt();
+                                        somethingBuilt = true;
+                                        ArrayList<String> arrayBoard = stringToArrayList(boardString);
+                                        CatanDice.state_after_building(pos, stringResourceState, arrayBoard);
+                                        boardString = arrayListToString(arrayBoard);
+                                        updateScore(structure, currentPlayer.getScores());
+                                        updateResources(stringResourceState);
+
+
+                                    }
+                                }
+                                currentPlayer.setBoard(stringToBoard(boardString));
+
+                                try {
+                                    displayStateCurrent(currentPlayer);
+                                } catch (FileNotFoundException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                                displayInstructions("Successfully built " + pos);
+
+                            } else if (act[0].equals("trade")) {
+                                CatanDice.state_after_trade(input, stringResourceState);
+                                currentPlayersResourceState.changeResourceState(stringResourceState);
+                                currentPlayer.setResources(currentPlayersResourceState);
+                                displayInstructions("Successfully traded two gold for " + input.substring(input.length() - 1));
+                                try {
+                                    displayStateCurrent(currentPlayer);
+                                } catch (FileNotFoundException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+
+
+                            } else if (act[0].equals("swap")) {
+                                ArrayList<String> arrayBoard = stringToArrayList(boardString);
+                                CatanDice.state_after_swap(stringResourceState, input, arrayBoard);
+                                boardString = arrayListToString(arrayBoard);
+                                currentPlayersResourceState.changeResourceState(stringResourceState);
+                                currentPlayer.setResources(currentPlayersResourceState);
+                                currentPlayer.setBoard(stringToBoard(boardString));
+                                String received = resourceReturner(input.substring(input.length() - 1));
+                                String traded = resourceReturner(Character.toString(input.charAt(5)));
+                                displayInstructions("Successfully swapped one " + traded + "for one " + received);
+                                try {
+                                    displayStateCurrent(currentPlayer);
+                                } catch (FileNotFoundException ex) {
+                                    throw new RuntimeException(ex);
+                                }
                             }
-                            displayInstructions("Successfully built " + pos);
-
-                        } else if (act[0].equals("trade")) {
-                            CatanDice.state_after_trade(input, stringResourceState);
-                            currentPlayersResourceState.changeResourceState(stringResourceState);
-                            currentPlayer.setResources(currentPlayersResourceState);
-                            displayInstructions("Successfully traded two gold for " + input.substring(input.length() - 1));
-                            try {
-                                displayStateCurrent(currentPlayer);
-                            } catch (FileNotFoundException ex) {
-                                throw new RuntimeException(ex);
-                            }
-
-
-                        } else if (act[0].equals("swap")) {
-                            ArrayList<String> arrayBoard = stringToArrayList(boardString);
-                            CatanDice.state_after_swap(stringResourceState, input, arrayBoard);
-                            boardString = arrayListToString(arrayBoard);
-                            currentPlayersResourceState.changeResourceState(stringResourceState);
-                            currentPlayer.setResources(currentPlayersResourceState);
-                            currentPlayer.setBoard(stringToBoard(boardString));
-                            String received = resourceReturner(input.substring(input.length() - 1));
-                            String traded = resourceReturner(Character.toString(input.charAt(5)));
-                            displayInstructions("Successfully swapped one " + traded + "for one " + received);
-                            try {
-                                displayStateCurrent(currentPlayer);
-                            } catch (FileNotFoundException ex) {
-                                throw new RuntimeException(ex);
-                            }
-
                         }
-
-
                     }
                 }
-
-
-
             });
 
             //Roll dice action
@@ -692,6 +673,12 @@ public class Game extends Application {
                  @Override
                  public void handle(ActionEvent actionEvent) {
                      if (rollCount == 1) {
+                         die1.setVisible(true);
+                         die2.setVisible(true);
+                         die3.setVisible(true);
+                         die4.setVisible(true);
+                         die5.setVisible(true);
+                         die6.setVisible(true);
                          int[] rolledDice = new int[]{0, 0, 0, 0, 0, 0};
                          MoveControls.rollDice(6, rolledDice);
                          Text rollCountText = textBox(String.valueOf(rollCount));
@@ -818,70 +805,106 @@ public class Game extends Application {
 
             //End turn button
 
-            //Current player set to player 1. Display current state and score.
+            //Roll dice action
+            endTurn.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    //Checks if the game is over. i.e. All players have had 15 turns
+                    if (playerNumber == 1) {
+                        if (player1.getScores().size() == 15 && playerAI.getScores().size() == 15) {
+                            gameOver = true;
+                        }
+                    } else if (playerNumber == 2) {
+                        if (player1.getScores().size() == 15 && player2.getScores().size() == 15) {
+                            gameOver = true;
+                        }
+                    } else if (playerNumber == 3) {
+                        if (player1.getScores().size() == 15 && player2.getScores().size() == 15 &&
+                                player3.getScores().size() == 15) {
+                            gameOver = true;
+                        }
+                    } else if (playerNumber == 4) {
+                        if (player1.getScores().size() == 15 && player2.getScores().size() == 15 &&
+                                player3.getScores().size() == 15 && player4.getScores().size() == 15) {
+                            gameOver = true;
+                        }
+                    }
 
-            //Prompt player to roll
+                    currentPlayer.incrementTurnCount();
+
+                    //checks if the player built. If not add zero
+                    if (!somethingBuilt) {
+                        ArrayList<Integer> newScore = currentPlayer.getScores();
+                        newScore.add(0);
+                        currentPlayer.setScores(newScore);
+                    }
+
+                    somethingBuilt = false;
+
+                    dieSelected = new int[]{0,0,0,0,0,0};
+
+                    if (playerTurn == 1) {
+                        player1.copyPlayer(currentPlayer);
+                    } else if (playerTurn == 2) {
+                        playerTurn = 3;
+                    } else if (playerTurn == 3) {
+                        playerTurn = 4;
+                    } else if (playerTurn == 4) {
+                        playerTurn = 1;
+                    }
+
+                    //set die back to transparent
+
+                    try {
+                        makeDieTransparent(die1);
+                        makeDieTransparent(die2);
+                        makeDieTransparent(die3);
+                        makeDieTransparent(die4);
+                        makeDieTransparent(die5);
+                        makeDieTransparent(die6);
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    //Changes the player turn count and copies changes made.
+
+                    dieSelected = new int[]{0,0,0,0,0,0};
+                    currentPlayerRunningScore = 0;
+                    rollCount = 1;
+
+                    if (playerTurn == 1) {
+                        player1.copyPlayer(currentPlayer);
+                        currentPlayer.copyPlayer(player2);
+                        playerTurn = 2;
+                    } else if (playerTurn == 2) {
+                        player2.copyPlayer(currentPlayer);
+                        currentPlayer.copyPlayer(player3);
+                        playerTurn = 3;
+                    } else if (playerTurn == 3) {
+                        player3.copyPlayer(currentPlayer);
+                        currentPlayer.copyPlayer(player4);
+                        playerTurn = 4;
+                    } else if (playerTurn == 4) {
+                        player4.copyPlayer(currentPlayer);
+                        currentPlayer.copyPlayer(player1);
+                        playerTurn = 1;
+                    }
+
+                    try {
+                        launchControls();
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
 
 
+            });
 
-            //get them to roll three times
-
-
-
-            //change their current resource state and current die
-
-
-
-            //prompt them to make a move
-
-
-
-            //check if move is valid
-
-
-
-            //update current displayed state
-
-
-
-            //update scores
-
-
-
-            //display scores
-
-
-
-            //update turn count
-
-
-
-            //update board state
-
-
-
-            //change player to next player
-
-
-
-            //check if game is over
-
-
-            //recursively call launchControls
-
-
+            displayStateCurrent(currentPlayer);
+            displayInstructions(currentPlayer.getName() + " is playing. Please roll!");
             controls.getChildren().addAll(controlMenu, controlHeader, header,
-                    hb, actionBarText, hb2, rollCounterRect, resetGameBox);
-
-            if (playerTurn == 1) {
-                playerTurn = 2;
-            } else if (playerTurn == 2) {
-                playerTurn = 3;
-            } else if (playerTurn == 3) {
-                playerTurn = 4;
-            } else if (playerTurn == 4) {
-                playerTurn = 1;
-            }
+                    hb, actionBarText, hb2, rollCounterRect, resetGameBox, hb3);
 
 
         } else { //the game is over
@@ -1392,32 +1415,32 @@ public class Game extends Application {
         }
 
         if (listResources.size() == 5) {
-            makeDieTransparent(die6,6);
+            makeDieTransparent(die6);
         } else if (listResources.size() == 4) {
-            makeDieTransparent(die5,5);
-            makeDieTransparent(die6,6);
+            makeDieTransparent(die5);
+            makeDieTransparent(die6);
         } else if (listResources.size() == 3) {
-            makeDieTransparent(die4,4);
-            makeDieTransparent(die5,5);
-            makeDieTransparent(die6,6);
+            makeDieTransparent(die4);
+            makeDieTransparent(die5);
+            makeDieTransparent(die6);
         } else if (listResources.size() == 2) {
-            makeDieTransparent(die3,3);
-            makeDieTransparent(die4,4);
-            makeDieTransparent(die5,5);
-            makeDieTransparent(die6,6);
+            makeDieTransparent(die3);
+            makeDieTransparent(die4);
+            makeDieTransparent(die5);
+            makeDieTransparent(die6);
         } else if (listResources.size() == 1) {
-            makeDieTransparent(die2,2);
-            makeDieTransparent(die3,3);
-            makeDieTransparent(die4,4);
-            makeDieTransparent(die5,5);
-            makeDieTransparent(die6,6);
+            makeDieTransparent(die2);
+            makeDieTransparent(die3);
+            makeDieTransparent(die4);
+            makeDieTransparent(die5);
+            makeDieTransparent(die6);
         } else if (listResources.size() == 0) {
-            makeDieTransparent(die1,1);
-            makeDieTransparent(die2,2);
-            makeDieTransparent(die3,3);
-            makeDieTransparent(die4,4);
-            makeDieTransparent(die5,5);
-            makeDieTransparent(die6,6);
+            makeDieTransparent(die1);
+            makeDieTransparent(die2);
+            makeDieTransparent(die3);
+            makeDieTransparent(die4);
+            makeDieTransparent(die5);
+            makeDieTransparent(die6);
         }
         currentPlayerDisplay.toFront();
 
@@ -1567,7 +1590,6 @@ public class Game extends Application {
 
         root.getChildren().add(controls); //adds control bar
         root.getChildren().add(currentPlayerDisplay); //adds current players board and scores
-        root.getChildren().add(currentPlayersScoreDisplay);
         root.getChildren().add(redDie); //Shows selected die
         root.getChildren().add(startMenu); // adds start menu
         root.getChildren().add(objects); //adds resource key, scoreboard, title and ocean
@@ -1576,7 +1598,6 @@ public class Game extends Application {
         root.getChildren().add(dieRoll); // adds dice to the board
         root.getChildren().add(rollCounter);
         root.getChildren().add(instructions);
-        root.getChildren().add(controlsForPlayerTurn);
 
     }
 
@@ -2161,11 +2182,10 @@ public class Game extends Application {
      * @throws FileNotFoundException
      */
 
-    public void makeDieTransparent(Rectangle shape, int die) throws FileNotFoundException {
+    public void makeDie(Rectangle shape, int die) throws FileNotFoundException {
         shape.setHeight(100);
         shape.setWidth(100);
-        shape.setFill(Color.TRANSPARENT);
-        shape.setStroke(Color.TRANSPARENT);
+        shape.setVisible(true);
 
         if (die == 1) {
             shape.setX(50);
@@ -2188,9 +2208,17 @@ public class Game extends Application {
         }
     }
 
+    public void makeDieTransparent(Rectangle shape) throws FileNotFoundException {
+        shape.setVisible(false);
+    }
+
+    public void makeDieVisible(Rectangle shape) throws FileNotFoundException {
+        shape.setVisible(true);
+    }
+
 
     public void updateScore (Structure structure, ArrayList<Integer> currentScores) {
-        currentPlayerRunningScore += structure.value;
+        currentPlayerRunningScore += structure.getValue();
 
         if (currentScores.isEmpty()) {
             currentScores.add(currentPlayerRunningScore);
