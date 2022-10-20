@@ -1,8 +1,10 @@
 package comp1110.ass2;
 
 import comp1110.ass2.gui.Game;
+import comp1110.ass2.Board;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Author of class: Hugo Heanly u7119555
@@ -35,6 +37,32 @@ public class AI {
         return possibleMoves;
     }
 
+    public static String highestPointMove (Player player) {
+        Structure[] playerStructures = player.getCurrentBoard().getStructures();
+        int currentHighestScore = 0;
+        String currentBestMove = "";
+        ArrayList<String> possibleMoves = possibleMoves(player);
+        if (!anyMovePossible(player)) {
+            return "";
+        } else {
+            for (int i = 0; i < possibleMoves.size(); i++) {
+                String currentMove = possibleMoves.get(i);
+                String[] action = currentMove.split(" ");
+                if (action[0].equals("build")) {
+                    int currentScore = Objects.requireNonNull(getStructure(action[1], playerStructures)).getValue();
+                    if (currentScore > currentHighestScore) {
+                        currentHighestScore = currentScore;
+                        currentBestMove = currentMove;
+                    }
+                }
+            }
+        }
+        if (currentBestMove.equals("")) {
+            return possibleMoves.get(0);
+        }
+        return currentBestMove;
+    }
+
     public static boolean anyMovePossible (Player player) {
         if (!possibleMoves(player).isEmpty()) {
             return true;
@@ -58,8 +86,19 @@ public class AI {
         return boardString;
     }
 
-
-
-
+    public static Structure getStructure(String pos, Structure[] structures) {
+        for (Structure structure : structures) {
+            if (structure.getPosition().equals(pos)) {
+                return structure;
+            }
+        }
+        return null;
+    }
 
 }
+
+
+
+
+
+

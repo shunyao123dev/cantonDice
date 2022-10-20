@@ -63,6 +63,7 @@ public class Game extends Application {
     private boolean gameOver = false;
     private boolean somethingBuilt = false;
     private boolean gameJustStarted = true;
+    private boolean AIGame = false;
 
     //Die
     private final Rectangle die1 = new Rectangle();
@@ -147,16 +148,18 @@ public class Game extends Application {
         onePlayer.setOnAction(actionEvent -> {
             // AI not ready yet.
 
-//            playerNumber = 1;
-//            playerTurn = 1;
-//            menu.setVisible(false);
-//            text.setVisible(false);
-//            introText.setVisible(false);
-//            intro.setVisible(false);
-//            try {
-//                launchControls();
-//            } catch (FileNotFoundException e) {
-//                throw new RuntimeException(e);
+            playerNumber = 1;
+            playerTurn = 1;
+            menu.setVisible(false);
+            text.setVisible(false);
+            introText.setVisible(false);
+            intro.setVisible(false);
+            AIGame = true;
+            try {
+                launchControls();
+            } catch (FileNotFoundException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         twoPlayer.setOnAction(actionEvent -> {
@@ -168,7 +171,7 @@ public class Game extends Application {
             intro.setVisible(false);
             try {
                 launchControls();
-            } catch (FileNotFoundException e) {
+            } catch (FileNotFoundException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -182,7 +185,7 @@ public class Game extends Application {
             intro.setVisible(false);
             try {
                 launchControls();
-            } catch (FileNotFoundException e) {
+            } catch (FileNotFoundException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -196,7 +199,7 @@ public class Game extends Application {
             intro.setVisible(false);
             try {
                 launchControls();
-            } catch (FileNotFoundException e) {
+            } catch (FileNotFoundException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -211,7 +214,7 @@ public class Game extends Application {
      * Author: Hugo Heanly u7119555
      */
 
-    public void launchControls() throws FileNotFoundException {
+    public void launchControls() throws FileNotFoundException, InterruptedException {
 
         controls.getChildren().clear();
         currentPlayerDisplay.getChildren().clear();
@@ -227,7 +230,11 @@ public class Game extends Application {
             if (playerTurn == 1) {
                 currentPlayer.copyFrom(player1);
             } else if (playerTurn == 2) {
-                currentPlayer.copyFrom(player2);
+                if (AIGame) {
+                    currentPlayer.copyFrom(playerAI);
+                } else {
+                    currentPlayer.copyFrom(player2);
+                }
             } else if (playerTurn == 3) {
                 currentPlayer.copyFrom(player3);
             } else if (playerTurn == 4) {
@@ -255,6 +262,7 @@ public class Game extends Application {
                 currentDie = new int[6];
                 currentStructures = new Structure[33];
                 playerNumber = 0;
+                AIGame = false;
                 player1.resetPlayer("Player 1");
                 player2.resetPlayer("Player 2");
                 player3.resetPlayer("Player 3");
@@ -755,6 +763,31 @@ public class Game extends Application {
                 }
             });
 
+            //automated AI move;
+
+            if (AIGame) {
+
+                //AI to roll dice
+
+                for (int i = 0; i < 4; i++) {
+                    rollDice.fire();
+                    Thread.sleep(2500);
+                }
+
+                //AI keeps going until no legal moves left
+
+                while(AI.anyMovePossible(currentPlayer)) {
+
+                    String firstLegalMove = AI.possibleMoves(currentPlayer).get(0);
+
+                }
+
+                endTurn.fire();
+
+
+            }
+
+
             //End turn button
 
             endTurn.setOnAction(actionEvent -> {
@@ -765,6 +798,8 @@ public class Game extends Application {
                     }
                 } else if (playerNumber == 2) {
                     if (player1.getScores().size() == 15 && player2.getScores().size() == 15) {
+                        gameOver = true;
+                    } else if (player1.getScores().size() == 15 && playerAI.getScores().size() == 15) {
                         gameOver = true;
                     }
                 } else if (playerNumber == 3) {
@@ -791,8 +826,6 @@ public class Game extends Application {
 
                 somethingBuilt = false;
 
-                dieSelected = new int[]{0, 0, 0, 0, 0, 0};
-
                 //set die back to transparent
 
                 try {
@@ -811,7 +844,18 @@ public class Game extends Application {
                 dieSelected = new int[]{0, 0, 0, 0, 0, 0};
                 rollCount = 1;
 
-                if (playerNumber == 2) {
+                if (playerNumber == 1) {
+                    if (playerTurn == 1) {
+                        player1.copyPlayer(currentPlayer);
+                        currentPlayer.copyPlayer(playerAI);
+                        playerTurn = 2;
+                    } else if (playerTurn == 2) {
+                        playerAI.copyPlayer(currentPlayer);
+                        currentPlayer.copyPlayer(player1);
+                        playerTurn = 1;
+                    }
+                }
+                else if  (playerNumber == 2) {
                     if (playerTurn == 1) {
                         player1.copyPlayer(currentPlayer);
                         currentPlayer.copyPlayer(player2);
@@ -859,7 +903,7 @@ public class Game extends Application {
 
                 try {
                     launchControls();
-                } catch (FileNotFoundException e) {
+                } catch (FileNotFoundException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
 
