@@ -18,21 +18,6 @@ of our project implements the following features:
 List additional noteworthy features beyond those in the assignment
 specification that you have added, if any.
 
-## Player instructions
 
-Use this section of the file to write any necessary instructions on
-how to play your implementation of the game. You can assume the player
-knows the game rules; the purpose of this section is to document how
-to use any parts of your game GUI that are not intuitively obvious
-(and not documented in the GUI itself).
-
-This section is optional.
-
-Notes:
-
-To select the die you want to keep on the second roll, click them. They will glow red if selected. To unselect
-click again.
-
-When you have completed your turn, click end turn.
 
 
