@@ -10,9 +10,8 @@
 #
 
 declaration: >-
-  Stage F represents the culmination of the entire assignment.  We declare that
-  everything we have submitted for for all stages of this assignment was
-  entirely our own work, with the following exceptions:
+  I submit the work below for assessment as my best work. I declare that this
+  is entirely my own work, with the following documented exceptions:
 
 # Use this to list names of people who you collaborated with, and a
 # comment about what you collaborated on.
@@ -29,22 +28,16 @@ declaration: >-
 # Add as many "url+licence+comment" entries as necessary
 # (or remove it altogether if you haven't used any external code)
 
+# I wish to submit the following classes as entirely my own (remove this if
+# you want to just submit methods):
 
-# Use this to list any assets (artwork, sound, etc) that you used.
-# Provide a comment explaining your use of that asset and the URL
-# and license for the asset
-#
-# Add as many "url+licence+comment" entries as necessary
-# (or remove it altogether if you haven't used any external assets)
+# I wish to submit the following methods as entirely my own (remove this if
+# you want to just submit classes):
+method:
+   - CatanDice.buildPlan() (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/CatanDice.java#L934-990)
+   - CatanDice.struc_need_to_built() (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/CatanDice.java#L1103-1111)
+   - CatanDice.action_to_get_enough_resource() (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/CatanDice.java#L886-910)
 
-
-
-# Sign *your* name and uids here. (Remove entries if you have fewer
-# than three members.)
-signatures:
-  - name: Shunyao Yang
-    uid: u7341225
-  - name: Hugo Heanly
-    uid: u7119555
-  - name: Zimu Li
-    uid: u7274285
+# sign *your* name and uid here
+name: Shunyao Yang
+uid: u7341225
