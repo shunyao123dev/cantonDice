@@ -247,7 +247,12 @@ public class CatanDice {
 
     // FIXME: Task #8
 
-
+    /**
+     * @author Shunyao Yang
+     * Generate a hashmap representation of each type of built structure
+     * @param B_state - arraylist representation of board_
+     * @return a hashmap representation of each type of built structure
+     */
     public static Map<String, ArrayList<String>> Builtstructure(ArrayList<String> B_state) {
         Map<String, ArrayList<String>> structure = new HashMap<>();
         ArrayList<String> S = new ArrayList<>();
@@ -970,7 +975,7 @@ public class CatanDice {
                 String n_board_state = String.join(",",b_state);
                 if (checkResourcesWithTradeAndSwap(s,n_board_state,r_state)) {
                     miss_resource = missing_resources(s,r_state);
-                    action = action_to_get_enough_resource(r_state,b_state,miss_resource,s);
+                    action = action_to_get_enough_resource(r_state,b_state,miss_resource,s); // check what actions can be done to get enough resource
                     for (String act:action) {
                         if (act.charAt(0)=='t') {
                             state_after_trade(act, r_state);
