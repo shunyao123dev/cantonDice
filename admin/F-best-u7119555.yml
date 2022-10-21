@@ -37,15 +37,15 @@ code:
 # I wish to submit the following classes as entirely my own (remove this if
 # you want to just submit methods):
 class:
-   - Game (Used some methods from CatanDice - written by Shunyao Yang)
-   - Viewer
-   - AI
-   - Board
-   - Player
-   - ResourceState
-   - ResourceType
-   - Structure
-   - StructureType
+   - Game (Used some methods from CatanDice - written by Shunyao Yang) (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/gui/Game.java)
+   - Viewer (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/gui/Viewer.java)
+   - AI (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/AI.java)
+   - Board (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/Board.java)
+   - Player (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/Player.java)
+   - ResourceState (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/ResourceState.java)
+   - ResourceType (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/ResourceType.java)
+   - Structure (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/Structure.java)
+   - StructureType (https://gitlab.cecs.anu.edu.au/u7119555/comp1110-ass2/-/blob/main/src/comp1110/ass2/StructureType.java)
 
 # sign *your* name and uid here
 name: Hugo Heanly
