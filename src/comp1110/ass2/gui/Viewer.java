@@ -1,9 +1,6 @@
 package comp1110.ass2.gui;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -11,10 +8,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.*;
@@ -26,33 +21,15 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class Viewer extends Application {
 
     private static final int VIEWER_WIDTH = 1200;
     private static final int VIEWER_HEIGHT = 700;
-
-    private static final int HEX_HEIGHT = 200;
-
-    private static final String testBoardState=
-            "R0,R1,R2,R3,R4,R5,R6,R7,R8," +
-            "R9,R10,R11,R12,R13,R14,R15,S3," +
-                    "S4,S5,S7,S9,S11,C7,C12,C20," +
-                    "C30,J1,J2,J3,J4,J5,J6,K1,K2,K3,K4,K5,K6";
-
     private final Group root = new Group();
-
     private final Group objects = new Group();
     private final Group controls = new Group();
-
     private final Group hexagons = new Group();
-
     private final Group structures = new Group();
-
-
-    private TextField playerTextField;
     private TextField boardTextField;
 
 
@@ -69,82 +46,46 @@ public class Viewer extends Application {
         String[] boardArr = board_state.split(",");
 
         for (var str : boardArr) {
-            if (str.equals("R0")) {
-                buildRoad(805, 300, 30);
-            } else if (str.equals("R1")) {
-                buildRoad(720,370,-90);
-            } else if (str.equals("R2")) {
-                buildRoad(778,382,-30);
-            } else if (str.equals("R3")) {
-                buildRoad(815,450,30);
-            } else if (str.equals("R4")) {
-                buildRoad(720,518,-90);
-            } else if (str.equals("R5")) {
-                buildRoad(790,530,-30);
-            } else if (str.equals("R6")) {
-                buildRoad(853,596,-90);
-            } else if (str.equals("R7")) {
-                buildRoad(937,535,30);
-            } else if (str.equals("R8")) {
-                buildRoad(922,458,-30);
-            } else if (str.equals("R9")) {
-                buildRoad(953,380,30);
-            } else if (str.equals("R10")) {
-                buildRoad(928,300,-30);
-            } else if (str.equals("R11")) {
-                buildRoad(945,225,30);
-            } else if (str.equals("R12")) {
-                buildRoad(989,518,-90);
-            } else if (str.equals("R13")) {
-                buildRoad(1070,460,30);
-            } else if (str.equals("R14")) {
-                buildRoad(1044,375,-30);
-            } else if (str.equals("R15")) {
-                buildRoad(1073,300,30);
-            } else if (str.equals("S3")) {
-                buildSettlement(825,290);
-            } else if (str.equals("S4")) {
-                buildSettlement(818,425);
-            } else if (str.equals("S5")) {
-                buildSettlement(820,580);
-            } else if (str.equals("S7")) {
-                buildSettlement(955,510);
-            } else if (str.equals("S9")) {
-                buildSettlement(960,355);
-            } else if (str.equals("S11")) {
-                buildSettlement(960,200);
-            } else if (str.equals("C7")) {
-                buildTown(670,340);
-            } else if (str.equals("C12")) {
-                buildTown(670,490);
-            } else if (str.equals("C20")) {
-                buildTown(1075,420);
-            } else if (str.equals("C30")) {
-                buildTown(1075,260);
-            } else if (str.equals("J1")) {
-                buildKnight(731,240);
-            } else if (str.equals("J2")) {
-                buildKnight(731,395);
-            } else if (str.equals("J3")) {
-                buildKnight(866,475);
-            } else if (str.equals("J4")) {
-                buildKnight(1003,395);
-            } else if (str.equals("J5")) {
-                buildKnight(1003,240);
-            } else if (str.equals("J6")) {
-                buildKnight(866,160);
-            } else if (str.equals("K1")) {
-                useKnight(731,240);
-            } else if (str.equals("K2")) {
-                useKnight(731,395);
-            } else if (str.equals("K3")) {
-                useKnight(866,475);
-            } else if (str.equals("K4")) {
-                useKnight(1003,395);
-            } else if (str.equals("K5")) {
-                useKnight(1003,240);
-            } else { //K6
-                useKnight(866,160);
+            switch (str) {
+                case "R0" -> buildRoad(805, 300, 30);
+                case "R1" -> buildRoad(720, 370, -90);
+                case "R2" -> buildRoad(778, 382, -30);
+                case "R3" -> buildRoad(815, 450, 30);
+                case "R4" -> buildRoad(720, 518, -90);
+                case "R5" -> buildRoad(790, 530, -30);
+                case "R6" -> buildRoad(853, 596, -90);
+                case "R7" -> buildRoad(937, 535, 30);
+                case "R8" -> buildRoad(922, 458, -30);
+                case "R9" -> buildRoad(953, 380, 30);
+                case "R10" -> buildRoad(928, 300, -30);
+                case "R11" -> buildRoad(945, 225, 30);
+                case "R12" -> buildRoad(989, 518, -90);
+                case "R13" -> buildRoad(1070, 460, 30);
+                case "R14" -> buildRoad(1044, 375, -30);
+                case "R15" -> buildRoad(1073, 300, 30);
+                case "S3" -> buildSettlement(825, 290);
+                case "S4" -> buildSettlement(818, 425);
+                case "S5" -> buildSettlement(820, 580);
+                case "S7" -> buildSettlement(955, 510);
+                case "S9" -> buildSettlement(960, 355);
+                case "S11" -> buildSettlement(960, 200);
+                case "C7" -> buildTown(670, 340);
+                case "C12" -> buildTown(670, 490);
+                case "C20" -> buildTown(1075, 420);
+                case "C30" -> buildTown(1075, 260);
+                case "J1" -> buildKnight(731, 240);
+                case "J2" -> buildKnight(731, 395);
+                case "J3" -> buildKnight(866, 475);
+                case "J4" -> buildKnight(1003, 395);
+                case "J5" -> buildKnight(1003, 240);
+                case "J6" -> buildKnight(866, 160);
+                case "K1" -> useKnight(731, 240);
+                case "K2" -> useKnight(731, 395);
+                case "K3" -> useKnight(866, 475);
+                case "K4" -> useKnight(1003, 395);
+                case "K5" -> useKnight(1003, 240);
+                default ->  //K6
+                        useKnight(866, 160);
             }
 
         }
@@ -161,12 +102,7 @@ public class Viewer extends Application {
         boardTextField = new TextField();
         boardTextField.setPrefWidth(500);
         Button button = new Button("Show");
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                displayState(boardTextField.getText());
-            }
-        });
+        button.setOnAction(e -> displayState(boardTextField.getText()));
         HBox hb = new HBox();
         hb.getChildren().addAll(boardLabel, boardTextField, button);
         hb.setSpacing(10);
@@ -175,7 +111,7 @@ public class Viewer extends Application {
 
     /**
      * Creates the base board for Catan Island 1
-     * @throws FileNotFoundException
+     * @throws FileNotFoundException if the files cannot be found within the /assets folder
      */
 
     void makeBaseBoard() throws FileNotFoundException {

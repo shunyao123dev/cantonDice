@@ -3,7 +3,6 @@ package comp1110.ass2;
 import java.util.ArrayList;
 
 import static comp1110.ass2.StructureType.*;
-import static comp1110.ass2.ResourceType.*;
 
 /**
  * Author of class: Hugo Heanly u7119555
@@ -82,64 +81,41 @@ public class Structure {
 
     public void setKnightUsed() {
         this.used = true;
-        String unBuiltKnight = this.position;
-        String builtKnight = "K" + unBuiltKnight.substring(unBuiltKnight.length() - 1);
-        this.position = builtKnight;
     }
 
 
     // Returns whether the structure is the start
     public boolean isStart() {
 
-        if (type == START) {
-            return true;
-        } else {
-            return false;
-        }
+        return type == START;
     }
 
     // Returns whether the structure is a road
 
     public boolean isRoad() {
 
-        if (type == ROAD) {
-            return true;
-        } else {
-            return false;
-        }
+        return type == ROAD;
     }
 
     // Returns whether the structure is a settlement
 
     public boolean isSettlement() {
 
-        if (type == SETTLEMENT) {
-            return true;
-        } else {
-            return false;
-        }
+        return type == SETTLEMENT;
     }
 
     // Returns whether the structure is a settlement
 
     public boolean isCity() {
 
-        if (type == CITY) {
-            return true;
-        } else {
-            return false;
-        }
+        return type == CITY;
     }
 
     // Returns whether the structure is a knight
 
     public boolean isKnight() {
 
-        if (type == KNIGHT) {
-            return true;
-        } else {
-            return false;
-        }
+        return type == KNIGHT;
 
 
 

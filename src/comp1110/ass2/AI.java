@@ -1,19 +1,17 @@
 package comp1110.ass2;
 
-import comp1110.ass2.gui.Game;
-import comp1110.ass2.Board;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
 /**
  * Author of class: Hugo Heanly u7119555
+ * Implements a simple highest point move AI
  */
 
 public class AI {
 
     static String[] allMoves = new String[]{"build R0", "build R1", "build R2", "build R3", "build R4", "build R5", "build R6", "build R7", "build R8", "build R9", "build R10", "build R11", "build R12",
-            "build R13", "build R14", "build R15", "build R16", "build S3",
+            "build R13", "build R14", "build R15", "build S3",
             "build S4", "build S5", "build S7", "build S9", "build S11",
             "build C7", "build C12", "build C20", "build C30", "build J1",
             "build J2", "build J3", "build J4", "build J5", "build J6",
@@ -42,7 +40,7 @@ public class AI {
         int currentHighestScore = 0;
         String currentBestMove = "";
         ArrayList<String> possibleMoves = possibleMoves(player);
-        if (!anyMovePossible(player)) {
+        if (possibleMoves.size() == 0) {
             return "";
         } else {
             for (int i = 0; i < possibleMoves.size(); i++) {
@@ -57,17 +55,15 @@ public class AI {
                 }
             }
         }
+
         if (currentBestMove.equals("")) {
-            return possibleMoves.get(0);
+            currentBestMove = possibleMoves.get(0);
         }
         return currentBestMove;
     }
 
     public static boolean anyMovePossible (Player player) {
-        if (!possibleMoves(player).isEmpty()) {
-            return true;
-        }
-        return false;
+        return !possibleMoves(player).isEmpty();
     }
 
     public static String boardToString(Board board)  {

@@ -1,7 +1,6 @@
 package comp1110.ass2;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Author of class: Hugo Heanly u7119555
@@ -36,9 +35,7 @@ public class Player {
         this.board = board;
     }
 
-    public int getTurnCount() {
-        return this.turnCount;
-    }
+    public int getTurnCount() {return this.turnCount;}
 
     public void setTurnCount(int turnCount) {
         this.turnCount = turnCount;

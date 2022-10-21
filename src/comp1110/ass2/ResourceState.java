@@ -19,21 +19,6 @@ public class ResourceState {
     public int[] getResourceState() {
         return this.state;
     }
-
-
-    //Update Resource State with by given parameters
-
-    public void changeResource(ResourceType type, int num) {
-        switch (type) {
-            case ORE -> this.state[0] = num;
-            case GRAIN -> this.state[1] = num;
-            case WOOL -> this.state[2] = num;
-            case TIMBER -> this.state[3] = num;
-            case BRICK -> this.state[4] = num;
-            case GOLD -> this.state[5] = num;
-        }
-    }
-
     public void changeResourceWithDice(int[] die) {
         int oreCount = countDice(0, die);
         int grainCount = countDice(1, die);
@@ -58,7 +43,6 @@ public class ResourceState {
             }
         }
     }
-
     public int countDice(int resource, int[] die) {
         int count = 0;
         for (int i = 0; i < die.length; i++) {
@@ -68,6 +52,4 @@ public class ResourceState {
         }
         return count;
     }
-
-
 }

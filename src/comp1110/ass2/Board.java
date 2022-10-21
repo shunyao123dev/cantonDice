@@ -1,13 +1,11 @@
 package comp1110.ass2;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static comp1110.ass2.ResourceType.*;
 import static comp1110.ass2.StructureType.*;
-import static comp1110.ass2.ResourceState.*;
 
 /**
  * Author of class: Hugo Heanly u7119555
@@ -16,7 +14,6 @@ import static comp1110.ass2.ResourceState.*;
 public class Board {
 
     //The structures on the game board
-
     public Structure[] structures;
 
     public int[] resources;
