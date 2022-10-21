@@ -9,6 +9,11 @@ of our project implements the following features:
  - A simple placement viewer (Task 5)
  - A basic playable game (Task 10)
  - Playable against a computer opponent (Task 15)
+ - Running score counter
+ - Instruction bar
+ - Playable with up-to four players
+ - Roll counter
+ - Winner display
 
 List additional noteworthy features beyond those in the assignment
 specification that you have added, if any.
@@ -22,3 +27,12 @@ to use any parts of your game GUI that are not intuitively obvious
 (and not documented in the GUI itself).
 
 This section is optional.
+
+Notes:
+
+To select the die you want to keep on the second roll, click them. They will glow red if selected. To unselect
+click again.
+
+When you have completed your turn, click end turn.
+
+

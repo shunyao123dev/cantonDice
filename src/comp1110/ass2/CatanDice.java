@@ -212,13 +212,19 @@ public class CatanDice {
      * @return true iff the structure is a possible next build, false
      * otherwise.
      */
-    public static boolean checkBuildConstraints(String structure,
-                                                String board_state) {
+    public static boolean checkBuildConstraints(String structure,  String board_state) {
+
+        ArrayList<String> boardArray = new ArrayList<>(Arrays.asList(board_state.split(",")));
+
         if (!(isBoardStateWellFormed(board_state))) {
             return false;
-        } else if (structure.equals("R0") || structure.equals("S3") || structure.equals("J1")) {
-            return true;
         }
+        for (String building : boardArray) {
+            if (structure.equals(building)) { // already built
+                return false;
+            }
+        }
+
         String[] b_state={};
         if (board_state.length()!=0){
             b_state = board_state.split(",");
