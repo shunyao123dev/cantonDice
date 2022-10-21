@@ -5,6 +5,7 @@ import java.util.Objects;
 
 /**
  * Author of class: Hugo Heanly u7119555
+ * Implements a simple highest point move AI
  */
 
 public class AI {
