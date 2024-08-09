@@ -45,13 +45,11 @@ public class Structure {
         this.prerequisites = prerequisites;
     }
 
+
+
     // Constructor for the Structure class that allows specifying
     // for the structure's position only
 
-    public Structure(String position) {
-        this.position = position;
-
-    }
 
     //Return functions
 
